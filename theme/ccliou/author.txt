@@ -1,0 +1,15 @@
+<leds.bmp>, <icons.bmp>
+    author: http://www.foood.net/
+
+<toolbar.bmp>
+    作者：ccliou@alumni.nccu.edu.tw
+    author: ccliou@alumni.nccu.edu.tw
+
+    licence of "toolbar.bmp" made by ccliou@alumni.nccu.edu.tw:
+        You DO NOT NEED to notify the author( ccliou@alumni.nccu.edu.tw )
+            nor pay any fee
+        when you modify, distribute, redistribute "toolbar.bmp".
+
+    由 ccliou@alumni.nccu.edu.tw 所製作的 toolbar.bmp 的授權
+        您「可以」「更改、散佈或再散佈」「toolbar.bmp」而
+    　　「無需」知會作者( ccliou@alumni.nccu.edu.tw )，也「無需」支付任何費用。

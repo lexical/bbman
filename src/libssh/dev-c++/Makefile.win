@@ -1,0 +1,86 @@
+# Project: libssh
+# Makefile created by Dev-C++ 4.9.9.0
+
+CPP  = g++.exe
+CC   = gcc.exe
+WINDRES = windres.exe
+RES  = 
+OBJ  = ../libssh/auth.o ../libssh/base64.o ../libssh/buffer.o ../libssh/channels.o ../libssh/client.o ../libssh/connect.o ../libssh/crypt.o ../libssh/dh.o ../libssh/error.o ../libssh/gzip.o ../libssh/kex.o ../libssh/keyfiles.o ../libssh/keys.o ../libssh/misc.o ../libssh/options.o ../libssh/packet.o ../libssh/sftp.o ../libssh/string.o ../libssh/wrapper.o ../client.o $(RES)
+LINKOBJ  = ../libssh/auth.o ../libssh/base64.o ../libssh/buffer.o ../libssh/channels.o ../libssh/client.o ../libssh/connect.o ../libssh/crypt.o ../libssh/dh.o ../libssh/error.o ../libssh/gzip.o ../libssh/kex.o ../libssh/keyfiles.o ../libssh/keys.o ../libssh/misc.o ../libssh/options.o ../libssh/packet.o ../libssh/sftp.o ../libssh/string.o ../libssh/wrapper.o ../client.o $(RES)
+LIBS =  -L"D:/Dev-Cpp/lib" D:/Dev-Cpp/lib/libeay32.a D:/Dev-Cpp/lib/ssleay32.a D:/Dev-Cpp/lib/libwsock32.a D:/Dev-Cpp/lib/libzlib.a  -s 
+INCS =  -I"D:/Dev-Cpp/include"  -I"C:/libssh/include" 
+CXXINCS =  -I"D:/Dev-Cpp/include/c++"  -I"D:/Dev-Cpp/include/c++/mingw32"  -I"D:/Dev-Cpp/include/c++/backward"  -I"D:/Dev-Cpp/include"  -I"C:/libssh/include" 
+BIN  = libssh.exe
+CXXFLAGS = $(CXXINCS)   -fexpensive-optimizations -O2
+CFLAGS = $(INCS) -D__WXMSW__   -fexpensive-optimizations -O2
+
+.PHONY: all all-before all-after clean clean-custom
+
+all: all-before libssh.exe all-after
+
+
+clean: clean-custom
+	rm -f $(OBJ) $(BIN)
+
+$(BIN): $(OBJ)
+	$(CC) $(LINKOBJ) -o "libssh.exe" $(LIBS)
+
+../libssh/auth.o: ../libssh/auth.c
+	$(CC) -c ../libssh/auth.c -o ../libssh/auth.o $(CFLAGS)
+
+../libssh/base64.o: ../libssh/base64.c
+	$(CC) -c ../libssh/base64.c -o ../libssh/base64.o $(CFLAGS)
+
+../libssh/buffer.o: ../libssh/buffer.c
+	$(CC) -c ../libssh/buffer.c -o ../libssh/buffer.o $(CFLAGS)
+
+../libssh/channels.o: ../libssh/channels.c
+	$(CC) -c ../libssh/channels.c -o ../libssh/channels.o $(CFLAGS)
+
+../libssh/client.o: ../libssh/client.c
+	$(CC) -c ../libssh/client.c -o ../libssh/client.o $(CFLAGS)
+
+../libssh/connect.o: ../libssh/connect.c
+	$(CC) -c ../libssh/connect.c -o ../libssh/connect.o $(CFLAGS)
+
+../libssh/crypt.o: ../libssh/crypt.c
+	$(CC) -c ../libssh/crypt.c -o ../libssh/crypt.o $(CFLAGS)
+
+../libssh/dh.o: ../libssh/dh.c
+	$(CC) -c ../libssh/dh.c -o ../libssh/dh.o $(CFLAGS)
+
+../libssh/error.o: ../libssh/error.c
+	$(CC) -c ../libssh/error.c -o ../libssh/error.o $(CFLAGS)
+
+../libssh/gzip.o: ../libssh/gzip.c
+	$(CC) -c ../libssh/gzip.c -o ../libssh/gzip.o $(CFLAGS)
+
+../libssh/kex.o: ../libssh/kex.c
+	$(CC) -c ../libssh/kex.c -o ../libssh/kex.o $(CFLAGS)
+
+../libssh/keyfiles.o: ../libssh/keyfiles.c
+	$(CC) -c ../libssh/keyfiles.c -o ../libssh/keyfiles.o $(CFLAGS)
+
+../libssh/keys.o: ../libssh/keys.c
+	$(CC) -c ../libssh/keys.c -o ../libssh/keys.o $(CFLAGS)
+
+../libssh/misc.o: ../libssh/misc.c
+	$(CC) -c ../libssh/misc.c -o ../libssh/misc.o $(CFLAGS)
+
+../libssh/options.o: ../libssh/options.c
+	$(CC) -c ../libssh/options.c -o ../libssh/options.o $(CFLAGS)
+
+../libssh/packet.o: ../libssh/packet.c
+	$(CC) -c ../libssh/packet.c -o ../libssh/packet.o $(CFLAGS)
+
+../libssh/sftp.o: ../libssh/sftp.c
+	$(CC) -c ../libssh/sftp.c -o ../libssh/sftp.o $(CFLAGS)
+
+../libssh/string.o: ../libssh/string.c
+	$(CC) -c ../libssh/string.c -o ../libssh/string.o $(CFLAGS)
+
+../libssh/wrapper.o: ../libssh/wrapper.c
+	$(CC) -c ../libssh/wrapper.c -o ../libssh/wrapper.o $(CFLAGS)
+
+../client.o: ../client.c
+	$(CC) -c ../client.c -o ../client.o $(CFLAGS)

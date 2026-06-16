@@ -1,0 +1,23 @@
+// THIS FILE WILL BE OVERWRITTEN BY DEV-C++!
+// DO NOT EDIT!
+
+#ifndef SCD_TELNET_PRIVATE_H
+#define SCD_TELNET_PRIVATE_H
+
+// VERSION DEFINITIONS
+#define VER_STRING	"1.7.7.4"
+#define VER_MAJOR	1
+#define VER_MINOR	7
+#define VER_RELEASE	7
+#define VER_BUILD	4
+#define COMPANY_NAME	""
+#define FILE_VERSION	""
+#define FILE_DESCRIPTION	"BBMan - BBS 連線軟體"
+#define INTERNAL_NAME	""
+#define LEGAL_COPYRIGHT	"國立政治大學資訊科學系８８級　謝淳達"
+#define LEGAL_TRADEMARKS	""
+#define ORIGINAL_FILENAME	"scd_telnet"
+#define PRODUCT_NAME	"BBMan"
+#define PRODUCT_VERSION	""
+
+#endif //SCD_TELNET_PRIVATE_H

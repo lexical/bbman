@@ -1,0 +1,801 @@
+# BBMan po.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the BBMan package.
+# Xie, Chun-Da <jakky1@pchome.com.tw>, 2004.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: BBMan v1.8\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-08-26 0:00+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Xie, Chun-Da <jakky1@pchome.com.tw>\n"
+"Language-Team: Traditional Chinese <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=BIG5\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: common.cpp:119
+msgid "Welcome to BBMan"
+msgstr "Åwªï¨Ï¥Î BBMan"
+
+#: common.cpp:120
+msgid ""
+".\n"
+"\n"
+"BBMan is designed by Xie, Chun-Da, Dept. of Computer Science, National "
+"Chengchi University, Taiwan.\n"
+"\n"
+"BBMan web page: http://bbman.sf.net/\n"
+"My email box: jakky1@pchome.com.tw\n"
+"\n"
+"Thanks to :\n"
+"http://www.foood.net/ --- Toolbar Icon set designer"
+msgstr "BBMan ¬O¥Ñ°ê¥ß¬Fªv¤j¾Ç¸ê°T¬ì¾Ç¨t¡@ÁÂ²E¹F¡@³]­p\n\nBBMan ºô­¶¡Ghttp://nccu.edu.tw/92753008/BBMan/\n§Úªº«H½c¡Gjakky1@pchome.com.tw\n\n¯S§O·PÁÂ¡G\nhttp://www.foood.net/ --- ¤u¨ã¦C¹Ï¥Ü´£¨ÑªÌ"
+
+#: common.cpp:131
+msgid ". Designer : Xie, Chun-Da, Dept. of Computer Science, NCCU, Taiwan"
+msgstr "¡C³]­pªÌ¡G¬F¤j¸ê¬ì¨t¡@ÁÂ²E¹F"
+
+#: common.cpp:168
+msgid "Can't load sound file"
+msgstr "µLªk¸ü¤JÁn­µÀÉ®×"
+
+#: common.cpp:247 frm_editterm.cpp:90
+msgid "BBMan - ANSI Editor"
+msgstr ""
+
+#: common.cpp:266
+msgid ""
+"Please input a password. Later you will need this password to restore BBMan "
+"window.\n"
+"(Password need to be at least 3 letters)"
+msgstr "½Ð¿é¤J±K½X¡C¤§«á±z»Ý­n³o­Ó±K½XÁÙ­ì BBMan µøµ¡"
+
+#: common.cpp:266 common.cpp:269
+msgid "Hide BBMan"
+msgstr "ÁôÂÃ BBMan"
+
+#: common.cpp:267
+msgid "Cancel Hiding BBMan"
+msgstr "¨ú®øÁôÂÃ BBMan"
+
+#: common.cpp:268
+msgid "Password needs to be at last 3 letters please."
+msgstr "±K½X¥²¶·¶W¹L¤T­Ó¦r¤¸"
+
+#: common.cpp:269
+msgid ""
+"Please enter password again to make sure you remember what password you just "
+"typed."
+msgstr "½Ð¦A¦¸¿é¤J­è­èªº±K½X¡A½T«O±z¤w¸g°O¦í¸Ó±K½X"
+
+#: common.cpp:270
+msgid "Password confirming failed, please input again."
+msgstr "«e«á¨â¦¸ªº±K½X¤£¦P¡A½Ð­«·s¿é¤J"
+
+#: common.cpp:282
+msgid "Please enter password to restore BBMan window."
+msgstr "½Ð¿é¤J±K½XÁÙ­ì BBMan µøµ¡"
+
+#: common.cpp:344
+msgid "The font you choosed is not correct, cancel change of font option."
+msgstr "±z©Ò¿ï¾Üªº¦r«¬¤£¥¿½T¡A¨ú®ø¦r«¬³]©w"
+
+#: frm_editterm.cpp:92
+msgid "New File"
+msgstr "¶}·sÀÉ®×"
+
+#: frm_editterm.cpp:101
+msgid "Save As..."
+msgstr "¥t¦s·sÀÉ..."
+
+#: frm_editterm.cpp:133 frm_editterm.cpp:150 frm_editterm.cpp:362
+msgid "Content modified but not save yet, are you sure to quit?"
+msgstr "¤º®e¦³ÅÜ§ó¡A½T©w­nÂ÷¶}¡H"
+
+#: frm_editterm.cpp:154
+msgid "Open"
+msgstr "¶}±ÒÂÂÀÉ"
+
+#: frm_editterm.cpp:219 frm_editterm.cpp:221 frm_telnet.cpp:622
+#: frm_telnet.cpp:624
+msgid "Please enter message you want to send"
+msgstr "½Ð¿é¤J­n°e¥Xªº¤å¦r"
+
+#: frm_editterm.cpp:219 frm_telnet.cpp:622 frm_telnet.cpp:624
+msgid "Input a line"
+msgstr "¾ã¦æ¿é¤J"
+
+#: frm_editterm.cpp:257
+msgid "New &Window"
+msgstr "¶}·sµøµ¡"
+
+#: frm_editterm.cpp:261
+msgid "&Save\tCtrl-S"
+msgstr "Àx¦s\tCtrl-S"
+
+#: frm_editterm.cpp:264
+msgid "&Quit\tAlt-F4"
+msgstr "µ²§ô\tAlt-F4"
+
+#: frm_editterm.cpp:265
+msgid "&File"
+msgstr "ÀÉ®×(&F)"
+
+#: frm_editterm.cpp:268
+msgid "Delete line\tCtrl-Y"
+msgstr "§R°£¾ã¦æ\tCtrl-Y"
+
+#: frm_editterm.cpp:269
+msgid "Delete Line Tail\tCtrl-K"
+msgstr "§R°£¦æ§À\tCtrl-K"
+
+#: frm_editterm.cpp:270
+msgid "Join next line\tCtrl-J"
+msgstr "¦X¨Ö¤U¤@¦æ\tCtrl-J"
+
+#: frm_editterm.cpp:272
+msgid "Copy (Plain Text) \tAlt-C"
+msgstr "½Æ»s (¯Â¤å¦r) \tAlt-C"
+
+#: frm_editterm.cpp:273
+msgid "Paste (Plain Text) \tAlt-V"
+msgstr "¶K¤W (¯Â¤å¦r) \tAlt-V"
+
+#: frm_editterm.cpp:275
+msgid "&Copy (with ANSI Color) \tCtrl-Alt-C"
+msgstr "½Æ»s (±m¦â¤å¦r) \tCtrl-Alt-C"
+
+#: frm_editterm.cpp:276
+msgid "&Paste (with ANSI Color) \tCtrl-Alt-V"
+msgstr "¶K¤W (±m¦â¤å¦r) \tCtrl-Alt-V"
+
+#: frm_editterm.cpp:278 frm_telnet.cpp:227
+msgid "Select &All\tAlt-A"
+msgstr "¿ï¾Ü¥þ³¡\tAlt-A"
+
+#: frm_editterm.cpp:280 frm_telnet.cpp:229
+msgid "Input &Line\tAlt-L"
+msgstr "¾ã¦æ¿é¤J\tAlt-L"
+
+#: frm_editterm.cpp:281 frm_telnet.cpp:230
+msgid "&Edit"
+msgstr "½s¿è(&E)"
+
+#: frm_editterm.cpp:284
+msgid "Normal (Cancel All Attributes)\tCtrl-N"
+msgstr "¥¿±`ÄÝ©Ê (¨ú®ø©Ò¦³ÄÝ©Ê)\tCtrl-N"
+
+#: frm_editterm.cpp:288
+msgid "black"
+msgstr "¶Â¦â"
+
+#: frm_editterm.cpp:288
+msgid "red"
+msgstr "¬õ¦â"
+
+#: frm_editterm.cpp:288
+msgid "green"
+msgstr "ºñ¦â"
+
+#: frm_editterm.cpp:288
+msgid "yellow"
+msgstr "¶À¦â"
+
+#: frm_editterm.cpp:288
+msgid "blue"
+msgstr "ÂÅ¦â"
+
+#: frm_editterm.cpp:288
+msgid "purple"
+msgstr "µµ¦â"
+
+#: frm_editterm.cpp:288
+msgid "anil"
+msgstr "ÀQ¦â"
+
+#: frm_editterm.cpp:288
+msgid "white"
+msgstr "¥Õ¦â"
+
+#: frm_editterm.cpp:293
+msgid "Text Color"
+msgstr "¤å¦rÃC¦â"
+
+#: frm_editterm.cpp:298
+msgid "Background Color"
+msgstr "©³¦â"
+
+#: frm_editterm.cpp:302
+msgid "Blink \tCtrl-B"
+msgstr "°{Ã{ \tCtrl-B"
+
+#: frm_editterm.cpp:303
+msgid "no blink \tCtrl-V"
+msgstr "¤£°{Ã{ \tCtrl-V"
+
+#: frm_editterm.cpp:305
+msgid "Highlight \tCtrl-H"
+msgstr "°ª«G«× \tCtrl-H"
+
+#: frm_editterm.cpp:306
+msgid "no highlight \tCtrl-G"
+msgstr "¥¿±`«G«× \tCtrl-G"
+
+#: frm_editterm.cpp:308
+msgid "Underline \tCtrl-U"
+msgstr "©³½u \tCtrl-U"
+
+#: frm_editterm.cpp:309
+msgid "no underline \tCtrl-I"
+msgstr "µL©³½u \tCtrl-I"
+
+#: frm_editterm.cpp:311
+msgid "Text Attribute"
+msgstr "¤å¦rÄÝ©Ê"
+
+#: frm_editterm.cpp:315
+msgid "About BBMan color text editor\tF1"
+msgstr "Ãö©ó BBMan ±m¦â¤å¦r½s¿è¾¹\tF1"
+
+#: frm_editterm.cpp:316
+msgid "&About"
+msgstr "Ãö©ó(&A)"
+
+#: frm_telnet.cpp:196 frm_telnet.cpp:295
+msgid "BBS List"
+msgstr "BBS ²M³æ"
+
+#: frm_telnet.cpp:197
+msgid "&Quick Connect... \tAlt-Q"
+msgstr "§Ö³t³s½u \tAlt-Q"
+
+#: frm_telnet.cpp:199
+msgid "&Disconnect \tAlt-D"
+msgstr "Â_½u \tAlt-D"
+
+#: frm_telnet.cpp:200
+msgid "Close Connection \tAlt-W"
+msgstr "Ãö³¬³s½u \tAlt-W"
+
+#: frm_telnet.cpp:201
+msgid "&Reconnect \tAlt-R"
+msgstr "­«·s³s½u \tAlt-R"
+
+#: frm_telnet.cpp:203
+msgid "Previous Connection \tAlt-Z"
+msgstr "¤W¤@­Ó³s½u \tAlt-Z"
+
+#: frm_telnet.cpp:204
+msgid "Next Connection \tAlt-X"
+msgstr "¤U¤@­Ó³s½u \tAlt-X"
+
+#: frm_telnet.cpp:205
+msgid "Switch to assigning connection \tAlt+0"
+msgstr "¤Á´«¨ì«ü©w³s½u"
+
+#: frm_telnet.cpp:207
+msgid "&Full screen \tAlt-Enter"
+msgstr "¥þ¿Ã¹õ \tAlt-Enter"
+
+#: frm_telnet.cpp:210
+msgid "Show &login dialog when startup"
+msgstr "±Ò°Êµ{¦¡®ÉÅã¥Üµn¤Jµøµ¡"
+
+#: frm_telnet.cpp:211
+msgid "&Modify login password"
+msgstr "­×§ïµn¤J±K½X"
+
+#: frm_telnet.cpp:212
+msgid "Login Option"
+msgstr "µn¤J¿ï¶µ"
+
+#: frm_telnet.cpp:215
+msgid "Exit &Program \tAlt-F4"
+msgstr "Â÷¶}µ{¦¡ \tAlt-F4"
+
+#: frm_telnet.cpp:216
+msgid "Co&nnection"
+msgstr "³s½u(&N)"
+
+#: frm_telnet.cpp:219
+msgid "Copy (Plain Text)\tAlt-C"
+msgstr "½Æ»s (¯Â¤å¦r)\tAlt-C"
+
+#: frm_telnet.cpp:220
+msgid "Paste (Plain Text)\tAlt-V"
+msgstr "¶K¤W (¯Â¤å¦r)\tAlt-V"
+
+#: frm_telnet.cpp:222
+msgid "Copy (with ANSI Color)\tCtrl-Alt-C"
+msgstr "½Æ»s (±m¦â¤å¦r)\tCtrl-Alt-C"
+
+#: frm_telnet.cpp:223
+msgid "Paste (with ANSI Color)\tCtrl-Alt-V"
+msgstr "¶K¤W (±m¦â¤å¦r)\tCtrl-Alt-¢ä"
+
+#: frm_telnet.cpp:225
+msgid "Open selected text as URL"
+msgstr "±N¿ï¨ú¤å¦rµø¬°¶W³sµ²¶}±Ò"
+
+#: frm_telnet.cpp:233
+msgid "Add favorite"
+msgstr "·s¼W§Úªº³Ì·R"
+
+#: frm_telnet.cpp:234
+msgid "Edit favorite"
+msgstr "½s¿è§Úªº³Ì·R"
+
+#: frm_telnet.cpp:236
+msgid "&Favorite"
+msgstr "§Úªº³Ì·R(&F)"
+
+#: frm_telnet.cpp:239
+msgid "&Font..."
+msgstr "¦r«¬..."
+
+#: frm_telnet.cpp:240
+msgid "Setup URL assicoation &program"
+msgstr "³]©w¶W³sµ²ÃöÁpµ{¦¡"
+
+#: frm_telnet.cpp:241
+msgid "Play &Sound when receive hot call"
+msgstr "¦¬¨ì¤ô²y®É¼½©ñ­µ¼Ö"
+
+#: frm_telnet.cpp:242
+msgid "Auto replay hot call when idle"
+msgstr "¶¢¸m®É¦Û°Ê¦^ÂÐ¤ô²y"
+
+#: frm_telnet.cpp:243
+msgid "&Edit canned message"
+msgstr "½s¿èÅø¸Ë°T®§"
+
+#: frm_telnet.cpp:244
+msgid "Max line &width for pasting article"
+msgstr "³]©w¶K¤W®É¦Û°Ê´«¦æ¨C¦æ³Ì¤jªø«×­­¨î"
+
+#: frm_telnet.cpp:245
+msgid "Enable &long screen"
+msgstr "±Ò°Êªø¿Ã¹õ"
+
+#: frm_telnet.cpp:246
+msgid "Enable double byte character &detect for current connection \tF12"
+msgstr "°»´ú¥Ø«e³s½u¤§Âù¦ì¤¸¦r"
+
+#: frm_telnet.cpp:247
+msgid "Display with highlight text"
+msgstr "¥Ã»·¥H°ª«G«×Åã¥Ü¦r¦ê"
+
+#: frm_telnet.cpp:249
+msgid "&Auto reconnect"
+msgstr "¦Û°Ê­«·s³s½u"
+
+#: frm_telnet.cpp:250
+msgid "Prevent I&dle"
+msgstr "¨¾§b (¨¾Â_½u)"
+
+#: frm_telnet.cpp:251
+msgid "&Options"
+msgstr "³]©w(&O)"
+
+#: frm_telnet.cpp:254
+msgid "ANSI &editor"
+msgstr "BBMan ±m¦â¤å¦r½s¿è¾¹"
+
+#: frm_telnet.cpp:255
+msgid "Lock screen (for temporarily away from keyboard)\tAlt-P"
+msgstr "Âê¦í¿Ã¹õ (Á×§KÂ÷®y®É¥L¤H°½¿s)\tAlt-P"
+
+#: frm_telnet.cpp:258
+msgid "&Tool"
+msgstr "¤u¨ã(&T)"
+
+#: frm_telnet.cpp:261
+msgid "&About BBMan \tF1"
+msgstr "Ãö©ó BBMan \tF1"
+
+#: frm_telnet.cpp:262
+msgid "About BBMan &format message"
+msgstr "Ãö©ó BBMan ®æ¦¡¤Æ°T®§"
+
+#: frm_telnet.cpp:264
+msgid "Browse BBMan &web site"
+msgstr "ÂsÄý BBMan ºô¯¸"
+
+#: frm_telnet.cpp:265
+msgid "&Mail to BBMan author"
+msgstr "±H«Hµ¹ BBMan ³]­pªÌ"
+
+#: frm_telnet.cpp:297
+msgid "Quick Connect (Alt+Q)"
+msgstr "§Ö³t³s½u (Alt+Q)"
+
+#: frm_telnet.cpp:299
+msgid "Reconnect (Enter) (Alt+R)"
+msgstr "­«·s³s½u (Enter) (Alt+R)"
+
+#: frm_telnet.cpp:300
+msgid "Close Connection (Ctrl+Del) (Alt+W)"
+msgstr "Ãö³¬³s½u (Ctrl+Del) (Alt+W)"
+
+#: frm_telnet.cpp:303
+msgid "Copy plain text (Alt+C)"
+msgstr "½Æ»s¯Â¤å¦r (Alt+C)"
+
+#: frm_telnet.cpp:304
+msgid "Copy with ANSI Color (Ctrl+Alt+C)"
+msgstr "½Æ»s±m¦â¤å¦r (Ctrl+Alt+C)"
+
+#: frm_telnet.cpp:305
+msgid "Paste with ANSI Color (Ctrl+Alt+V)"
+msgstr "¶K¤W±m¦â¤å¦r (Ctrl+Alt+V)"
+
+#: frm_telnet.cpp:310
+msgid "Full Screen (Alt+Enter)"
+msgstr "¥þ¿Ã¹õ (Alt+Enter)"
+
+#: frm_telnet.cpp:313
+msgid "Lock screen (Alt+P)"
+msgstr "Âê¦í¿Ã¹õ (Alt+P)"
+
+#: frm_telnet.cpp:315
+msgid "About BBMan (F1)"
+msgstr "Ãö©ó BBMan (F1)"
+
+#: frm_telnet.cpp:318
+msgid "Hostname :"
+msgstr "ºô§}¡G"
+
+#: frm_telnet.cpp:321
+msgid "Enter the server address, and press [Enter] to connect"
+msgstr "½Ð¿é¤J¯¸¥x¦ì§}¡AµM«á«ö¤U [Enter] ¶}©l³s½u"
+
+#: frm_telnet.cpp:656
+msgid "There are existing connection, are you sure to quit?"
+msgstr "¥Ø«e¤´¦³³s½u¨Ï¥Î¤¤¡A½T©w­nÂ÷¶}µ{¦¡¡H"
+
+#: frm_telnet.cpp:686
+msgid ""
+"BBMan format message allow you to send special code at [auto send message "
+"after connect] or [send customer message] \n"
+"\n"
+"All special code start with backlash \\ \n"
+"\\n:[Enter]\n"
+"\\^?:Ctrl+? (for example: \\^R means Ctrl+R) \n"
+"\\#{UDLR}:up down left right arrow key (\\#U: up arrow) (\\#L:left arrow) \n"
+"\\p3: pause for 3 secs (from 1 ~ 9)\n"
+"\\\\:backlash \\\n"
+"\n"
+"For example when you login ptt, you can assign auto send string:\\p3username"
+"\\npassword\\n\\n\\#D\\#D\\n\\n \n"
+"(Pause 3 secs -> Send username -> [Enter] -> Send password -> [Enter]  login "
+"-> [Enter] -> [Down] twice -> [Enter] twice to User menu)"
+msgstr "BBMan ®æ¦¡¤Æ°T®§¥i¥HÅý§A¦b [³s½u«á¦Û°Ê°e¥X¦r¦ê] ©Î [°e¥X¦Û©w°T®§] ®É«ü©w°e¥X¤@¨Ç¯S®í½X\n\n©Ò¦³¯S®í½X¬Ò¥H±×½u \\ ¬°¶}ÀY\n\\n¡G[Enter]Áä\n\\^?¡GCtrl+? ( ¨Ò¦p \\^R ªí¥Ü Ctrl+R )\n\\#{UDLR}¡G¤W¤U¥ª¥kÁä ( \\#U¡G¤W ) (\\#L¡G¥ª)\n\\p3¡G¼È°± 3 ¬í ( ¼Æ¦r¥i¬° 1~9 )\n\\\\¡G±×½u \\\n\n¨Ò¦p¦bµn¤J ptt ®É§A¥i¥H«ü©w¦Û°Ê°e¥X¦r¦ê¡G\\p3username\\npassword\\n\\n\\#D\\#D\\n\\n \n( ¼È°± 3 ¬í -> ¿é¥X username -> [Enter] -> ¿é¥X password -> [Enter] µn¤J -> [Enter] -> ¨â¦¸ [Down] -> ¨â¦¸ [Enter] ¨ì¨Ï¥ÎªÌ¿ï³æ )"
+
+#: frm_telnet.cpp:687
+msgid "About BBMan format message"
+msgstr "Ãö©ó BBMan ®æ¦¡¤Æ°T®§"
+
+#: frm_telnet.cpp:761
+msgid "Edit / Delete site"
+msgstr "½s¿è / §R°£¯¸¥x"
+
+#: frm_telnet.cpp:866
+msgid ""
+"Connection fail ( maybe server out-of-service, or wrong address )"
+msgstr "³s½u¥¢±Ñ ( ¥i¯à¬O¥D¾÷¼È®É°±¤îªA°È©Î¬O©Ò¿é¤Jªº¦ì§}¿ù»~ )"
+
+#: frm_telnet.cpp:877
+msgid "[1;1H[1;5;33;43m Disconnected [m"
+msgstr "³s½u¤w¤¤Â_"
+
+#: frm_telnet.cpp:984
+msgid ""
+"Please enter site address\n"
+"\n"
+"If not connects with default port (23), please add colon and port number\n"
+"For example: use ptt.twbbs.org:3456 to connect ptt.twbbs.org with port 3456"
+msgstr "½Ð¿é¤J¥D¾÷¦ì§}\n\n¦pªG±ý¨Ï¥Î«D¹w³] port (23) µn¤J¡A½Ð¦bºô§}«á¥[¤W «_¸¹: ¥H¤Î port number\n¨Ò¦pptt.twbbs.org:3456 ¥Nªí¥H port 3456 ³s¤W ptt.twbbs.org"
+
+#: frm_telnet.cpp:984
+msgid "Quick Connect"
+msgstr "§Ö³t³s½u"
+
+#: frm_telnet.cpp:1059
+msgid "Please choose what hyperlinks associated program you want to edit?"
+msgstr "½Ð¿ï¾Ü­n½s¿è­þ­Ó¶W³sµ²Ãþ«¬ªºÃöÁpµ{¦¡¡H"
+
+#: frm_telnet.cpp:1059
+msgid "Edit hyperlinks associated program"
+msgstr "½s¿è¶W³sµ²ÃöÁpµ{¦¡"
+
+#: frm_telnet.cpp:1073
+msgid "What program to open this type of hyperlinks?"
+msgstr "½Ð°Ý­n¥Î­þ­Óµ{¦¡¨Ó¶}±Ò³oÃþ¶W³sµ²¡H"
+
+#: frm_telnet.cpp:1073 frm_telnet.cpp:1075
+msgid "Setup hyperlinks associated program"
+msgstr "³]©w¶W³sµ²ÃöÁpµ{¦¡"
+
+#: frm_telnet.cpp:1084
+msgid ""
+"Please enter message for auto replying hot call when idle.\n"
+"\n"
+"Press [Esc] or [Cancel] or [empty content] means you will disable this "
+"function\n"
+"Press [OK] to keep current setting\n"
+"(Not support BBMan format message)"
+msgstr "½Ð¿é¤J¶¢¸m®É­n¦^¶Ç¤°»ò¦r¦êµ¹¥á¤ô²yµ¹§Aªº¤H\n\n«ö¤U [Esc] ©Î [Cancel] ©Î [§â¤º®e²MªÅ] ±N¥Nªí±z·Q­n¨ú®ø³o­Ó¾÷¨î\n¤£·Q§ó§ï³]©w½Ðª½±µ«ö [OK] §Y¥i\n( ¤£¤ä´© BBMan ®æ¦¡¤Æ°T®§ )"
+
+#: frm_telnet.cpp:1084
+msgid "Auto hot call reply"
+msgstr "¦Û°Ê¤ô²y¦^ÂÐ"
+
+#: frm_telnet.cpp:1088
+msgid "Disable auto hot call reply?"
+msgstr "­n¨ú®ø¦Û°Ê¦^ÂÐ¤ô²y¾÷¨î¡H"
+
+#: frm_telnet.cpp:1094
+msgid ""
+"This program has built in auto reconnect function.\n"
+"Some BBS (like KKCity) is hard to connect for sometime. This program will "
+"retry connecting till connected. "
+msgstr "¦¹µ{¦¡¤w¤º«Ø¦Û°Ê­«·s³s½u¾÷¨î¡C\n¬Y¨Ç BBS ¡]¨Ò¦p KKCity¡^ ¦b¬Y¨Ç®É¬q±`±`·|µLªk³s¤W¡A³o®É¦¹µ{¦¡·|¦Û°Ê­«·s³s½u¡Aª½¨ì³s¤W¬°¤î¡C"
+
+#: frm_telnet.cpp:1097
+msgid ""
+"This program has built in prevent idle (prevent disconnect) function.\n"
+"Program will send Ctrl+L every 3 minutes to make server refresh screen. "
+"(Won't change your screen) Even idle for all day long you won't get "
+"disconneted."
+msgstr "¦¹µ{¦¡¤w¤º«Ø¨¾§b (¨¾Â_½u) ¾÷¨î¡C\nµ{¦¡·|¦b¶¢¸m®É¨C¤T¤ÀÄÁ¦Û°Ê¥á¥X Ctrl+L Åý server ­«·s°e¤@¦¸µe­±¦^¨Ó¡]¦Ó³o­Ó«ü¥O¤£·|Åý¿Ã¹õªº¸ê®Æ¦³©ÒÅÜ¤Æ¡^¡A§Y¨Ï¶¢¸m¤@¾ã¤Ñ¤]¤£·|³QÂ_½u¡C"
+
+#: frm_telnet.cpp:1113
+msgid ""
+"Please choose which shortcut message you want to edit.\n"
+"\n"
+"(Support BBMAN format message. Please refer [Help] How to edit BBMan format "
+"message.)"
+msgstr "½Ð¿ï¾Ü­n½s¿è­þ­Ó§Ö³tÁä°T®§¡H\n\n( ¤ä´© BBMan ®æ¦¡¤Æ°T®§¡C½Ð°Ñ¦Ò¿ï³æ [»¡©ú] ½s¿è BBMan ®æ¦¡¤Æ°T®§ªº¤èªk )"
+
+#: frm_telnet.cpp:1121
+msgid ""
+"Edit shortcut message.\n"
+"\n"
+"(Empty or choose [Cancel] means cancel this shortcut message.)"
+msgstr "½s¿è§Ö³tÁä°T®§\n\n( ²MªÅ©Î¿ï¨ú [Cancel] ¥Nªí¨ú®ø¦¹§Ö³tÁä°T®§ )"
+
+#: frm_telnet.cpp:1125
+msgid "Are you sure to delete this canned message?"
+msgstr "½T©w­n§R°£¦¹Åø¸Ë°T®§¡H"
+
+#: frm_telnet.cpp:1142
+msgid ""
+"Please assign sound player program\n"
+"\n"
+"For example: esdplay / artsplay / xmms."
+msgstr "½Ð«ü©w¥Î¨Ó¼½©ñÁn­µªºµ{¦¡\n\n¨Ò¦p¡Gesdplay / artsplay / xmms"
+
+#: frm_telnet.cpp:1145
+msgid "You canceled assigning sound player program."
+msgstr "±z¨ú®ø«ü©w¼½©ñÁn­µªºµ{¦¡"
+
+#: frm_telnet.cpp:1154
+msgid "Open sound file"
+msgstr "¶}±ÒÁn­µÀÉ®×"
+
+#: frm_telnet.cpp:1156
+msgid "Open sound file. (Only accept .wav format)"
+msgstr "¶}±ÒÁn­µÀÉ®×¡]¶È±µ¨ü .wav ®æ¦¡¡^"
+
+#: frm_telnet.cpp:1166
+msgid ""
+"You just cancel choosing. Do you want to cancel playing sound file, instead "
+"of system beep when receiving hot call?"
+msgstr "±z­è­è¨ú®ø¤F¿ï¨ú¡C¬O§_·Q­n¨ú®ø¼½©ñÁn­µÀÉ®×¡A¦b±µ¨ì¤ô²y®É¡A¥H¨t²Î¹GÁn¥N´À¡H"
+
+#: frm_telnet.cpp:1176
+msgid ""
+"Please set max letters for pasting ( number has to be between 5 ~ 100 )\n"
+"\n"
+"If some lines out of max number, system sill auto wrap.\n"
+"This function will auto detect Chinese and English character. Will not cut "
+"in word."
+msgstr "½Ð³]©w¶K¤W¤å¦r®É¨C¦æ³Ì¤jªø«×¡]¼Æ¦r»Ý¬É©ó 5 ~ 100 ¤§¶¡¡^\n\n­Y¬Y¦æ¤å¦r¶W¥X«ü©wªø«×®Éµ{¦¡·|¦Û°ÊÂ_¦æ\n¦¹¾÷¨î·|¦Û°Ê°»´ú¤¤¤å¦r©M­^¤å¡A¤£·|¨Ï¤¤¤å©M­^¤å¦r³QºI¦¨¨â¥b"
+
+#: frm_telnet.cpp:1177
+msgid "Auto wrap when paste"
+msgstr "¶K¤W®É¦Û°ÊÂ_¦æ"
+
+#: frm_telnet.cpp:1377
+#, c-format
+msgid "Are you sure to close connection [ %d. %s ] ?"
+msgstr "¬O§_­nÃö³¬³s½u [ %d. %s ]"
+
+#: frm_telnet.cpp:1396
+#, c-format
+msgid "Please enter connection number : %d to %d"
+msgstr "½Ð¿é¤J³s½u½s¸¹¡G%d ¨ì %d"
+
+#: frm_telnet.cpp:1400
+msgid "The number you entered is Not a number"
+msgstr "±z¿é¤Jªº¤£¬O¼Æ¦r"
+
+#: frm_telnet.cpp:1408
+msgid "The number you entered is Out-of-bound"
+msgstr "©Ò¿é¤Jªº¼Æ¦r¶W¥X½d³ò"
+
+#: login.cpp:70
+msgid "New account name(Esc to cancel)"
+msgstr "±ý·s¼W¤§±b¸¹¦WºÙ¡]«ö Esc Áä¨ú®ø¡^"
+
+#: login.cpp:75
+msgid "Account name exists."
+msgstr "¦¹±b¸¹¤w¸g¦³¤H¨Ï¥Î¤F"
+
+#: login.cpp:78
+msgid "Please enter password (at least 3 letters)"
+msgstr "½Ð¿é¤J±K½X¡]³Ì¤Ö»Ý¤T­Ó¦r¤¸¡^"
+
+#: login.cpp:81
+msgid "Password Incorrect. Password has to be longer then 3 letters."
+msgstr "±K½Xªø«×¥²¶·¤j©ó¤T­Ó¦r¤¸"
+
+#: login.cpp:82
+msgid "Please enter password again to confirm."
+msgstr "½Ð¦A¦¸¿é¤J±K½X½T»{"
+
+#: login.cpp:85
+msgid "Password confirming failed. Difference between twice password entering."
+msgstr "¨â¦¸¿é¤Jªº±K½X¤£¦P"
+
+#: login.cpp:89
+msgid "Adding new account finished."
+msgstr "·s¼W±b¸¹§¹¦¨"
+
+#: login.cpp:98
+msgid "You are anonymous login now, can't modify pasword."
+msgstr "±z²{¦b¬O°Î¦Wµn¤J¡A¤£¯à­×§ï±K½X"
+
+#: login.cpp:103
+msgid "Please enter old password (Esc cancel)"
+msgstr "½Ð¿é¤JÂÂ±K½X¡]«ö Esc ¨ú®ø¡^"
+
+#: login.cpp:103
+msgid "Step 1"
+msgstr "Step 1"
+
+#: login.cpp:105
+msgid "Old password not correct."
+msgstr "ÂÂ±K½X¿é¤J¿ù»~"
+
+#: login.cpp:110
+msgid "Please enter new password (at least 3 letters) (Esc cancel)"
+msgstr "½Ð¿é¤J·s±K½X¡]³Ì¤Ö»Ý¤T­Ó¦r¤¸¡^¡]«ö Esc ¨ú®ø¡^"
+
+#: login.cpp:110
+msgid "Step 2"
+msgstr "Step 2"
+
+#: login.cpp:113
+msgid "Password needs at least 3 letters, please enter again."
+msgstr "±K½X³Ì¤Ö»Ý¤T­Ó¦r¤¸¡A½Ð­«·s¿é¤J"
+
+#: login.cpp:114
+msgid "Please enter new password again to confirm."
+msgstr "½Ð¦A¤@¦¸¿é¤J·s±K½X½T»{"
+
+#: login.cpp:114
+msgid "Step 3"
+msgstr "Step 3"
+
+#: login.cpp:116
+msgid "Difference between twice new password entering, please enter again."
+msgstr "¨â¦¸©Ò¿é¤Jªº·s±K½X¤£¬Û¦P¡A½Ð­«·s¿é¤J"
+
+#: login.cpp:150
+msgid ""
+"Please enter login name.\n"
+"\n"
+"Press Esc to log in anonymously.\n"
+"\n"
+" Enter 'new' to add new account.\n"
+"\n"
+"If you don't want this window shows every time at startup, please change it "
+"in menu [Connect] -> [Login Option]."
+msgstr "½Ð¿é¤Jµn¤J±b¸¹\n\nª½±µ«ö Esc ¥Nªí°Î¦Wµn¤J\n\n¿é¤J new ¥Nªí·s¼W±b¸¹\n\n­Y¤£§Æ±æ¨C¦¸¶}±Òµ{¦¡³£¥X²{¦¹µøµ¡¡A¥i¨ì³s½uµøµ¡ªº¿ï³æ [³s½u] -> [µn¤J³]©w] ¨ú®ø¤§"
+
+#: login.cpp:150
+msgid "Log in BBMan"
+msgstr "µn¤J BBMan"
+
+#: login.cpp:155
+msgid "Please enter password."
+msgstr "½Ð¿é¤Jµn¤J±K½X"
+
+#: login.cpp:164
+msgid "Login name or password incorrect, please enter again."
+msgstr "±b¸¹©Î±K½X¿é¤J¿ù»~¡A½Ð­«·s¿é¤J"
+
+#: scd_gtk_textctrl.cpp:20 scd_gtk_textctrl.cpp:70
+msgid "Paste"
+msgstr "¶K¤W"
+
+#: scd_gtk_textctrl.cpp:21 sites_frame.cpp:86 sites_frame.cpp:192
+msgid "Cancel"
+msgstr "¨ú®ø"
+
+#: scd_gtk_textctrl.cpp:71
+msgid "Please use mouse to select next line, and close window."
+msgstr "½Ð±N­n¶K¤Wªº¤å¦r½Æ»s¨ì¤U¦C¤è¶ô¡A¦AÃö³¬µøµ¡§Y¥i"
+
+#: sites_frame.cpp:24
+msgid "Connection Name"
+msgstr "³s½u¦WºÙ"
+
+#: sites_frame.cpp:30
+msgid "IP"
+msgstr "¥D¾÷¦ì§}"
+
+#: sites_frame.cpp:51
+msgid "Auto Connect at Startup"
+msgstr "µ{¦¡±Ò°Ê®É¦Û°Ê³s½u"
+
+#: sites_frame.cpp:57
+msgid "Auto Login"
+msgstr "¦Û°Êµn¤J"
+
+#: sites_frame.cpp:63
+msgid "Login Name"
+msgstr "µn¤J±b¸¹"
+
+#: sites_frame.cpp:69
+msgid "Login Password"
+msgstr "µn¤J±K½X"
+
+#: sites_frame.cpp:75
+msgid ""
+"Auto output format message after connect (or auto login)\n"
+"\n"
+" (Please refer [Help] menu about BBMan format message): "
+msgstr "¦b³s½u«á (©Î¦Û°Êµn¤J«á) ¦Û°Ê¿é¥X BBMan ®æ¦¡¤Æ°T®§\n ( Ãö©ó BBMan ®æ¦¡¤Æ°T®§½Ð°Ñ¦Ò [»¡©ú] ¿ï³æ )¡G"
+
+#: sites_frame.cpp:85
+msgid "OK"
+msgstr "½T©w"
+
+#: sites_frame.cpp:102
+msgid ""
+"You just checked [Auto Login] or input data in [Auto output format message "
+"after connect], but you are anonymous logging in BBMan now. This means the "
+"account/password you inputed may be hacked by somone on purpose.\n"
+"\n"
+"Are you sure to continue?"
+msgstr "±z­è­è¤Ä¿ï¤F¡e¦Û°Êµn¤J¡f¿ï¶µ¡A©Î¬O¦b¡e³s½u«á¦Û°Ê¿é¥X®æ¦¡¤Æ°T®§¡f¤¤¿é¤J¸ê®Æ¡A¦ý¬O±z¥Ø«e¬O°Î¦Wµn¤J BBMan\n³o¥Nªí±z©Ò¿é¤Jªº±b¸¹±K½X¦³¥i¯à·|³Q¦³¤ß¤H¤h¯}¸Ñ\n\n½T©w­nÄ~Äò¡H"
+
+#: sites_frame.cpp:107
+msgid "Please input Server Address"
+msgstr "½Ð¿é¤J¥D¾÷¦ì§}"
+
+#: sites_frame.cpp:108
+msgid "Please input Port"
+msgstr "½Ð¿é¤J Port"
+
+#: sites_frame.cpp:109
+msgid "Please input Connection Name"
+msgstr "½Ð¿é¤J³s½u¦WºÙ"
+
+#: sites_frame.cpp:111
+msgid ""
+"You checked [Auto Login] option, have to input Login Name and Login Password."
+msgstr "±z¿ï¨ú¤F¡e¦Û°Êµn¤J¡f¿ï¶µ¡A¥²¶·¿é¤Jµn¤J±b¸¹©M±K½X"
+
+#: sites_frame.cpp:191
+msgid "Connect"
+msgstr "³s½u"
+
+#: sites_frame.cpp:209
+msgid "Famous BBS"
+msgstr "¦U¤j BBS"

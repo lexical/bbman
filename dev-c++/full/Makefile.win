@@ -1,0 +1,143 @@
+# Project: BBMan
+# Makefile created by Dev-C++ 4.9.9.0
+
+CPP  = g++.exe
+CC   = gcc.exe
+WINDRES = windres.exe
+RES  = BBMan_private.res
+OBJ  = obj/bookmark.o obj/common.o obj/des.o obj/ds.o obj/editterm_win.o obj/frm_editterm.o obj/frm_sftp.o obj/frm_telnet.o obj/login.o obj/main.o obj/scd_editterm.o obj/scd_gtk_textctrl.o obj/scd_socket.o obj/scd_tabctrl.o obj/scd_telnet.o obj/scd_terminal.o obj/telnet_panel.o obj/scd_wxsftp.o obj/scd_wxssh.o obj/auth.o obj/base64.o obj/buffer.o obj/channels.o obj/client.o obj/connect.o obj/crypt.o obj/dh.o obj/error.o obj/gzip.o obj/kex.o obj/keyfiles.o obj/keys.o obj/misc.o obj/options.o obj/packet.o obj/sftp.o obj/string.o obj/wrapper.o $(RES)
+LINKOBJ  = obj/bookmark.o obj/common.o obj/des.o obj/ds.o obj/editterm_win.o obj/frm_editterm.o obj/frm_sftp.o obj/frm_telnet.o obj/login.o obj/main.o obj/scd_editterm.o obj/scd_gtk_textctrl.o obj/scd_socket.o obj/scd_tabctrl.o obj/scd_telnet.o obj/scd_terminal.o obj/telnet_panel.o obj/scd_wxsftp.o obj/scd_wxssh.o obj/auth.o obj/base64.o obj/buffer.o obj/channels.o obj/client.o obj/connect.o obj/crypt.o obj/dh.o obj/error.o obj/gzip.o obj/kex.o obj/keyfiles.o obj/keys.o obj/misc.o obj/options.o obj/packet.o obj/sftp.o obj/string.o obj/wrapper.o $(RES)
+LIBS =  -L"D:/Dev-Cpp/lib" -mwindows -Wl,--subsystem,windows -mwindows -lwxmsw -lstdc++ -lgcc -lodbc32 -lwsock32 -lwinspool -lwinmm -lshell32 -lcomctl32 -lctl3d32 -ladvapi32 -lopengl32 -lglu32 -lole32 -loleaut32 -luuid   D:/Dev-Cpp/lib/libeay32.a D:/Dev-Cpp/lib/ssleay32.a D:/Dev-Cpp/lib/libzlib.a D:/Dev-Cpp/lib/libwsock32.a  -s 
+INCS =  -I"D:/Dev-Cpp/include"  -I"../../src/libssh/include" 
+CXXINCS =  -I"D:/Dev-Cpp/include/c++"  -I"D:/Dev-Cpp/include/c++/mingw32"  -I"D:/Dev-Cpp/include/c++/backward"  -I"D:/Dev-Cpp/include"  -I"../../src/libssh/include" 
+BIN  = obj/BBMan.exe
+CXXFLAGS = $(CXXINCS) -DWINVER=0x0400 -D__WIN95__ -D__GNUWIN32__ -D__WIN32__ -DHAVE_W32API_H  -D__WXMSW__ -D__WINDOWS__ -Wall -fno-pcc-struct-return -O2 -Os -fno-rtti -fno-exceptions   -fexpensive-optimizations -O2
+CFLAGS = $(INCS) -D__WXMSW__   -fexpensive-optimizations -O2
+
+.PHONY: all all-before all-after clean clean-custom
+
+all: all-before obj/BBMan.exe all-after
+
+
+clean: clean-custom
+	rm -f $(OBJ) $(BIN)
+
+$(BIN): $(OBJ)
+	$(CPP) $(LINKOBJ) -o "obj\BBMan.exe" $(LIBS)
+
+obj/bookmark.o: ../../src/bookmark.cpp
+	$(CPP) -c ../../src/bookmark.cpp -o obj/bookmark.o $(CXXFLAGS)
+
+obj/common.o: ../../src/common.cpp
+	$(CPP) -c ../../src/common.cpp -o obj/common.o $(CXXFLAGS)
+
+obj/des.o: ../../src/des.cpp
+	$(CPP) -c ../../src/des.cpp -o obj/des.o $(CXXFLAGS)
+
+obj/ds.o: ../../src/ds.cpp
+	$(CPP) -c ../../src/ds.cpp -o obj/ds.o $(CXXFLAGS)
+
+obj/editterm_win.o: ../../src/editterm_win.cpp
+	$(CPP) -c ../../src/editterm_win.cpp -o obj/editterm_win.o $(CXXFLAGS)
+
+obj/frm_editterm.o: ../../src/frm_editterm.cpp
+	$(CPP) -c ../../src/frm_editterm.cpp -o obj/frm_editterm.o $(CXXFLAGS)
+
+obj/frm_sftp.o: ../../src/frm_sftp.cpp
+	$(CPP) -c ../../src/frm_sftp.cpp -o obj/frm_sftp.o $(CXXFLAGS)
+
+obj/frm_telnet.o: ../../src/frm_telnet.cpp
+	$(CPP) -c ../../src/frm_telnet.cpp -o obj/frm_telnet.o $(CXXFLAGS)
+
+obj/login.o: ../../src/login.cpp
+	$(CPP) -c ../../src/login.cpp -o obj/login.o $(CXXFLAGS)
+
+obj/main.o: ../../src/main.cpp
+	$(CPP) -c ../../src/main.cpp -o obj/main.o $(CXXFLAGS)
+
+obj/scd_editterm.o: ../../src/scd_editterm.cpp
+	$(CPP) -c ../../src/scd_editterm.cpp -o obj/scd_editterm.o $(CXXFLAGS)
+
+obj/scd_gtk_textctrl.o: ../../src/scd_gtk_textctrl.cpp
+	$(CPP) -c ../../src/scd_gtk_textctrl.cpp -o obj/scd_gtk_textctrl.o $(CXXFLAGS)
+
+obj/scd_socket.o: ../../src/scd_socket.cpp
+	$(CPP) -c ../../src/scd_socket.cpp -o obj/scd_socket.o $(CXXFLAGS)
+
+obj/scd_tabctrl.o: ../../src/scd_tabctrl.cpp
+	$(CPP) -c ../../src/scd_tabctrl.cpp -o obj/scd_tabctrl.o $(CXXFLAGS)
+
+obj/scd_telnet.o: ../../src/scd_telnet.cpp
+	$(CPP) -c ../../src/scd_telnet.cpp -o obj/scd_telnet.o $(CXXFLAGS)
+
+obj/scd_terminal.o: ../../src/scd_terminal.cpp
+	$(CPP) -c ../../src/scd_terminal.cpp -o obj/scd_terminal.o $(CXXFLAGS)
+
+obj/telnet_panel.o: ../../src/telnet_panel.cpp
+	$(CPP) -c ../../src/telnet_panel.cpp -o obj/telnet_panel.o $(CXXFLAGS)
+
+obj/scd_wxsftp.o: ../../src/scd_wxssh/scd_wxsftp.cpp
+	$(CPP) -c ../../src/scd_wxssh/scd_wxsftp.cpp -o obj/scd_wxsftp.o $(CXXFLAGS)
+
+obj/scd_wxssh.o: ../../src/scd_wxssh/scd_wxssh.cpp
+	$(CPP) -c ../../src/scd_wxssh/scd_wxssh.cpp -o obj/scd_wxssh.o $(CXXFLAGS)
+
+obj/auth.o: ../../src/libssh/libssh/auth.c
+	$(CC) -c ../../src/libssh/libssh/auth.c -o obj/auth.o $(CFLAGS)
+
+obj/base64.o: ../../src/libssh/libssh/base64.c
+	$(CC) -c ../../src/libssh/libssh/base64.c -o obj/base64.o $(CFLAGS)
+
+obj/buffer.o: ../../src/libssh/libssh/buffer.c
+	$(CC) -c ../../src/libssh/libssh/buffer.c -o obj/buffer.o $(CFLAGS)
+
+obj/channels.o: ../../src/libssh/libssh/channels.c
+	$(CC) -c ../../src/libssh/libssh/channels.c -o obj/channels.o $(CFLAGS)
+
+obj/client.o: ../../src/libssh/libssh/client.c
+	$(CC) -c ../../src/libssh/libssh/client.c -o obj/client.o $(CFLAGS)
+
+obj/connect.o: ../../src/libssh/libssh/connect.c
+	$(CC) -c ../../src/libssh/libssh/connect.c -o obj/connect.o $(CFLAGS)
+
+obj/crypt.o: ../../src/libssh/libssh/crypt.c
+	$(CC) -c ../../src/libssh/libssh/crypt.c -o obj/crypt.o $(CFLAGS)
+
+obj/dh.o: ../../src/libssh/libssh/dh.c
+	$(CC) -c ../../src/libssh/libssh/dh.c -o obj/dh.o $(CFLAGS)
+
+obj/error.o: ../../src/libssh/libssh/error.c
+	$(CC) -c ../../src/libssh/libssh/error.c -o obj/error.o $(CFLAGS)
+
+obj/gzip.o: ../../src/libssh/libssh/gzip.c
+	$(CC) -c ../../src/libssh/libssh/gzip.c -o obj/gzip.o $(CFLAGS)
+
+obj/kex.o: ../../src/libssh/libssh/kex.c
+	$(CC) -c ../../src/libssh/libssh/kex.c -o obj/kex.o $(CFLAGS)
+
+obj/keyfiles.o: ../../src/libssh/libssh/keyfiles.c
+	$(CC) -c ../../src/libssh/libssh/keyfiles.c -o obj/keyfiles.o $(CFLAGS)
+
+obj/keys.o: ../../src/libssh/libssh/keys.c
+	$(CC) -c ../../src/libssh/libssh/keys.c -o obj/keys.o $(CFLAGS)
+
+obj/misc.o: ../../src/libssh/libssh/misc.c
+	$(CC) -c ../../src/libssh/libssh/misc.c -o obj/misc.o $(CFLAGS)
+
+obj/options.o: ../../src/libssh/libssh/options.c
+	$(CC) -c ../../src/libssh/libssh/options.c -o obj/options.o $(CFLAGS)
+
+obj/packet.o: ../../src/libssh/libssh/packet.c
+	$(CC) -c ../../src/libssh/libssh/packet.c -o obj/packet.o $(CFLAGS)
+
+obj/sftp.o: ../../src/libssh/libssh/sftp.c
+	$(CC) -c ../../src/libssh/libssh/sftp.c -o obj/sftp.o $(CFLAGS)
+
+obj/string.o: ../../src/libssh/libssh/string.c
+	$(CC) -c ../../src/libssh/libssh/string.c -o obj/string.o $(CFLAGS)
+
+obj/wrapper.o: ../../src/libssh/libssh/wrapper.c
+	$(CC) -c ../../src/libssh/libssh/wrapper.c -o obj/wrapper.o $(CFLAGS)
+
+BBMan_private.res: BBMan_private.rc 
+	$(WINDRES) -i BBMan_private.rc -I rc -o BBMan_private.res -O coff  --include-dir D:/Dev-Cpp/include
