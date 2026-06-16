@@ -293,8 +293,6 @@ BBS_Frame::BBS_Frame(const wxString& title, const wxPoint& pos, const wxSize& si
 #endif
 //	menuTool->Append(MENU_ANSIEDITOR, gettext("ANSI &editor") );
 	AppendMenuItemWithBitmap(menuTool, MENU_ANSIEDITOR, gettext("ANSI &editor"), GetProgramIcon(BBMAN_ICON_EDIT) );
-//	menuTool->Append(MENU_LOCKSCREEN, gettext("Lock screen (for temporarily away from keyboard)\tAlt-P") );
-	AppendMenuItemWithBitmap(menuTool, MENU_LOCKSCREEN, gettext("Lock screen (for temporarily away from keyboard)\tAlt-P"), GetProgramIcon(BBMAN_ICON_LOCK) );
 //	menuTool->Append(MENU_EXPORT_SETTING, gettext("Export setting") );
 //	menuTool->Append(MENU_IMPORT_SETTING, gettext("Import setting") );
 	menuBar->Append(menuTool, gettext("&Tool"));
@@ -353,7 +351,6 @@ BBS_Frame::BBS_Frame(const wxString& title, const wxPoint& pos, const wxSize& si
 #else
 		k++;
 #endif
-		tb->AddTool( MENU_LOCKSCREEN , wxEmptyString , toolbarIcons[k++] , gettext("Lock screen (Alt+P)") );
 		tb->Realize();
 	}
 
