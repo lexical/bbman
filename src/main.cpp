@@ -64,6 +64,7 @@ void init()
 	init_sound();
 	init_font();
 	init_Naws();
+	init_PreventIdle();
 	Init_LineWrapedLength();
 
 	//高亮度顯示所有字

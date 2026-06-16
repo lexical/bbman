@@ -136,6 +136,7 @@ private:
 public:
 	int getServerIdleTime();	//取得閒置的時間
 	int getUserIdleTime();	//取得閒置的時間
+	void MarkKeepAliveSent();
 
 
 	//**************** 事件 ****************//

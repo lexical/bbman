@@ -403,6 +403,19 @@ void EnableNaws(bool b)
 }
 bool isEnableNaws()	{	return blEnableNaws;	}
 
+static bool blPreventIdle = true;
+void init_PreventIdle()
+{
+	GetConfig()->Read( GetUserConfigPath(_T("/setting/prevent_idle")) , & blPreventIdle , true );
+}
+void EnablePreventIdle(bool b)
+{
+	if( b == blPreventIdle )	return;
+	blPreventIdle = b;
+	GetConfig()->Write( GetUserConfigPath(_T("/setting/prevent_idle")) , b );
+}
+bool isPreventIdle()	{	return blPreventIdle;	}
+
 
 #include "frm_telnet.h"
 #include "frm_editterm.h"

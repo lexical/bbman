@@ -90,6 +90,10 @@ void init_Naws();
 void EnableNaws(bool b);
 bool isEnableNaws();
 // ----------------------------------------------------------------------------
+void init_PreventIdle();
+void EnablePreventIdle(bool b);
+bool isPreventIdle();
+// ----------------------------------------------------------------------------
 void ShowTelnet();
 void ShowAnsiEditor();
 void CloseAnsiEditor(wxFrame *win);

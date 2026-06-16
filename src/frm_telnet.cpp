@@ -284,7 +284,7 @@ BBS_Frame::BBS_Frame(const wxString& title, const wxPoint& pos, const wxSize& si
 	menuOption->AppendCheckItem(MENU_ALWAYS_HIGHLIGHT, gettext("Display with highlight text") );
 	menuOption->AppendSeparator();
 	menuOption->Append(MENU_AUTO_RECONNECT, gettext("&Auto reconnect") );
-	menuOption->Append(MENU_PREVENT_DISCONNECT, gettext("Prevent I&dle") );
+	menuOption->AppendCheckItem(MENU_PREVENT_DISCONNECT, gettext("Prevent I&dle by refreshing screen") );
 	menuBar->Append(menuOption, gettext("&Options"));
 	
 	wxMenu *menuTool = new wxMenu;
@@ -918,11 +918,18 @@ void BBS_Frame::OnTimer(wxTimerEvent& event)
 {
 	if( isClosed )	return;
 
-	for(int i=0;i<tab->GetItemCount();i++)
+	if( isPreventIdle() )
 	{
-		SCD_Telnet *t = (SCD_Telnet*) tab->GetItemData(i);
-		if( t->getServerIdleTime() > 60*3 )	//如果該連線閒置過久
- 			t->UserSend("\x1bOA\x1bOB");	//Ctrl + L
+		char refresh = '\x0c';
+		for(int i=0;i<tab->GetItemCount();i++)
+		{
+			SCD_Telnet *t = (SCD_Telnet*) tab->GetItemData(i);
+			if( t->getUserIdleTime() > 60*3 )
+			{
+				t->UserSend(&refresh, 1);
+				t->MarkKeepAliveSent();
+			}
+		}
 	}
 
 	if(now_telnet != NULL)
@@ -1189,7 +1196,7 @@ void BBS_Frame::OnSetting(wxCommandEvent& event)
       		wxMessageBox( gettext("This program has built in auto reconnect function.\nSome BBS (like KKCity) is hard to connect for sometime. This program will retry connecting till connected. ") );
       		break;
 		case MENU_PREVENT_DISCONNECT :
-      		wxMessageBox( gettext("This program has built in prevent idle (prevent disconnect) function.\nProgram will send Ctrl+L every 3 minutes to make server refresh screen. (Won't change your screen) Even idle for all day long you won't get disconneted.") );
+			EnablePreventIdle( ! isPreventIdle() );
       		break;
 		case MENU_EDIT_CANNED_MESSAGE :
 			{
@@ -1537,6 +1544,9 @@ void BBS_Frame::OnUpdate_UI(wxUpdateUIEvent& event)
 			break;
 		case MENU_ALWAYS_HIGHLIGHT :
 			event.Check( TerminalChar::getAlwaysHighlight() );
+			break;
+		case MENU_PREVENT_DISCONNECT :
+			event.Check( isPreventIdle() );
 			break;
 		case MENU_LOGINWHENSTART :
 			event.Check( getLoginWhenStart() );
