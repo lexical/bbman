@@ -17,6 +17,10 @@
 
 #ifndef BBMAN_NO_SSH
 	#include "scd_wxssh/scd_wxssh.h"
+	typedef SCD_wxSSH SCD_SSH_Transport;
+#else
+	#include "scd_pty_ssh.h"
+	typedef SCD_PtySSH SCD_SSH_Transport;
 #endif
 
 // ============================================================================
@@ -25,9 +29,7 @@ class SCD_Socket
 {
 private:
 	wxSocketClient *telnet_sock;
-#ifndef BBMAN_NO_SSH
-	SCD_wxSSH *ssh_sock;
-#endif
+SCD_SSH_Transport *ssh_sock;
 	int m_type;	//telnet ? ssh ? unknown ?
 
 	wxEvtHandler *evt_handler;
