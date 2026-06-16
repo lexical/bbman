@@ -17,6 +17,7 @@
 #include "common.h"
 #include "login.h"
 #include "scd_terminal.h"
+#include <wx/image.h>
 
 // ----------------------------------------------------------------------------
 // headers
@@ -74,11 +75,14 @@ void init()
 
 bool MyApp::OnInit()
 {
+	SetAppName(_T("bbman"));
+	SetClassName(_T("bbman"));
+	wxInitAllImageHandlers();
 	SetApp(this);
 	init();
-	if( getLoginWhenStart() )	ShowLoginDialog();
-
 	ShowTelnet();
+
+	if( getLoginWhenStart() )	ShowLoginDialog();
 
 	// success: wxApp::OnRun() will be called which will enter the main message
 	// loop and the application will run. If we returned FALSE here, the

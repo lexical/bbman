@@ -19,9 +19,19 @@
 
 // ============================================================================
 
-wxString Login_ID( wxEmptyString );		//使用者目前的身分
-wxString Login_Password;	//使用者密碼
-char *Default_Password = "eU6cZpQw";
+static wxString& LoginID()
+{
+	static wxString value;
+	return value;
+}
+static wxString& LoginPassword()
+{
+	static wxString value;
+	return value;
+}
+#define Login_ID LoginID()
+#define Login_Password LoginPassword()
+#define Default_Password _T("eU6cZpQw")
 
 bool isAnonymousLogin()
 {	return Login_ID.IsEmpty();	}
@@ -59,7 +69,7 @@ void setLoginWhenStart(bool b)
 bool getLoginWhenStart()
 {
 	bool b;
-	GetConfig()->Read( _T("/setting/login_when_start") , & b , true );
+	GetConfig()->Read( _T("/setting/login_when_start") , & b , false );
 	return b;
 }
 

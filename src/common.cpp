@@ -17,7 +17,7 @@
 #include "login.h"
 
 #include <wx/config.h>
-wxConfig cfg( _T("BBMan") );
+static wxConfig *cfg = NULL;
 
 // ============================================================================
 
@@ -62,7 +62,10 @@ void ExecFuncUsingThread(SCD_ThreadFunc func, void *clientdata)
 // ============================================================================
 
 wxConfigBase* GetConfig()
-{	return &cfg;	}
+{
+	if( cfg == NULL ) cfg = new wxConfig(_T("BBMan"));
+	return cfg;
+}
 // ----------------------------------------------------------------------------
 wxString CharPtrTowxString(const char *str)
 {
@@ -73,7 +76,9 @@ wxString CharPtrTowxString(const char *str)
 char* wxStringToCharPtr(const wxString &str)
 {
 	static wxMBConvUTF8 mb;
-	return (char*) mb.cWX2MB( str.c_str() );
+	static wxCharBuffer buf;
+	buf = str.mb_str(mb);
+	return const_cast<char*>(buf.data());
 }
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
@@ -85,6 +90,7 @@ void MakeBitmapMask(wxBitmap& bmp)
 {	bmp.SetMask( new wxMask(bmp, *wxWHITE) );	}
 // ----------------------------------------------------------------------------
 #include <wx/file.h>
+#include <wx/filename.h>
 void init_Icons()
 {
 	int i=0, k;
@@ -117,7 +123,17 @@ void init_Icons()
 // ----------------------------------------------------------------------------
 wxBitmap& GetProgramIcon(int icon_id)
 {
-	if(icon_id >= BBMAN_ICON_END)	return wxNullBitmap;
+	static wxBitmap fallback_icon;
+	if( ! fallback_icon.IsOk() )
+	{
+		fallback_icon.Create(16, 16);
+		wxMemoryDC dc(fallback_icon);
+		dc.SetBackground(*wxBLACK_BRUSH);
+		dc.Clear();
+		dc.SelectObject(wxNullBitmap);
+	}
+
+	if(icon_id >= BBMAN_ICON_END || ! icon_list[icon_id].IsOk())	return fallback_icon;
 	return icon_list[icon_id];
 }
 // ----------------------------------------------------------------------------
@@ -131,12 +147,68 @@ void AppendMenuItemWithBitmap(wxMenu *parent, int id, const wxString& item, wxBi
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
+static wxString FindThemePath(const wxString& baseDir, const wxString& theme)
+{
+	if( baseDir.IsEmpty() )
+		return wxEmptyString;
+
+	wxFileName base(baseDir, wxEmptyString);
+	base.Normalize(wxPATH_NORM_DOTS | wxPATH_NORM_ABSOLUTE);
+	wxString root = base.GetPathWithSep();
+
+	wxString path = root + _T("theme/") + theme + _T("/");
+	if( wxFile::Exists(path + _T("icons.bmp")) )
+		return path;
+
+	path = root + _T("theme/default/");
+	if( wxFile::Exists(path + _T("icons.bmp")) )
+		return path;
+
+	return wxEmptyString;
+}
+// ----------------------------------------------------------------------------
+static wxString FindThemePathFromCurrentDir(const wxString& theme)
+{
+	wxFileName dir(wxGetCwd(), wxEmptyString);
+	dir.Normalize(wxPATH_NORM_DOTS | wxPATH_NORM_ABSOLUTE);
+
+	wxFileName home(wxGetHomeDir(), wxEmptyString);
+	home.Normalize(wxPATH_NORM_DOTS | wxPATH_NORM_ABSOLUTE);
+	wxString homePath = home.GetPath();
+
+	while( true )
+	{
+		wxString path = FindThemePath(dir.GetPath(), theme);
+		if( ! path.IsEmpty() )
+			return path;
+
+		if( dir.GetPath() == homePath || dir.GetDirCount() == 0 )
+			break;
+
+		dir.RemoveLastDir();
+	}
+
+	return wxEmptyString;
+}
+// ----------------------------------------------------------------------------
 wxString GetThemePath()
 {
-	wxString path;
-	GetConfig()->Read( GetUserConfigPath(_T("/setting/theme")) , & path , _T("default") );
-	path = _T("theme/") + path + _T("/");
-	return path;
+	wxString theme;
+	GetConfig()->Read( GetUserConfigPath(_T("/setting/theme")) , & theme , _T("default") );
+
+	wxString resourceDir;
+	if( wxGetEnv(_T("BBMAN_RESOURCE_DIR"), &resourceDir) )
+	{
+		wxString path = FindThemePath(resourceDir, theme);
+		if( ! path.IsEmpty() )
+			return path;
+	}
+
+	wxString path = FindThemePathFromCurrentDir(theme);
+	if( ! path.IsEmpty() )
+		return path;
+
+	return _T("theme/default/");
 }
 // ----------------------------------------------------------------------------
 #include <wx/dir.h>
@@ -240,7 +312,7 @@ wxString GetTextFromClipboard(bool comm_with_other)
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
 
-void OnLinkClicked( char *link, enum LINK_TYPE _t);
+void OnLinkClicked( char *link, LINK_TYPE _t);
 
 #include <wx/strconv.h>
 
@@ -338,10 +410,20 @@ bool isEnableNaws()	{	return blEnableNaws;	}
 BBS_Frame *telnet_frame;
 wxPointerArray edit_win_list;
 
+#if wxCHECK_VERSION(2, 9, 0)
+static const int BBMAN_DEFAULT_WIN_WIDTH = 1205;
+static const int BBMAN_DEFAULT_WIN_HEIGHT = 925;
+#else
+static const int BBMAN_DEFAULT_WIN_WIDTH = 750;
+static const int BBMAN_DEFAULT_WIN_HEIGHT = 550;
+#endif
+
+
 void ShowTelnet()
 {
 	telnet_frame = new BBS_Frame(_T("BBMan"),
-	                             wxPoint(50, 50), wxSize(750, 550));
+	                             wxPoint(50, 50),
+	                             wxSize(BBMAN_DEFAULT_WIN_WIDTH, BBMAN_DEFAULT_WIN_HEIGHT));
 
 	//還原成上次的視窗大小
 	int w, h;
@@ -373,10 +455,9 @@ void ShowTelnet()
 		}
 		ret = GetConfig()->GetNextEntry( name , id );
 	}
+	telnet_frame->Show(TRUE);
 	telnet_frame->ShowSpecifiedTerminal(0);
 	//
-
-	telnet_frame->Show(TRUE);
 
 	GetConfig()->Read( GetUserConfigPath(_T("/setting/win_geo/fullscreen")) , & w , 0 );
 	if(w==1)	telnet_frame->FullScreen();
@@ -447,6 +528,11 @@ wxFont GetCurrentFont()
 		isInited = true;
 
 		global_default_fnt = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
+#if wxCHECK_VERSION(2, 9, 0)
+		global_default_fnt = wxFont(12, wxFONTFAMILY_TELETYPE, wxFONTSTYLE_NORMAL,
+		                            wxFONTWEIGHT_NORMAL, false,
+		                            _T("AR PL UMing TW"));
+#endif
 
 		wxString fnt_name;
 
@@ -455,7 +541,9 @@ wxFont GetCurrentFont()
 			wxNativeFontInfo fi;
 			if( fi.FromString( fnt_name ) )	global_default_fnt.SetNativeFontInfo(fi);
 		}
+#if !wxCHECK_VERSION(2, 9, 0)
 		global_default_fnt.SetNoAntiAliasing( !blAA );
+#endif
 //		global_default_fnt.SetDefaultEncoding(wxFONTENCODING_CP950);
 	}
 	return global_default_fnt;
@@ -472,7 +560,9 @@ void UserSetFont(wxFrame *frm)
 	if( fnt.Ok() )
 	{
 		global_default_fnt = fnt;
+#if !wxCHECK_VERSION(2, 9, 0)
 		global_default_fnt.SetNoAntiAliasing( !blAA );
+#endif
 
 		telnet_frame->SetTerminalFont(fnt);
 		int c = edit_win_list.GetCount();
@@ -490,7 +580,7 @@ void UserSetFont(wxFrame *frm)
 
 
 
-void setLinkProgram(enum LINK_TYPE _t , wxString program_path)
+void setLinkProgram(LINK_TYPE _t , wxString program_path)
 {
 	switch(_t)
 	{
@@ -506,7 +596,7 @@ void setLinkProgram(enum LINK_TYPE _t , wxString program_path)
 	}
 }
 
-wxString getLinkProgram(enum LINK_TYPE _t)
+wxString getLinkProgram(LINK_TYPE _t)
 {
 	wxString program_path = wxEmptyString;
 
@@ -553,7 +643,7 @@ wxString getLinkProgram(enum LINK_TYPE _t)
 	return program_path;
 }
 
-void OnLinkClicked( char *link, enum LINK_TYPE _t)
+void OnLinkClicked( char *link, LINK_TYPE _t)
 {
 	switch(_t)
 	{
@@ -573,7 +663,7 @@ void OnLinkClicked( char *link, enum LINK_TYPE _t)
 
 void OpenHyperlink(char *link)
 {
-	enum LINK_TYPE _t;
+	LINK_TYPE _t;
 	if( strstr(link, "http:/") == link )	_t = LINK_HTTP;
 	else if( strstr(link, "https:/") == link )	_t = LINK_HTTPS;
 	else if( strstr(link, "telnet:/") == link )	_t = LINK_TELNET;

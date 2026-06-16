@@ -1,0 +1,50 @@
+# wxWidgets 3 / GTK3 build for the modernized BBMan port.
+
+PROG := bbman-wx3
+BIN := obj/$(PROG)
+
+CXX := g++
+CC := gcc
+WX_CXXFLAGS := $(shell wx-config --cxxflags)
+WX_LIBS := $(shell wx-config --libs)
+
+CPPFLAGS := -DBBMAN_NO_SSH -I../src
+CXXFLAGS := -g -O0 -std=gnu++17 -fno-rtti -fno-exceptions -Wall -Wextra
+CFLAGS := -std=gnu11 -Wall -Wextra
+LDFLAGS :=
+LDLIBS := $(WX_LIBS) -lutil
+
+COMMON_OBJ := \
+	obj/scd_terminal.o \
+	obj/login.o \
+	obj/common.o \
+	obj/ds.o \
+	obj/des.o \
+	obj/editterm_win.o \
+	obj/frm_editterm.o \
+	obj/frm_telnet.o \
+	obj/main.o \
+	obj/scd_editterm.o \
+	obj/scd_gtk_textctrl.o \
+	obj/scd_tabctrl.o \
+	obj/scd_telnet.o \
+	obj/bookmark.o \
+	obj/telnet_panel.o \
+	obj/scd_socket.o \
+	obj/scd_pty_ssh.o
+
+.PHONY: all clean
+
+all: $(BIN)
+
+obj:
+	mkdir -p obj
+
+$(BIN): obj $(COMMON_OBJ)
+	$(CXX) $(COMMON_OBJ) -o $@ $(LDFLAGS) $(LDLIBS)
+
+obj/%.o: ../src/%.cpp | obj
+	$(CXX) $(WX_CXXFLAGS) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
+
+clean:
+	rm -f $(COMMON_OBJ) $(BIN)

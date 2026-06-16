@@ -1,0 +1,7 @@
+CVS/
+unix/obj/
+*.o
+*.d
+*~
+Thumbs.db
+BBMan-src-*.tgz

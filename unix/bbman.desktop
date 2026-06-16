@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=BBMan
+Comment=BBMan BBS client
+Path=/home/kengyu/git/bbman
+Exec=/home/kengyu/git/bbman/unix/obj/bbman-wx3
+Icon=/home/kengyu/git/bbman/icon/BBMan_48.png
+Terminal=false
+Categories=Network;TerminalEmulator;
+StartupNotify=true
+StartupWMClass=bbman

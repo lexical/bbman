@@ -30,7 +30,7 @@
 
 #include <wx/config.h>
 //#include <wx/fileconf.h>
-static wxString BBMAN_VERSION = _T(" v3.0.1");
+#define BBMAN_VERSION _T(" v3.0.1")
 
 
 #ifdef __UNIX__
@@ -102,9 +102,9 @@ int GetVarFontSize();
 void SetVarFontSize(int s);
 void UserSetFont(wxFrame *frm);
 // ----------------------------------------------------------------------------
-void setLinkProgram(enum LINK_TYPE _t , wxString program_path);
-wxString getLinkProgram(enum LINK_TYPE _t);
-void OnLinkClicked( char *link, enum LINK_TYPE _t);
+void setLinkProgram(LINK_TYPE _t , wxString program_path);
+wxString getLinkProgram(LINK_TYPE _t);
+void OnLinkClicked(char *link, LINK_TYPE _t);
 void OpenHyperlink(char *link);
 // ----------------------------------------------------------------------------
 void Init_LineWrapedLength();
