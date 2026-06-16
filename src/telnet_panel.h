@@ -26,6 +26,7 @@ private:
 public:
 	Telnet_Panel();
 	void SetTelnet(SCD_Telnet *t);
+	void DetachTelnet();
 
 	void OnMouseRightUp(wxMouseEvent& event);
 	void OnMouseLeftDown(wxMouseEvent& event);
@@ -46,7 +47,7 @@ public:
 private:
 
 	SCD_Telnet *now_telnet;
-	wxCaret caret;
+
 
     DECLARE_EVENT_TABLE()
 };

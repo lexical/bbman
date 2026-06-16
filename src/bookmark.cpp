@@ -39,12 +39,12 @@ bool ShowFavoriteEditor(wxWindow *parent, SiteInfo *si)
 // ----------------------------------------------------------------------------
 
 BEGIN_EVENT_TABLE(frm_Favorite_Edit, wxDialog)
-	EVT_CUSTOM_RANGE(wxEVT_COMMAND_TEXT_UPDATED, ID_TEXT_BEGIN, ID_TEXT_END, frm_Favorite_Edit::OnDataChanged)
+	EVT_COMMAND_RANGE(ID_TEXT_BEGIN, ID_TEXT_END, wxEVT_COMMAND_TEXT_UPDATED, frm_Favorite_Edit::OnDataChanged)
 	EVT_CHECKBOX(CHK_AUTOLOGIN, frm_Favorite_Edit::OnDataChanged)
 	EVT_CHECKBOX(CHK_AUTOCONNECT, frm_Favorite_Edit::OnDataChanged)
 	EVT_RADIOBOX(RDBX_PROTOCOL, frm_Favorite_Edit::OnDataChanged)
 
-	EVT_CUSTOM_RANGE(wxEVT_COMMAND_BUTTON_CLICKED, MENU_BEGIN, MENU_END, frm_Favorite_Edit::OnButton)
+	EVT_COMMAND_RANGE(MENU_BEGIN, MENU_END, wxEVT_COMMAND_BUTTON_CLICKED, frm_Favorite_Edit::OnButton)
 
 	EVT_TREE_SEL_CHANGING( 0, frm_Favorite_Edit::OnItemSelecting )
 	EVT_TREE_SEL_CHANGED( 0, frm_Favorite_Edit::OnItemSelected )
@@ -57,11 +57,11 @@ END_EVENT_TABLE()
 
 // ----------------------------------------------------------------------------
 wxString frm_Favorite_Edit::m_GetNodeText(wxTreeItemId node)
-{	return node_name_map[node];	}
+{	return node_name_map[node.GetID()];	}
 // ----------------------------------------------------------------------------
 void frm_Favorite_Edit::m_SetNodeText(wxTreeItemId node, wxString s)
 {
-	node_name_map[node] = s;
+	node_name_map[node.GetID()] = s;
 	if( tree.GetItemImage(node) == ICON_DIR )
 		tree.SetItemText(node, s);
 	else
@@ -97,9 +97,10 @@ wxTreeItemId frm_Favorite_Edit::m_InsertItem(const wxTreeItemId& parent, const w
 // ----------------------------------------------------------------------------
 void frm_Favorite_Edit::OnClose(wxCloseEvent& event)
 {
-//	wxMessageBox("OnClose()");
-//	EndModal(wxID_CANCEL);
-//	this->Destroy();
+	if( IsModal() )
+		EndModal(wxID_CANCEL);
+	else
+		event.Skip();
 }
 // ----------------------------------------------------------------------------
 void frm_Favorite_Edit::OnTreeBeginDrag(wxTreeEvent& event)
@@ -123,7 +124,7 @@ void frm_Favorite_Edit::OnTreeEndDrag(wxTreeEvent& event)
 	int src_item_img = tree.GetItemImage(drag_src_item);
 
 	prev_tar_item = tree.GetPrevSibling(drag_tar_item);
-	if( prev_tar_item <= 0 )	prev_tar_item = drag_tar_item;
+	if( !prev_tar_item.IsOk() )	prev_tar_item = drag_tar_item;
 
 	new_item = m_InsertItem( tree.GetItemParent(prev_tar_item), prev_tar_item,
 		m_GetNodeText(drag_src_item), src_item_img );
@@ -136,7 +137,7 @@ bool frm_Favorite_Edit::isParentNode(wxTreeItemId parent, wxTreeItemId child)
 {
 	while(true)
 	{
-		if(child <= 0)	return false;
+		if(!child.IsOk())	return false;
 		else if(child == parent)	return true;
 		child = tree.GetItemParent(child);
 	}
@@ -238,13 +239,13 @@ void frm_Favorite_Edit::SaveFavorites(wxTreeItemId parent, wxString config_path)
 {
  	GetConfig()->SetPath( config_path );
 
-	long cookie;
+	wxTreeItemIdValue cookie;
 	wxTreeItemId child;
 	wxString child_text, child_name, child_path;
 	int index = 0;
 //	m_SetNodeText(tar, m_GetNodeText(src) );
 	child = tree.GetFirstChild(parent, cookie);
-	while(child > 0)
+	while(child.IsOk())
 	{
 		child_text = m_GetNodeText(child);
      	int child_img = tree.GetItemImage(child);
@@ -291,7 +292,7 @@ bool frm_Favorite_Edit::save_site()
 
 	wxTreeItemId sel_item;
 	sel_item = tree.GetSelection();
-	if(sel_item <= 0)	return false;
+	if(!sel_item.IsOk())	return false;
 
 	wxString site_desc = m_GetNodeText( sel_item );
 	int sel_item_img = tree.GetItemImage(sel_item);
@@ -335,7 +336,7 @@ void frm_Favorite_Edit::OnButton(wxCommandEvent& event)
 			{
 				wxTreeItemId sel_item, next_item, new_item;
 				sel_item = tree.GetSelection();
-				if( sel_item <= 0 )	break;
+				if( !sel_item.IsOk() )	break;
 				int sel_item_img = tree.GetItemImage(sel_item);
 				wxString site_desc = m_GetNodeText( sel_item );
 
@@ -345,7 +346,7 @@ void frm_Favorite_Edit::OnButton(wxCommandEvent& event)
 				if(id == MENU_MOVEDOWN )
 				{
 					next_item = tree.GetNextVisible(next_item);
-					if( next_item <= 0 )	return;
+					if( !next_item.IsOk() )	return;
 					if( tree.GetItemImage(next_item) == ICON_DIR )	//如果 next_item 是資料夾, 則新增至 next_item 底下成為第一個 child
 						new_item = m_PrependItem(next_item, site_desc, sel_item_img);
 					else	//新增至 next_item 之後
@@ -354,9 +355,9 @@ void frm_Favorite_Edit::OnButton(wxCommandEvent& event)
 				else
 				{
 					next_item = tree.GetPrevVisible(next_item);
-					if( next_item <= 0 )	return;
+					if( !next_item.IsOk() )	return;
 					next_item = tree.GetPrevVisible(next_item);
-					if( next_item <= 0 )	return;
+					if( !next_item.IsOk() )	return;
 					if( tree.GetItemImage(next_item) == ICON_DIR )	//如果 next_item 是資料夾, 則新增至 next_item 底下成為第一個 child
 						new_item = m_AppendItem(next_item, site_desc, sel_item_img);
 					else	//新增至 next_item 之後
@@ -366,7 +367,7 @@ void frm_Favorite_Edit::OnButton(wxCommandEvent& event)
 				}
 
 
-//				tmp_item = m_InsertItem( tree.GetParent(next_item) , next_item, site_desc, sel_item_img );
+//				tmp_item = m_InsertItem( tree.GetItemParent(next_item) , next_item, site_desc, sel_item_img );
 				if( sel_item_img == ICON_DIR ) CopyTreeItem(sel_item, new_item); //如果是資料夾則複製整個資料夾結構
 				tree.Delete(sel_item);
 				tree.SelectItem(new_item);
@@ -380,7 +381,7 @@ void frm_Favorite_Edit::OnButton(wxCommandEvent& event)
 
 				wxTreeItemId sel_item;
 				sel_item = tree.GetSelection();
-				sel_item = m_InsertItem( tree.GetParent(sel_item) , sel_item, si.Get(), ICON_SITE );
+				sel_item = m_InsertItem( tree.GetItemParent(sel_item) , sel_item, si.Get(), ICON_SITE );
 
 				tree.SelectItem(sel_item);
 				txtName->SetSelection(-1,-1);
@@ -392,7 +393,7 @@ void frm_Favorite_Edit::OnButton(wxCommandEvent& event)
 			{
 				wxTreeItemId sel_item;
 				sel_item = tree.GetSelection();
-				sel_item = m_InsertItem( tree.GetParent(sel_item) , sel_item, _T("New Folder"), ICON_DIR );
+				sel_item = m_InsertItem( tree.GetItemParent(sel_item) , sel_item, _T("New Folder"), ICON_DIR );
 
 				tree.SelectItem(sel_item);
 				txtName->SetSelection(-1,-1);
@@ -404,7 +405,7 @@ void frm_Favorite_Edit::OnButton(wxCommandEvent& event)
 			{
 				wxTreeItemId sel_item, new_item;
 				sel_item = tree.GetSelection();
-				if(sel_item <= 0)	return;
+				if(!sel_item.IsOk())	return;
 				int sel_item_img = tree.GetItemImage(sel_item);
 				new_item = m_InsertItem( tree.GetItemParent(sel_item), sel_item, m_GetNodeText(sel_item), sel_item_img );
 				if(sel_item_img == ICON_DIR)	CopyTreeItem(sel_item, new_item);
@@ -449,11 +450,11 @@ void frm_Favorite_Edit::OnButton(wxCommandEvent& event)
 
 void frm_Favorite_Edit::CopyTreeItem(wxTreeItemId src, wxTreeItemId tar)
 {
-	long cookie;
+	wxTreeItemIdValue cookie;
 	wxTreeItemId src_child, tar_child;
 //	m_SetNodeText(tar, m_GetNodeText(src) );
 	src_child = tree.GetFirstChild(src, cookie);
-	while(src_child > 0)
+	while(src_child.IsOk())
 	{
      	int src_child_img = tree.GetItemImage(src_child);
 		tar_child = m_AppendItem( tar, m_GetNodeText(src_child), src_child_img );
@@ -469,7 +470,7 @@ void frm_Favorite_Edit::OnItemSelecting(wxTreeEvent& event)
 
 void frm_Favorite_Edit::OnItemSelected(wxTreeEvent& event)
 {
-	int sel_item = event.GetItem();
+	wxTreeItemId sel_item = event.GetItem();
 	int sel_item_img = tree.GetItemImage(sel_item);
 	wxString site_desc = m_GetNodeText( sel_item );
 
@@ -520,7 +521,11 @@ frm_Favorite_Edit::frm_Favorite_Edit(wxWindow *parent)
 
 	tree.Create(this, 0, wxDefaultPosition, wxDefaultSize, wxTR_DEFAULT_STYLE | wxTR_HIDE_ROOT );
 	list_root = tree.AddRoot(wxEmptyString);
-	tree.SetNextHandler(this);
+	tree.Bind(wxEVT_TREE_SEL_CHANGING, &frm_Favorite_Edit::OnItemSelecting, this);
+	tree.Bind(wxEVT_TREE_SEL_CHANGED, &frm_Favorite_Edit::OnItemSelected, this);
+	tree.Bind(wxEVT_TREE_BEGIN_DRAG, &frm_Favorite_Edit::OnTreeBeginDrag, this);
+	tree.Bind(wxEVT_TREE_END_DRAG, &frm_Favorite_Edit::OnTreeEndDrag, this);
+	tree.Bind(wxEVT_TREE_KEY_DOWN, &frm_Favorite_Edit::OnTreeKeyDown, this);
 
 	//載入圖示
 	wxImageList *img_list = new wxImageList(16,16, true, 2);
@@ -617,7 +622,7 @@ END_EVENT_TABLE()
 bool frm_BBSList::getSiteInfo(wxString &_addr, wxString &_name)
 {
 	wxTreeItemId nodeId = tree.GetSelection();
-	if( nodeId > 0
+	if( nodeId.IsOk()
  		&& tree.GetItemImage( nodeId ) == ITEM_SITE )	//而且該 item 是一個 site
 	{
 		wxString txt = tree.GetItemText(nodeId);
@@ -637,7 +642,7 @@ frm_BBSList::frm_BBSList()
 {
 
 	tree.Create(this, 666, wxDefaultPosition, this->GetClientSize(), wxTR_DEFAULT_STYLE | wxTR_HIDE_ROOT );
-	tree.SetNextHandler(this);
+	tree.Bind(wxEVT_LEFT_DCLICK, &frm_BBSList::OnMouseDoubleClick, this);
 
 
 	wxBoxSizer *sub_sizer, *sizer = new wxBoxSizer( wxVERTICAL );
@@ -672,8 +677,8 @@ void frm_BBSList::OnSearch(wxCommandEvent& event)
 	
 	wxTreeItemId next, now, orig = tree.GetSelection();
 	now = orig;
-	long cookie;
-	if(now <= 0)	return;
+	wxTreeItemIdValue cookie;
+	if(!now.IsOk())	return;
 
 	while(true)
 	{
@@ -682,20 +687,20 @@ void frm_BBSList::OnSearch(wxCommandEvent& event)
 		else
 		{
 			next = tree.GetNextSibling(now);
-			if( next > 0 )	now = next;
+			if( next.IsOk() )	now = next;
 			else
 			{
 				while(true)
 				{
 					now = tree.GetItemParent(now);
-					if( now <= 0 )	//遇到 root node
+					if( !now.IsOk() )	//遇到 root node
 					{
 						now = tree.GetRootItem();
 						now = tree.GetFirstChild(now, cookie);
 						break;
 					}
 					next = tree.GetNextSibling(now);
-					if( next > 0 )
+					if( next.IsOk() )
 					{	now = next;	break;	}
 				}
 			}
@@ -726,7 +731,7 @@ void frm_BBSList::OnOpenSite(wxCommandEvent& event)
 void frm_BBSList::OnMouseDoubleClick(wxMouseEvent& event)
 {
 	wxTreeItemId nodeId = tree.GetSelection();
-	if( nodeId > 0
+	if( nodeId.IsOk()
  		&& tree.GetItemImage( nodeId ) == ITEM_SITE )	//而且該 item 是一個 site
 	{
 		EndModal(wxID_OK);

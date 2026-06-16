@@ -26,6 +26,7 @@ enum { ICON_CLOSE, ICON_CONNECTING, ICON_CONNECTED, ICON_MESSAGE };
 #include "scd_gtk_textctrl.h"
 
 #include <wx/file.h>
+#include <wx/numdlg.h>
 
 // ============================================================================
 
@@ -168,14 +169,9 @@ END_EVENT_TABLE()
 
 BBS_Frame::~BBS_Frame()
 {
-	panel.Show(false);
-	panel.SetTelnet(NULL);
-	//delete all telnet ...
-	for(int i=0;i<tab.GetItemCount();i++)
-	{
-		SCD_Telnet *t = (SCD_Telnet*) tab.GetItemData(i);
-		delete t;
-	}		
+	isClosed = true;
+	timer.Stop();
+	CloseAllTerminals();
 #ifdef __WXGTK__
 	destroy_CopyPasteDialog();
 #endif
@@ -188,17 +184,32 @@ BBS_Frame::BBS_Frame(const wxString& title, const wxPoint& pos, const wxSize& si
 	//you need to add both 16x16 & 32x32 icons
 	//16x16 for frame title & taskbar icon
 	//32x32 for alt-tab icon
-//	SetIcon(wxICON(mondrian));
-	#include "icon/bbman_16.xpm"
-	#include "icon/bbman_32.xpm"
-	wxIconBundle *icons = new wxIconBundle( wxIcon(bbman_16_xpm) );
-	icons->AddIcon( wxIcon(bbman_32_xpm) );
-	SetIcons(*icons);
-	delete icons;
+	wxString iconPath = _T("icon/");
+	if( ! wxFile::Exists(iconPath + _T("BBMan_48.png")) )
+		iconPath = _T("../icon/");
+
+	wxIconBundle icons;
+	if( wxFile::Exists(iconPath + _T("BBMan_16.png")) )
+		icons.AddIcon(wxIcon(iconPath + _T("BBMan_16.png"), wxBITMAP_TYPE_PNG));
+	if( wxFile::Exists(iconPath + _T("BBMan_32.png")) )
+		icons.AddIcon(wxIcon(iconPath + _T("BBMan_32.png"), wxBITMAP_TYPE_PNG));
+	if( wxFile::Exists(iconPath + _T("BBMan_48.png")) )
+		icons.AddIcon(wxIcon(iconPath + _T("BBMan_48.png"), wxBITMAP_TYPE_PNG));
+
+	if( icons.IsEmpty() )
+	{
+		#include "icon/bbman_16.xpm"
+		#include "icon/bbman_32.xpm"
+		icons.AddIcon(wxIcon(bbman_16_xpm));
+		icons.AddIcon(wxIcon(bbman_32_xpm));
+	}
+	SetIcons(icons);
 	//
 
 	tb = NULL;
 	txtAddress = NULL;
+	panel = new Telnet_Panel;
+	tab = new SCD_TabCtrl;
 
 #ifdef __WXMSW__
 	SetBackgroundColour( wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE) );
@@ -309,53 +320,41 @@ BBS_Frame::BBS_Frame(const wxString& title, const wxPoint& pos, const wxSize& si
 
 	#define FILENAME_TOOLBAR_ICON "toolbar.bmp"
 	tb = NULL;
-	if( wxFile::Exists( GetThemePath() + _T(FILENAME_TOOLBAR_ICON) ) )
+	wxString toolbarIconPath = GetThemePath() + _T(FILENAME_TOOLBAR_ICON);
+	if( wxFile::Exists( toolbarIconPath ) )
 	{
-
-	int k;
-	int height;
-	wxBitmap icons[8];
-	wxBitmap tbimg( GetThemePath() + _T( FILENAME_TOOLBAR_ICON ) , wxBITMAP_TYPE_BMP );
-	height = tbimg.GetHeight();
- 	for(k=0;k<8;k++)
-		MakeBitmapMask( icons[k] = tbimg.GetSubBitmap( wxRect( k*height, 0, height, height ) ) );
-	
-	tb = new wxToolBar(this, -1, wxDefaultPosition, wxDefaultSize, wxTB_FLAT | wxTB_HORIZONTAL | wxNO_BORDER );
-//	tb = CreateToolBar();
-	tb->SetToolBitmapSize(wxSize(height,height));
-//	tb->SetWindowStyle( wxTB_FLAT | wxTB_DOCKABLE | wxTB_HORIZONTAL );
-	tb->SetMargins(3, 3);
+		int k;
+		int height;
+		wxBitmap toolbarIcons[8];
+		wxBitmap tbimg( toolbarIconPath , wxBITMAP_TYPE_BMP );
+		height = tbimg.GetHeight();
+		for(k=0;k<8;k++)
+			MakeBitmapMask( toolbarIcons[k] = tbimg.GetSubBitmap( wxRect( k*height, 0, height, height ) ) );
+		
+		tb = new wxToolBar(this, -1, wxDefaultPosition, wxDefaultSize, wxTB_FLAT | wxTB_HORIZONTAL | wxNO_BORDER );
+		tb->SetToolBitmapSize(wxSize(height,height));
+		tb->SetMargins(3, 3);
 #ifdef __WXMSW__
-	tb->SetBackgroundColour( wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE) );
+		tb->SetBackgroundColour( wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE) );
 #endif
-	k = 0;
-	tb->AddTool( MENU_OPENSITELIST , wxEmptyString , icons[k++] , gettext("Connection List") );
-	tb->AddTool( MENU_QUICKCONNECT , wxEmptyString , icons[k++] , gettext("Quick Connect (Alt+Q)") );
-	tb->AddSeparator();
-	tb->AddTool( MENU_RECONNECT , wxEmptyString , icons[k++] , gettext("Reconnect (Enter) (Alt+R)") );
-	tb->AddTool( MENU_DELETETELNET , wxEmptyString , icons[k++] , gettext("Close Connection (Ctrl+Del) (Alt+W)") );
-	tb->AddSeparator();
-	tb->AddTool( MENU_COPY , wxEmptyString , icons[k++] , gettext("Copy plain text (Alt+C)") );
-	tb->AddTool( MENU_PASTE_ANSI , wxEmptyString , icons[k++] , gettext("Paste (Alt+V)") );
-	tb->AddSeparator();
+		k = 0;
+		tb->AddTool( MENU_OPENSITELIST , wxEmptyString , toolbarIcons[k++] , gettext("Connection List") );
+		tb->AddTool( MENU_QUICKCONNECT , wxEmptyString , toolbarIcons[k++] , gettext("Quick Connect (Alt+Q)") );
+		tb->AddSeparator();
+		tb->AddTool( MENU_RECONNECT , wxEmptyString , toolbarIcons[k++] , gettext("Reconnect (Enter) (Alt+R)") );
+		tb->AddTool( MENU_DELETETELNET , wxEmptyString , toolbarIcons[k++] , gettext("Close Connection (Ctrl+Del) (Alt+W)") );
+		tb->AddSeparator();
+		tb->AddTool( MENU_COPY , wxEmptyString , toolbarIcons[k++] , gettext("Copy plain text (Alt+C)") );
+		tb->AddTool( MENU_PASTE_ANSI , wxEmptyString , toolbarIcons[k++] , gettext("Paste (Alt+V)") );
+		tb->AddSeparator();
 #ifndef BBMAN_NO_SSH
-	tb->AddTool( MENU_SHOW_SFTP , wxEmptyString , icons[k++] , gettext("Show SFTP Window (F6)") );
-	tb->AddSeparator();
+		tb->AddTool( MENU_SHOW_SFTP , wxEmptyString , toolbarIcons[k++] , gettext("Show SFTP Window (F6)") );
+		tb->AddSeparator();
 #else
-	k++;
+		k++;
 #endif
-	tb->AddTool( MENU_LOCKSCREEN , wxEmptyString , icons[k++] , gettext("Lock screen (Alt+P)") );
-
-#ifdef __WXMSW__
-	tb->AddSeparator();
-	tb->AddControl( stxtHostname = new wxStaticText(tb, -1, _T("Hostname :") ) );
-	tb->AddControl( txtAddress = new wxTextCtrl(tb, 666, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER ) );
-	txtAddress->Connect( 666 , wxEVT_SET_FOCUS , (wxObjectEventFunction) (wxEventFunction) (wxFocusEventFunction) &BBS_Frame::OnAddressTextSetFocus );
-#endif
-
-	tb->Realize();
-//	SetToolBar(tb);
-
+		tb->AddTool( MENU_LOCKSCREEN , wxEmptyString , toolbarIcons[k++] , gettext("Lock screen (Alt+P)") );
+		tb->Realize();
 	}
 
 #ifndef __WXMSW__
@@ -403,13 +402,13 @@ BBS_Frame::BBS_Frame(const wxString& title, const wxPoint& pos, const wxSize& si
 	image_list.Add( GetProgramIcon(BBMAN_ICON_CONNECTED) );
 	image_list.Add( GetProgramIcon(BBMAN_ICON_MESSAGE) );
 
-	tab.Create(this, 666);
-	tab.Init();
-	tab.SetImageList( & image_list );
+	tab->Create(this, 666);
+	tab->Init();
+	tab->SetImageList( & image_list );
 
 
-	panel.Create(this, -1, wxDefaultPosition, wxDefaultSize , wxNO_FULL_REPAINT_ON_RESIZE );
-	panel.SetFont( GetFont() );
+	panel->Create(this, -1, wxDefaultPosition, wxDefaultSize , wxNO_FULL_REPAINT_ON_RESIZE );
+	panel->SetFont( GetFont() );
 
 
 	
@@ -429,7 +428,7 @@ BBS_Frame::BBS_Frame(const wxString& title, const wxPoint& pos, const wxSize& si
 
 
 	wxAcceleratorTable accel( ac , entries);
-	panel.SetAcceleratorTable(accel);
+	panel->SetAcceleratorTable(accel);
 //#endif
 
 	//
@@ -439,35 +438,27 @@ BBS_Frame::BBS_Frame(const wxString& title, const wxPoint& pos, const wxSize& si
 	isClosed = false;
 
 //	if(tb)	tb->SetSizeHints( tb->GetSize().GetWidth(), tb->GetSize().GetHeight() );
-//	tab.SetSizeHints(1000,30,1000,30);
-//	panel.SetSizeHints(1000,700,1000,1000);
+//	tab->SetSizeHints(1000,30,1000,30);
+//	panel->SetSizeHints(1000,700,1000,1000);
 
-	wxFlexGridSizer *main_sizer;
+	wxBoxSizer *main_sizer;
 	wxBoxSizer *sub_sizer;
-//	wxBoxSizer *txthost_sizer;
-	main_sizer = new wxFlexGridSizer(1);
-
-//	txthost_sizer = new wxBoxSizer(wxHORIZONTAL);
-//	txthost_sizer->Add( stxtHostname , 0 , wxALIGN_CENTER_VERTICAL ); 
-//	txthost_sizer->Add( txtAddress , 0 , wxALIGN_CENTER_VERTICAL );
+	main_sizer = new wxBoxSizer(wxVERTICAL);
 
 	sub_sizer = new wxBoxSizer(wxHORIZONTAL);
 	if(tb)
 	{
-		sub_sizer->Add( tb , 0 );
+		sub_sizer->Add( tb , 0, wxALIGN_CENTER_VERTICAL );
 		sub_sizer->Add( 6, 0 );
 	}
 #ifndef __WXMSW__
 	sub_sizer->Add( stxtHostname, 0, wxALIGN_CENTER_VERTICAL );
-	sub_sizer->Add( txtAddress, 0, wxALIGN_CENTER_VERTICAL ); 
+	sub_sizer->Add( txtAddress, 0, wxALIGN_CENTER_VERTICAL );
 #endif
-	sub_sizer->Layout();
-//	sub_sizer->Add( txtAddress , 1 , wxEXPAND | wxALIGN_CENTER );
-//	sub_sizer->Add( txthost_sizer, 0, wxALIGN_BOTTOM );
+	main_sizer->Add( sub_sizer, 0, wxEXPAND );
 
-	main_sizer->Add( sub_sizer, 0 );
-//	main_sizer->Add( & tab , 0 , wxEXPAND );
-//	main_sizer->Add( & panel , 1 , wxEXPAND );
+	main_sizer->Add( tab, 0, wxEXPAND );
+	main_sizer->Add( panel, 1, wxEXPAND );
 
 	main_sizer->Layout();
 	SetAutoLayout(true);
@@ -477,22 +468,22 @@ BBS_Frame::BBS_Frame(const wxString& title, const wxPoint& pos, const wxSize& si
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
 void BBS_Frame::ShowPreviousTelnet()
-{	tab.ShowPreviousTab();	}
+{	tab->ShowPreviousTab();	}
 // ----------------------------------------------------------------------------
 void BBS_Frame::ShowNextTelnet()
-{	tab.ShowNextTab();	}
+{	tab->ShowNextTab();	}
 // ----------------------------------------------------------------------------
 int BBS_Frame::getNowTelnetIndex()
-{	return tab.GetSelection();	}
+{	return tab->GetSelection();	}
 // ----------------------------------------------------------------------------
 int BBS_Frame::getTelnetCount()
-{	return tab.GetItemCount();	}
+{	return tab->GetItemCount();	}
 // ----------------------------------------------------------------------------
 void BBS_Frame::OnMouseRightDown(wxMouseEvent& event)
 {
 	if( event.GetId() == 666 )	//使用者在連線標籤上點選右鍵, 想關閉某個連線
 	{
-		int i = tab.getTabUnderMouse( event.GetX() , event.GetY() );
+		int i = tab->getTabUnderMouse( event.GetX() , event.GetY() );
 		if( i < 0 )	return;
 
 		DeleteTerminal(i);
@@ -500,7 +491,26 @@ void BBS_Frame::OnMouseRightDown(wxMouseEvent& event)
 }
 // ----------------------------------------------------------------------------
 void BBS_Frame::OnMouseRightUp(wxMouseEvent& event)
-{	PopupMenu( editMenu , event.GetX() + panel.GetPosition().x , event.GetY() + panel.GetPosition().y );	}
+{
+	ShowEditContextMenu(wxPoint(event.GetX() + panel->GetPosition().x, event.GetY() + panel->GetPosition().y));
+}
+// ----------------------------------------------------------------------------
+void BBS_Frame::ShowEditContextMenu(const wxPoint& pos)
+{
+	wxMenu contextMenu;
+	AppendMenuItemWithBitmap(&contextMenu, MENU_COPY, gettext("Copy (Plain Text)"), GetProgramIcon(BBMAN_ICON_COPY) );
+	contextMenu.Append(MENU_COPY_ANSI , gettext("Copy (with ANSI Color)") );
+	contextMenu.AppendSeparator();
+	AppendMenuItemWithBitmap(&contextMenu, MENU_PASTE_ANSI, gettext("Paste"), GetProgramIcon(BBMAN_ICON_PASTE) );
+	contextMenu.AppendSeparator();
+	AppendMenuItemWithBitmap(&contextMenu, MENU_OPEN_SELECTION_AS_LINK, gettext("Open selected text as URL"), GetProgramIcon(BBMAN_ICON_WEB) );
+	contextMenu.AppendSeparator();
+	contextMenu.Append(MENU_SELECTALL , gettext("Select All") );
+	contextMenu.AppendSeparator();
+	contextMenu.Append(MENU_INPUT_LINE, gettext("Input Line") );
+
+	PopupMenu( &contextMenu , pos );
+}
 // ----------------------------------------------------------------------------
 void BBS_Frame::OnMouseLeftUp(wxMouseEvent& event)
 {;}
@@ -512,14 +522,14 @@ void BBS_Frame::OnMenuOpen(wxMenuEvent& event)
 {
 #if defined(__WXGTK__)
 	wxFocusEvent e;
-	panel.OnFocus(e);	//GTK 下用 alt 選取選單時會造成 telnet_panel::isAltDown 判斷錯誤，因此在這裡呼叫 telnet_panel::OnFocus 使之還原
+	panel->OnFocus(e);	//GTK 下用 alt 選取選單時會造成 telnet_panel::isAltDown 判斷錯誤，因此在這裡呼叫 telnet_panel::OnFocus 使之還原
 #endif
 }
 // ----------------------------------------------------------------------------
 void BBS_Frame::OnFocus(wxFocusEvent& event)
 {
 #if defined(__WXGTK__)
-	panel.OnFocus(event);	//GTK 下用 alt+tab 切換視窗時會造成 telnet_panel::isAltDown 判斷錯誤，因此在這裡呼叫 telnet_panel::OnFocus 使之還原
+	panel->OnFocus(event);	//GTK 下用 alt+tab 切換視窗時會造成 telnet_panel::isAltDown 判斷錯誤，因此在這裡呼叫 telnet_panel::OnFocus 使之還原
 //fprintf(stderr, "SetFocus\n");
 #endif
 }
@@ -605,23 +615,23 @@ void BBS_Frame::connect(SiteInfo &si)
 	if( now_telnet == NULL || ! now_telnet->IsDisconnected() )
 	{	//如果目前的 telnet 數目 == 0 , 或者  目前的 telnet 連線不是關閉的
 		//則新增一個連線
- 		now_telnet = new SCD_Telnet(&panel);
+ 		now_telnet = new SCD_Telnet(panel);
 		now_telnet->SetOnLinkClickedFunc( OnLinkClicked );
 
- 		tab.InsertItem(0, tab_title, ICON_CONNECTING, now_telnet);
- 		next_tab_index = tab.GetItemCount() - 1;
+ 		tab->InsertItem(0, tab_title, ICON_CONNECTING, now_telnet);
+ 		next_tab_index = tab->GetItemCount() - 1;
 	}
 	else
 	{
-  		next_tab_index = tab.GetSelection();
+  		next_tab_index = tab->GetSelection();
 
-		tab.SetItemText( next_tab_index , tab_title );
-		tab.SetItemImage( next_tab_index, ICON_CONNECTING );
+		tab->SetItemText( next_tab_index , tab_title );
+		tab->SetItemImage( next_tab_index, ICON_CONNECTING );
 	}
 
 	now_telnet->connect( si.protocol, si.ip, si.port , si.name , si.username , si.password , si.message );
 
-	tab.SetSelection( next_tab_index );
+	tab->SetSelection( next_tab_index );
 }
 // ----------------------------------------------------------------------------
 void BBS_Frame::OnTabChanged(wxNotebookEvent& event)
@@ -631,17 +641,17 @@ void BBS_Frame::OnTabChanged(wxNotebookEvent& event)
   	if( event.GetSelection() < 0 )
    	{
    		now_telnet = NULL;
-   		panel.SetTelnet(NULL);
+   		panel->SetTelnet(NULL);
    		SetTitle(_T("BBMan"));
 		if(txtAddress)	txtAddress->Clear();
    	}
    	else
    	{
 		SCD_Telnet *t;
-		t = (SCD_Telnet*) tab.GetItemData( tab.GetSelection() );
+		t = (SCD_Telnet*) tab->GetItemData( tab->GetSelection() );
 		now_telnet = t;
 
-		panel.SetTelnet(t);
+		panel->SetTelnet(t);
 
 		wxString tmp_ip = t->getIP();
 		int tmp_port = t->getPort();
@@ -665,7 +675,7 @@ void BBS_Frame::OnTabChanged(wxNotebookEvent& event)
 //		FitTerminalSize();
 	}
 
-	panel.SetFocus();
+	panel->SetFocus();
 
 	UpdateToolbarUI();
 }
@@ -724,17 +734,35 @@ void BBS_Frame::OnInputLine(wxCommandEvent& event)
 // event handlers
 
 void BBS_Frame::OnActivate(wxActivateEvent& event)
-{	panel.SetFocus();	}
+{	panel->SetFocus();	}
 // ----------------------------------------------------------------------------
 void BBS_Frame::OnQuit(wxCommandEvent& WXUNUSED(event))
-{	Close();	}	//這會產生 BBS_Frame 的 OnClose event
+{	Close();	}	//
+// ----------------------------------------------------------------------------
+void BBS_Frame::CloseAllTerminals()
+{
+	panel->DetachTelnet();
+	now_telnet = NULL;
+
+	while( tab->GetItemCount() > 0 )
+	{
+		SCD_Telnet *t = (SCD_Telnet*) tab->GetItemData(0);
+		tab->DeleteItem(0);
+		if( t )
+		{
+			t->close();
+			delete t;
+		}
+	}
+}
+//這會產生 BBS_Frame 的 OnClose event
 // ----------------------------------------------------------------------------
 void BBS_Frame::OnClose(wxCloseEvent& event)
 {
 	bool hasConnection = false;
-	for(int i=0;i<tab.GetItemCount();i++)
+	for(int i=0;i<tab->GetItemCount();i++)
 	{
-		if( ((SCD_Telnet*)tab.GetItemData(i))->IsConnected() )
+		if( ((SCD_Telnet*)tab->GetItemData(i))->IsConnected() )
 		{
 			hasConnection = true;
 			break;
@@ -750,6 +778,8 @@ void BBS_Frame::OnClose(wxCloseEvent& event)
 			}
 
 	isClosed = true;
+	timer.Stop();
+	CloseAllTerminals();
 
 	//儲存視窗大小
 	GetConfig()->Write( GetUserConfigPath(_T("/setting/win_geo/fullscreen")) , IsFullScreen()?1:0 );
@@ -764,7 +794,7 @@ void BBS_Frame::OnClose(wxCloseEvent& event)
 	}
 	//
 
-	this->Destroy();	//關閉視窗			
+	Destroy();	//
 }
 // ----------------------------------------------------------------------------
 void BBS_Frame::OnAbout(wxCommandEvent& event)
@@ -889,9 +919,11 @@ void BBS_Frame::OnBookmark(wxCommandEvent& event)
 // ----------------------------------------------------------------------------
 void BBS_Frame::OnTimer(wxTimerEvent& event)
 {
-	for(int i=0;i<tab.GetItemCount();i++)
+	if( isClosed )	return;
+
+	for(int i=0;i<tab->GetItemCount();i++)
 	{
-		SCD_Telnet *t = (SCD_Telnet*) tab.GetItemData(i);
+		SCD_Telnet *t = (SCD_Telnet*) tab->GetItemData(i);
 		if( t->getServerIdleTime() > 60*3 )	//如果該連線閒置過久
  			t->UserSend("\x1bOA\x1bOB");	//Ctrl + L
 	}
@@ -902,35 +934,37 @@ void BBS_Frame::OnTimer(wxTimerEvent& event)
 // ----------------------------------------------------------------------------
 void BBS_Frame::OnSocketEvent( wxSocketEvent &e )
 {
+	if( isClosed )	return;
+
 	//note : 在跟那些一連線馬上就斷線的 server 連線的情況下,
 	//有可能 wxSOCKET_LOST 會在 wxSOCKET_CONNECTION 之前到
 	//所以還是要看 socket::IsConnected() 比較正確
 
 	SCD_Telnet *t = (SCD_Telnet*) e.GetClientData();
 	if( t == NULL )	return;
-	int i = tab.GetItemIndex(t);
+	int i = tab->GetItemIndex(t);
 	if( i < 0 )	return;	//如果 i < 0 , 代表使用者要求刪除該 tab
 
 	if( e.GetSocketEvent() == wxSOCKET_CONNECTION
 		|| e.GetSocketEvent() == wxSOCKET_LOST )
 	{
 		if( t->IsConnected() )	//如果已經連上線了
-			tab.SetItemImage( i , ICON_CONNECTED );
+			tab->SetItemImage( i , ICON_CONNECTED );
 		else	//如果連線中斷了
 		{
-			if( tab.GetItemImage(i) == ICON_CONNECTING )	//如果不是因為連不上而斷線 (因為如果是先連上才斷線的話, imageid 應該等於 ICON_CONNECTED , 如果 imageid == ICON_CONNECTING 則代表沒有連上過)
+			if( tab->GetItemImage(i) == ICON_CONNECTING )	//如果不是因為連不上而斷線 (因為如果是先連上才斷線的話, imageid 應該等於 ICON_CONNECTED , 如果 imageid == ICON_CONNECTING 則代表沒有連上過)
 			{
-				tab.SetItemImage( i , ICON_CLOSE );
+				tab->SetItemImage( i , ICON_CLOSE );
 				t->parse( wxStringToCharPtr( wxString( _T("\x1b[1;1H\x1b[1;5;33;43m ") ) + gettext("Connection fail ( maybe server out-of-service, or wrong address )") + wxString(_T(" \x1b[m")) ) );
 			}
 			else if( ! t->isUserClosed() && t->getConnectTime() < 10 )	//如果連線時間不到十秒鐘就被斷線, 則重新連線
 			{
-				tab.SetItemImage( i , ICON_CONNECTING );
+				tab->SetItemImage( i , ICON_CONNECTING );
 				t->reconnect();
 			}
 			else
 			{
-				tab.SetItemImage( i , ICON_CLOSE );
+				tab->SetItemImage( i , ICON_CLOSE );
 				t->parse( wxStringToCharPtr( wxString( _T("\x1b[1;1H\x1b[1;5;33;43m ") ) + gettext("Disconnected") + wxString(_T(" \x1b[m")) ) );
 			}
 		}
@@ -941,10 +975,10 @@ void BBS_Frame::OnSocketEvent( wxSocketEvent &e )
 	{
   		if( t->isBell() )	//看看經過 SCD_Telnet::parse() 之後, 有沒有 '\a' 這個字元 (也就是檢查有沒有其他人丟水球進來)
   		{
-			if( ((SCD_Telnet*)tab.GetItemData(tab.GetSelection()))->getUserIdleTime() > 60 )	//如果使用者閒置超過一分鐘才自動切換至來訊連線
-	  			tab.SetSelection(i);	//有人丟水球進來的話, 則切換到該 telnet 畫面
+			if( ((SCD_Telnet*)tab->GetItemData(tab->GetSelection()))->getUserIdleTime() > 60 )	//如果使用者閒置超過一分鐘才自動切換至來訊連線
+	  			tab->SetSelection(i);	//有人丟水球進來的話, 則切換到該 telnet 畫面
 
-			tab.SetItemImage( i, ICON_MESSAGE );	//修改連線標籤的圖示提醒使用者有水球
+			tab->SetItemImage( i, ICON_MESSAGE );	//修改連線標籤的圖示提醒使用者有水球
 //			wxBell();	
  			SCD_PlaySound();	//發出聲音提醒使用者有水球
 
@@ -954,7 +988,7 @@ void BBS_Frame::OnSocketEvent( wxSocketEvent &e )
 				if( GetConfig()->Read( GetUserConfigPath(_T("/setting/auto_reply")) , & msg ) )	//如果有設定自動回覆水球機制
 				{
         			t->keyControl('R');
-	 				t->UserSend( (char*) msg.c_str() );
+	 				t->UserSend( wxStringToCharPtr(msg) );
 	 				t->keyEnter();
 	 				t->UserSend( "Y" );
 	 				t->keyEnter();
@@ -966,9 +1000,9 @@ void BBS_Frame::OnSocketEvent( wxSocketEvent &e )
 // ----------------------------------------------------------------------------
 void BBS_Frame::OnChar(wxKeyEvent& event)
 {
-	int id = tab.GetSelection();
-	if( tab.GetItemImage(id) == ICON_MESSAGE )
-		tab.SetItemImage( id, ICON_CONNECTED );
+	int id = tab->GetSelection();
+	if( tab->GetItemImage(id) == ICON_MESSAGE )
+		tab->SetItemImage( id, ICON_CONNECTED );
 
 #ifdef __WXGTK__
 	if( event.AltDown() )
@@ -988,9 +1022,9 @@ void BBS_Frame::OnChar(wxKeyEvent& event)
 // ----------------------------------------------------------------------------
 void BBS_Frame::OnKeyDown(wxKeyEvent& event)
 {	
-	int id = tab.GetSelection();
-	if( tab.GetItemImage(id) == ICON_MESSAGE )
-		tab.SetItemImage( id, ICON_CONNECTED );
+	int id = tab->GetSelection();
+	if( tab->GetItemImage(id) == ICON_MESSAGE )
+		tab->SetItemImage( id, ICON_CONNECTED );
 
 	//自行處理快速鍵
 	if( event.ControlDown() )
@@ -1002,7 +1036,7 @@ void BBS_Frame::OnKeyDown(wxKeyEvent& event)
 		else if( event.m_keyCode == WXK_HOME )
 			ShowSpecifiedTerminal(0);
 		else if( event.m_keyCode == WXK_END )
-			ShowSpecifiedTerminal( tab.GetItemCount() - 1 );
+			ShowSpecifiedTerminal( tab->GetItemCount() - 1 );
 		else if( event.m_keyCode == WXK_INSERT )
 			QuickConnect();
 
@@ -1023,7 +1057,7 @@ void BBS_Frame::OnKeyDown(wxKeyEvent& event)
 
 	if( event.m_keyCode == 13 && now_telnet->IsDisconnected() )	//斷線時按 [Enter] 重新連線
 	{
-		tab.SetItemImage( tab.GetSelection(), ICON_CONNECTING );
+		tab->SetItemImage( tab->GetSelection(), ICON_CONNECTING );
 		now_telnet->reconnect();
 	}
 }
@@ -1077,7 +1111,7 @@ void BBS_Frame::OnConnection(wxCommandEvent& event)
 			if(now_telnet == NULL)	return;
 			if( now_telnet->IsDisconnected() )
 			{
-				tab.SetItemImage( tab.GetSelection(), ICON_CONNECTING );
+				tab->SetItemImage( tab->GetSelection(), ICON_CONNECTING );
 				now_telnet->reconnect();
 			}
 			break;
@@ -1123,7 +1157,7 @@ void BBS_Frame::OnSetting(wxCommandEvent& event)
 				int id = wxGetSingleChoiceIndex( gettext("Please choose what hyperlinks associated program you want to edit?") , gettext("Edit hyperlinks associated program") , list );
 				if( id == -1 )	break;
 
-    			enum LINK_TYPE _t;
+    			LINK_TYPE _t;
 				switch(id)
 				{
 					case 0 : _t = LINK_HTTP;	break;
@@ -1136,7 +1170,7 @@ void BBS_Frame::OnSetting(wxCommandEvent& event)
 #if defined(__WXGTK__)
 				link_program = wxGetTextFromUser( gettext("What program to open this type of hyperlinks?") , gettext("Setup hyperlinks associated program") , link_program );
 #else
-				link_program = wxFileSelector( gettext("Setup hyperlinks associated program") , link_program, wxEmptyString, _T("exe") , _T("Program (*.exe)|*.exe|All (*.*)|*.*") , wxOPEN | wxFILE_MUST_EXIST , this );
+				link_program = wxFileSelector( gettext("Setup hyperlinks associated program") , link_program, wxEmptyString, _T("exe") , _T("Program (*.exe)|*.exe|All (*.*)|*.*") , wxFD_OPEN | wxFD_FILE_MUST_EXIST , this );
 #endif
 				if( ! link_program.IsEmpty() )	setLinkProgram( _t , link_program );
 			}
@@ -1170,7 +1204,7 @@ void BBS_Frame::OnSetting(wxCommandEvent& event)
 				{
 					key = wxString::Format( _T("%d") , id );
 					GetConfig()->Read( key , & msg , wxEmptyString );
-					msg = wxString::Format( _T("< Ctrl+F%d >：") , id ) + msg;
+					msg = wxString::Format( _T("< Ctrl+F%d >: ") , id ) + msg;
 					msg_list.Add( msg );
 				}
 				
@@ -1215,9 +1249,9 @@ void BBS_Frame::OnSetting(wxCommandEvent& event)
 				wxString old_file, new_file;
 				GetConfig()->Read( GetUserConfigPath(_T("/setting/sound_file")) , & old_file , wxEmptyString );
 #ifdef __WXGTK__
-				new_file = wxFileSelector( gettext("Open sound file") , old_file.BeforeLast('/'), old_file.AfterLast('/'), wxEmptyString , wxEmptyString , wxOPEN | wxFILE_MUST_EXIST , this );
+				new_file = wxFileSelector( gettext("Open sound file") , old_file.BeforeLast('/'), old_file.AfterLast('/'), wxEmptyString , wxEmptyString , wxFD_OPEN | wxFD_FILE_MUST_EXIST , this );
 #else
-				new_file = wxFileSelector( gettext("Open sound file. (Only accept .wav format)") , old_file.BeforeLast('\\'), old_file.AfterLast('\\'), wxEmptyString , _T("Sound (*.wav)|*.wav") , wxOPEN | wxFILE_MUST_EXIST , this );
+				new_file = wxFileSelector( gettext("Open sound file. (Only accept .wav format)") , old_file.BeforeLast('\\'), old_file.AfterLast('\\'), wxEmptyString , _T("Sound (*.wav)|*.wav") , wxFD_OPEN | wxFD_FILE_MUST_EXIST , this );
 #endif
 				if( ! new_file.IsEmpty() )
 				{
@@ -1254,7 +1288,7 @@ void BBS_Frame::OnSetting(wxCommandEvent& event)
 				bool b = ! TerminalChar::getAlwaysHighlight();
 				TerminalChar::setAlwaysHighlight(b);
 				GetConfig()->Write( GetUserConfigPath(_T("/setting/always_highlight")) , b );
-				panel.Refresh();
+				panel->Refresh();
 			}
 			break;
 	}
@@ -1293,13 +1327,13 @@ void BBS_Frame::OnTool(wxCommandEvent& event)
 					wxMessageBox( _T("目前 BBMan 沒有任何的設定值") );
 					return;
 				}
-				wxString path = wxFileSelector( _T("匯出 BBMan 設定值") , wxEmptyString, _T("BBMan設定.reg"), _T("reg") , _T("Windows 登錄檔|*.reg") , wxSAVE | wxOVERWRITE_PROMPT , this );
+				wxString path = wxFileSelector( _T("匯出 BBMan 設定值") , wxEmptyString, _T("BBMan設定.reg"), _T("reg") , _T("Windows 登錄檔|*.reg") , wxFD_SAVE | wxFD_OVERWRITE_PROMPT , this );
 				if( path.empty() )	return;
 				RegSaveKey( HKEY_CURRENT_USER , wxStringToCharPtr(path), NULL );
 */
 /*
 #elif defined(__WXGTK__)
-				wxString path = wxFileSelector( _T("匯出 BBMan 設定值") , wxEmptyString, _T("BBMan設定值.txt"), _T("reg") , _T("所有檔案 (*.*)|*.*") , wxSAVE | wxOVERWRITE_PROMPT , this );
+				wxString path = wxFileSelector( _T("匯出 BBMan 設定值") , wxEmptyString, _T("BBMan設定值.txt"), _T("reg") , _T("所有檔案 (*.*)|*.*") , wxFD_SAVE | wxFD_OVERWRITE_PROMPT , this );
 				if( path.empty() )	return false;
 				wxExecute( wxString( _T("cp ~/.BBMan ") ) + path );
 #endif
@@ -1325,8 +1359,8 @@ void BBS_Frame::FitTerminalSize()
 	now_telnet->repaint();
     wxSize size;
     if(now_telnet)	size = now_telnet->getWindowSize();
-    else size = panel.GetClientSize();
-    size.SetHeight( size.GetHeight() + tab.GetSize().GetHeight() );
+    else size = panel->GetClientSize();
+    size.SetHeight( size.GetHeight() + tab->GetSize().GetHeight() );
 	SetClientSize(size);
 */
 }
@@ -1340,7 +1374,7 @@ void BBS_Frame::recalcVarFontSize()	//重新計算 panel 可接受最大字體大小
 #endif
 */
 
-	wxSize new_winsize = panel.GetClientSize();
+	wxSize new_winsize = panel->GetClientSize();
 
 	wxFont fnt = GetCurrentFont();
 	wxClientDC dc(this);
@@ -1395,13 +1429,7 @@ void BBS_Frame::recalcVarFontSize()	//重新計算 panel 可接受最大字體大小
 
 void BBS_Frame::OnResize(wxSizeEvent& event)
 {
-	int tb_h = 0;
-	if(tb)	tb_h = tb->GetSize().GetHeight();
-
-	tab.Move( 0 , tb_h );
-	tab.SetSize( GetClientSize().GetWidth(), tab.GetSize().GetHeight() );
-	panel.Move(0, tb_h + tab.GetSize().GetHeight());
-	panel.SetSize( GetClientSize().GetWidth() , GetClientSize().GetHeight() - tab.GetSize().GetHeight() - tb_h );
+	Layout();
 
 	int t = GetVarFontSize();
 	recalcVarFontSize();
@@ -1417,7 +1445,7 @@ void BBS_Frame::OnGoTab(wxCommandEvent& event)
 {
 	int id = event.GetId();
 	id = id - MENU_GOTAB_1;
-	if( tab.GetSelection() != id )	tab.SetSelection( id );
+	if( tab->GetSelection() != id )	tab->SetSelection( id );
 }
 // ----------------------------------------------------------------------------
 void BBS_Frame::SendCanedMessage(int id)
@@ -1443,20 +1471,20 @@ void BBS_Frame::OnCanedMessage(wxCommandEvent& event)
 // ----------------------------------------------------------------------------
 void BBS_Frame::DeleteTerminal(int id)
 {
-	if( id == -1 )	id = tab.GetSelection();
-	if( id < 0 || id >= tab.GetItemCount() )	return;
+	if( id == -1 )	id = tab->GetSelection();
+	if( id < 0 || id >= tab->GetItemCount() )	return;
 
-	int img = tab.GetItemImage(id);
+	int img = tab->GetItemImage(id);
 
 	if( img == ICON_CONNECTED || img == ICON_MESSAGE )
-		if( wxNO == wxMessageBox( wxString::Format( gettext("Are you sure to close connection [ %d. %s ] ?") , id+1 , wxStringToCharPtr(tab.GetItemText(id)) ) , wxEmptyString, wxYES_NO ) )
+		if( wxNO == wxMessageBox( wxString::Format( gettext("Are you sure to close connection [ %d. %s ] ?") , id+1 , wxStringToCharPtr(tab->GetItemText(id)) ) , wxEmptyString, wxYES_NO ) )
 			return;
 
 	SCD_Telnet *t;
-	t = (SCD_Telnet*) tab.GetItemData(id);
+	t = (SCD_Telnet*) tab->GetItemData(id);
 	now_telnet = NULL;
 	t->close();
-	tab.DeleteItem(id);
+	tab->DeleteItem(id);
 	delete t;
 }
 // ----------------------------------------------------------------------------
@@ -1465,7 +1493,7 @@ void BBS_Frame::ShowSpecifiedTerminal(int id)
 
 	if( id == -1 )
 	{
-		int c = tab.GetItemCount();
+		int c = tab->GetItemCount();
 		if(c <= 1)	return;
 
 		wxString line = wxGetTextFromUser( wxString::Format( gettext("Please enter connection number : %d to %d") , 1 , c) , wxEmptyString , wxEmptyString , this);
@@ -1478,7 +1506,7 @@ void BBS_Frame::ShowSpecifiedTerminal(int id)
 		else
 		{
 			line.ToLong( (long*) &id );
-			if( id < 1 || id > tab.GetItemCount() )
+			if( id < 1 || id > tab->GetItemCount() )
 			{
 				wxMessageBox( gettext("The number you entered is Out-of-bound") );
 				return;
@@ -1487,7 +1515,7 @@ void BBS_Frame::ShowSpecifiedTerminal(int id)
 		}
 	}
 
-	if( id != tab.GetSelection() )	tab.SetSelection(id);
+	if( id != tab->GetSelection() )	tab->SetSelection(id);
 }
 // ----------------------------------------------------------------------------
 void BBS_Frame::FullScreen()

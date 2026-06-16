@@ -119,7 +119,7 @@ int SCD_TabCtrl::SetSelection(int index)
 
 	//產生 EVT_TAB_SEL_CHANGING 事件
 	wxNotebookEvent eb(wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGING , GetId() , index , old_selected_index );
-	GetParent()->ProcessEvent(eb);	//這裡不能用 AddPenddingEvent() 不然會 crash
+	GetParent()->GetEventHandler()->ProcessEvent(eb);	//這裡不能用 AddPenddingEvent() 不然會 crash
 
 	//更新資料
 	now_selected_index = index;
@@ -127,7 +127,7 @@ int SCD_TabCtrl::SetSelection(int index)
 
 	//產生 EVT_TAB_SEL_CHANGED 事件
 	wxNotebookEvent ea(wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED , GetId() , index , old_selected_index );
-	GetParent()->ProcessEvent(ea);	//這裡不能用 AddPenddingEvent() 不然會 crash
+	GetParent()->GetEventHandler()->ProcessEvent(ea);	//這裡不能用 AddPenddingEvent() 不然會 crash
 
 	return old_selected_index;
 }
@@ -346,7 +346,7 @@ void SCD_TabCtrl::OnMouseMove(wxMouseEvent& event)
 }
 // ----------------------------------------------------------------------------
 void SCD_TabCtrl::OnMouseRightDown(wxMouseEvent& event)
-{	GetParent()->AddPendingEvent(event);	}
+{	wxPostEvent(GetParent(), event);	}
 // ----------------------------------------------------------------------------
 void SCD_TabCtrl::OnPaint(wxPaintEvent& event)
 {
@@ -360,13 +360,17 @@ void SCD_TabCtrl::OnPaint(wxPaintEvent& event)
 	if( now_start_index >= GetItemCount() && GetItemCount() > 0 )
  		now_start_index = GetItemCount() - 1;
 
+#if !wxCHECK_VERSION(2, 9, 0)
 	dc.BeginDrawing();
+#endif
 
 	int start_x, i;
 	for(start_x = 0 , i = now_start_index ; start_x < win_width && isTabExist(i) ;i++)
 		start_x = DrawTab(i, &dc , start_x);
 
+#if !wxCHECK_VERSION(2, 9, 0)
 	dc.EndDrawing();
+#endif
 
 	if( start_x < win_width )	now_right_index = i + 1;
 	else	now_right_index = i - 2;

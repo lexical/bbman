@@ -24,7 +24,6 @@ class EditTerm_win : public wxScrolledWindow
 private:
 	wxCaret caret;
 	wxTimer timer;
-	wxMenu *popmenu;
 
 public:
 	SCD_EditTerm *editterm;
@@ -32,7 +31,6 @@ public:
 	EditTerm_win(wxWindow *parent);
 	~EditTerm_win();
 
-	void SetPopupMenu(wxMenu *mnu);
 	void OnKeyDown(wxKeyEvent& event);
 	void OnChar(wxKeyEvent& event);
 	void OnMouseLeftDown(wxMouseEvent& event);

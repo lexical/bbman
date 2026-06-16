@@ -102,7 +102,7 @@ void frame_EditTerm::UpdateTitle()
 
 bool frame_EditTerm::SaveNewFile()
 {
-	wxString path = wxFileSelector( gettext("Save As...") , wxEmptyString, _T("NewFile.ans"), _T("ans") , _T("BBS ANSI Text (*.ans)|*.ans|All (*.*)|*.*") , wxSAVE | wxOVERWRITE_PROMPT , this );
+	wxString path = wxFileSelector( gettext("Save As...") , wxEmptyString, _T("NewFile.ans"), _T("ans") , _T("BBS ANSI Text (*.ans)|*.ans|All (*.*)|*.*") , wxFD_SAVE | wxFD_OVERWRITE_PROMPT , this );
 	if( path.empty() )	return false;
 	return SaveFile( path , editterm->GetAllContent(true) );
 }    
@@ -155,7 +155,7 @@ void frame_EditTerm::OnFile(wxCommandEvent& event)
 						break;
 				}
     
-				wxString path = wxFileSelector( gettext("Open") , wxEmptyString, wxEmptyString, _T("ans") , gettext("BBS color text file (*.ans)|*.ans|All (*.*)|*.*") , wxOPEN | wxFILE_MUST_EXIST , this );
+				wxString path = wxFileSelector( gettext("Open") , wxEmptyString, wxEmptyString, _T("ans") , gettext("BBS color text file (*.ans)|*.ans|All (*.*)|*.*") , wxFD_OPEN | wxFD_FILE_MUST_EXIST , this );
 				if( path.empty() )	return;
 				
 				FILE *fp = wxFopen( path , wxT( "rb" ) );
@@ -249,6 +249,37 @@ void frame_EditTerm::OnCharProperty(wxCommandEvent& event)
 	}
 }    
 
+void frame_EditTerm::ShowCharPropContextMenu(const wxPoint& pos)
+{
+	wxMenu contextMenu;
+	contextMenu.Append(MENU_CHARPROP_NORMAL , gettext("Normal (Cancel All Attributes)") );
+	contextMenu.AppendSeparator();
+
+	wxString name[] = { gettext("black"), gettext("red"), gettext("green"), gettext("yellow"), gettext("blue"), gettext("purple"), gettext("anil"), gettext("white") };
+
+	wxMenu *menuTextColor = new wxMenu;
+	for(int i=0;i<8;i++)
+		menuTextColor->Append(MENU_CHARPROP_CHCOLOR_1 + i , name[i]);
+	contextMenu.Append(0, gettext("Text Color"), menuTextColor);
+
+	wxMenu *menuBackColor = new wxMenu;
+	for(int i=0;i<8;i++)
+		menuBackColor->Append(MENU_CHARPROP_BGCOLOR_1 + i , name[i]);
+	contextMenu.Append(0, gettext("Background Color"), menuBackColor);
+
+	contextMenu.AppendSeparator();
+	contextMenu.Append(MENU_CHARPROP_BLINK , gettext("Blink") );
+	contextMenu.Append(MENU_CHARPROP_UNBLINK , gettext("no blink") );
+	contextMenu.AppendSeparator();
+	contextMenu.Append(MENU_CHARPROP_HIGHLIGHT , gettext("Highlight") );
+	contextMenu.Append(MENU_CHARPROP_UNHIGHLIGHT , gettext("no highlight") );
+	contextMenu.AppendSeparator();
+	contextMenu.Append(MENU_CHARPROP_UNDERLINE , gettext("Underline") );
+	contextMenu.Append(MENU_CHARPROP_UNUNDERLINE , gettext("no underline") );
+
+	PopupMenu(&contextMenu, pos);
+}
+
 frame_EditTerm::frame_EditTerm(const wxString& title, const wxPoint& pos, const wxSize& size, long style)
 	   : wxFrame(NULL, -1, title, pos, size, style)
 {
@@ -289,16 +320,16 @@ frame_EditTerm::frame_EditTerm(const wxString& title, const wxPoint& pos, const 
 	menuCharProp->AppendSeparator();
 
 	wxMenuItem *mi;
-	const wxChar *name[] = { gettext("black"), gettext("red"), gettext("green"), gettext("yellow"), gettext("blue"), gettext("purple"), gettext("anil"), gettext("white") };
+	wxString name[] = { gettext("black"), gettext("red"), gettext("green"), gettext("yellow"), gettext("blue"), gettext("purple"), gettext("anil"), gettext("white") };
 
 	wxMenu *menuTextColor = new wxMenu;
 	for(int i=0;i<8;i++)
-	{	mi = new wxMenuItem(NULL, MENU_CHARPROP_CHCOLOR_1 + i , wxString::Format(_T("%s\tCtrl-%d"), name[i], (i+1)) );	/*mi->SetTextColour(TerminalColors[0][i]);*/	menuTextColor->Append(mi);	}
+	{	mi = new wxMenuItem(NULL, MENU_CHARPROP_CHCOLOR_1 + i , wxString::Format(_T("%s\tCtrl-%d"), name[i].c_str(), (i+1)) );	/*mi->SetTextColour(TerminalColors[0][i]);*/	menuTextColor->Append(mi);	}
 	menuCharProp->Append(0, gettext("Text Color"), menuTextColor);
 
 	wxMenu *menuBackColor = new wxMenu;
 	for(int i=0;i<8;i++)
-	{	mi = new wxMenuItem(NULL, MENU_CHARPROP_BGCOLOR_1 + i , wxString::Format(_T("%s\tCtrl-Shift-%d"), name[i], (i+1)) );	/*mi->SetBackgroundColour(TerminalColors[0][i]);*/	menuBackColor->Append(mi);	}
+	{	mi = new wxMenuItem(NULL, MENU_CHARPROP_BGCOLOR_1 + i , wxString::Format(_T("%s\tCtrl-Shift-%d"), name[i].c_str(), (i+1)) );	/*mi->SetBackgroundColour(TerminalColors[0][i]);*/	menuBackColor->Append(mi);	}
 	menuCharProp->Append(0, gettext("Background Color"), menuBackColor);
 
 	menuCharProp->AppendSeparator();
@@ -337,7 +368,6 @@ frame_EditTerm::frame_EditTerm(const wxString& title, const wxPoint& pos, const 
 
 	editterm = NULL;
 	editterm_win = new EditTerm_win(this);
-	editterm_win->SetPopupMenu(menuCharProp);
 	editterm = editterm_win->editterm;
 	editterm->SetFont(GetCurrentFont());
 	editterm->setEnableDoubleByteDetection(false);

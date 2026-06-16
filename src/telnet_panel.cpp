@@ -45,11 +45,15 @@ Telnet_Panel::Telnet_Panel()
 
 	now_telnet = NULL;
 
-	//建立游標
-	caret.Create(this, 8,2);
-	this->SetCaret( &caret );
+	// wxWindow owns the caret after SetCaret().
+	this->SetCaret( new wxCaret(this, 8, 2) );
 
 	isAltDown = false;
+}
+// ----------------------------------------------------------------------------
+void Telnet_Panel::DetachTelnet()
+{
+	now_telnet = NULL;
 }
 // ----------------------------------------------------------------------------
 void Telnet_Panel::SetTelnet(SCD_Telnet *t)
@@ -57,10 +61,18 @@ void Telnet_Panel::SetTelnet(SCD_Telnet *t)
 	if( now_telnet )
 	{	now_telnet->Hide();	}
 
+	if( t == NULL )
+	{
+		now_telnet = NULL;
+		return;
+	}
+
 //#ifdef __WXMSW__	//windows 下不加上這段時, 若 now_telnet 畫面比 t 大, 則會殘留 now_telnet 的畫面
 
 	wxClientDC dc(this);
+#if !wxCHECK_VERSION(2, 9, 0)
 	dc.BeginDrawing();
+#endif
 	if( t && now_telnet )
 	{
 		wxSize old_ws, new_ws;
@@ -76,7 +88,9 @@ void Telnet_Panel::SetTelnet(SCD_Telnet *t)
 		if(t<b)	dc.DrawRectangle(0, t, (l>r)?l:r, b-t);
 	}
 
+#if !wxCHECK_VERSION(2, 9, 0)
 	dc.EndDrawing();
+#endif
 //#endif
 
 	now_telnet = t;
@@ -97,7 +111,6 @@ void Telnet_Panel::SetTelnet(SCD_Telnet *t)
 */
 	}
 
-//	dc.EndDrawing();
 
 #ifdef __WXGTK__	//wxGTK 下不加上這段時, console 右邊和下面會留下不少空白
 	SetBackgroundColour(*wxBLACK);
@@ -107,7 +120,11 @@ void Telnet_Panel::SetTelnet(SCD_Telnet *t)
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
 void Telnet_Panel::OnMouseRightUp(wxMouseEvent& event)
-{   GetParent()->AddPendingEvent(event);    }
+{
+	BBS_Frame *frame = static_cast<BBS_Frame*>(GetParent());
+	if( frame )
+		frame->ShowEditContextMenu(wxPoint(event.GetX() + GetPosition().x, event.GetY() + GetPosition().y));
+}
 // ----------------------------------------------------------------------------
 void Telnet_Panel::OnMouseLeftDown(wxMouseEvent& event)
 {
@@ -128,7 +145,7 @@ void Telnet_Panel::OnMouseLeftUp(wxMouseEvent& event)
 		now_telnet->OnMouseLeftUp(event);
 		now_telnet->CopySelectionToClipboard(false);
 
-		GetParent()->AddPendingEvent(event);
+		wxPostEvent(GetParent(), event);
 	}
 }
 // ----------------------------------------------------------------------------
@@ -137,7 +154,7 @@ void Telnet_Panel::OnMouseMiddleDown(wxMouseEvent& event)
 	if(now_telnet)
 	{
 		now_telnet->PasteFromClipboard(true);
-		GetParent()->AddPendingEvent(event);
+		wxPostEvent(GetParent(), event);
 	}
 }
 // ----------------------------------------------------------------------------
@@ -167,7 +184,7 @@ void Telnet_Panel::OnKeyDown(wxKeyEvent& event)
 #endif
 
 	//這必須放在前面，不然可能會被 now_telnet->OnKeyDown(event); 呼叫 event.Skip();
-	GetParent()->ProcessEvent(event);
+	GetParent()->GetEventHandler()->ProcessEvent(event);
 	if(now_telnet)	now_telnet->OnKeyDown(event);
 }
 // ----------------------------------------------------------------------------
@@ -184,12 +201,12 @@ void Telnet_Panel::OnChar(wxKeyEvent& event)
 	event.m_altDown = isAltDown;
 #endif
 
-	GetParent()->AddPendingEvent(event);
+	wxPostEvent(GetParent(), event);
 	if(now_telnet)	now_telnet->OnChar(event);
 }
 // ----------------------------------------------------------------------------
 void Telnet_Panel::OnSocketEvent( wxSocketEvent &e )
-{ 	GetParent()->AddPendingEvent(e);	}
+{ 	wxPostEvent(GetParent(), e);	}
 // ----------------------------------------------------------------------------
 void Telnet_Panel::OnFocus(wxFocusEvent& event)
 {

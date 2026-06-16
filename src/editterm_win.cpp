@@ -13,6 +13,7 @@
 #ifndef EDITTERM_WIN_CPP
 #define EDITTERM_WIN_CPP
 #include "editterm_win.h"
+#include "frm_editterm.h"
 
 #include <wx/caret.h>
 #include "scd_editterm.h"
@@ -56,7 +57,6 @@ EditTerm_win::EditTerm_win(wxWindow *parent) : wxScrolledWindow(parent, -1, wxDe
 	timer.SetOwner(this, 0);
 	timer.Start(600);
 	
-	popmenu = NULL;
 }
 // ----------------------------------------------------------------------------
 EditTerm_win::~EditTerm_win()
@@ -66,9 +66,6 @@ EditTerm_win::~EditTerm_win()
 }
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
-// ----------------------------------------------------------------------------
-void EditTerm_win::SetPopupMenu(wxMenu *mnu)
-{	popmenu = mnu;	}
 // ----------------------------------------------------------------------------
 void EditTerm_win::OnKeyDown(wxKeyEvent& event)
 {	editterm->OnKeyDown(event);	}
@@ -89,7 +86,11 @@ void EditTerm_win::OnMouseLeftUp(wxMouseEvent& event)
 }
 // ----------------------------------------------------------------------------
 void EditTerm_win::OnMouseRightDown(wxMouseEvent& event)
-{	if(popmenu)	PopupMenu( popmenu , event.GetX() , event.GetY() );	}
+{
+	frame_EditTerm *frame = static_cast<frame_EditTerm*>(GetParent());
+	if( frame )
+		frame->ShowCharPropContextMenu(wxPoint(event.GetX(), event.GetY()));
+}
 // ----------------------------------------------------------------------------
 void EditTerm_win::OnMouseMiddleDown(wxMouseEvent& event)
 {	editterm->PasteFromClipboard(true);	}

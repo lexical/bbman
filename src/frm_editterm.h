@@ -47,6 +47,7 @@ public:
 	void OnFile(wxCommandEvent& event);
 	void OnEdit(wxCommandEvent& event);
 	void OnCharProperty(wxCommandEvent& event);
+	void ShowCharPropContextMenu(const wxPoint& pos);
 
 	void UpdateTitle();
 	void SetTerminalFont(wxFont fnt);

@@ -23,7 +23,7 @@
 // ----------------------------------------------------------------------------
 
 bool ShowFavoriteEditor(wxWindow *parent = NULL, SiteInfo *si = NULL);
-WX_DECLARE_HASH_MAP( int, wxString, wxIntegerHash, wxIntegerEqual, t_int_wxString_hash );
+WX_DECLARE_HASH_MAP( void*, wxString, wxPointerHash, wxPointerEqual, t_int_wxString_hash );
 
 class frm_Favorite_Edit : public wxDialog
 {

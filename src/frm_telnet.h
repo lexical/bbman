@@ -38,7 +38,7 @@ class BBS_Frame : public wxFrame
 {
 public:
 	wxToolBar *tb;
- 	Telnet_Panel panel;
+ 	Telnet_Panel *panel;
 	wxTextCtrl *txtAddress;
 	wxStaticText *stxtHostname;
 
@@ -47,7 +47,7 @@ private:
 	wxScrolledWindow scrollwin;
 
 	wxTimer timer;
- 	SCD_TabCtrl tab;
+ 	SCD_TabCtrl *tab;
  	wxImageList image_list;
 
 	wxMenu *editMenu;
@@ -57,6 +57,7 @@ private:
 
 	bool isClosed;
 
+	void CloseAllTerminals();
 	void ReloadBookmark();	//Åª¨ú®ÑÅÒ¦Cªí
 	void ReloadBookmark(wxMenu *parent, wxString config_path, int &id);
 
@@ -95,6 +96,7 @@ public:
 
 	void OnMouseRightDown(wxMouseEvent& event);
 	void OnMouseRightUp(wxMouseEvent& event);
+	void ShowEditContextMenu(const wxPoint& pos);
 
 	void OnMouseLeftUp(wxMouseEvent& event);
 	void OnMouseMiddleDown(wxMouseEvent& event);
