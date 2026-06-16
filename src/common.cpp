@@ -91,6 +91,7 @@ void MakeBitmapMask(wxBitmap& bmp)
 // ----------------------------------------------------------------------------
 #include <wx/file.h>
 #include <wx/filename.h>
+#include <wx/stdpaths.h>
 void init_Icons()
 {
 	int i=0, k;
@@ -147,7 +148,7 @@ void AppendMenuItemWithBitmap(wxMenu *parent, int id, const wxString& item, wxBi
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
-static wxString FindThemePath(const wxString& baseDir, const wxString& theme)
+static wxString FindResourcePath(const wxString& baseDir)
 {
 	if( baseDir.IsEmpty() )
 		return wxEmptyString;
@@ -156,37 +157,75 @@ static wxString FindThemePath(const wxString& baseDir, const wxString& theme)
 	base.Normalize(wxPATH_NORM_DOTS | wxPATH_NORM_ABSOLUTE);
 	wxString root = base.GetPathWithSep();
 
-	wxString path = root + _T("theme/") + theme + _T("/");
-	if( wxFile::Exists(path + _T("icons.bmp")) )
+	if( wxFile::Exists(root + _T("theme/default/icons.bmp")) ||
+		wxFileName::DirExists(root + _T("mo")) )
+		return root;
+
+	return wxEmptyString;
+}
+// ----------------------------------------------------------------------------
+static wxString FindResourcePathFromParents(const wxString& baseDir)
+{
+	wxFileName dir(baseDir, wxEmptyString);
+	dir.Normalize(wxPATH_NORM_DOTS | wxPATH_NORM_ABSOLUTE);
+
+	while( true )
+	{
+		wxString path = FindResourcePath(dir.GetPath());
+		if( ! path.IsEmpty() )
+			return path;
+
+		if( dir.GetDirCount() == 0 )
+			break;
+
+		dir.RemoveLastDir();
+	}
+
+	return wxEmptyString;
+}
+// ----------------------------------------------------------------------------
+wxString GetResourcePath()
+{
+	wxString resourceDir;
+	if( wxGetEnv(_T("BBMAN_RESOURCE_DIR"), &resourceDir) )
+	{
+		wxString path = FindResourcePath(resourceDir);
+		if( ! path.IsEmpty() )
+			return path;
+	}
+
+	wxString path = FindResourcePathFromParents(
+		wxFileName(wxStandardPaths::Get().GetExecutablePath()).GetPath());
+	if( ! path.IsEmpty() )
 		return path;
 
-	path = root + _T("theme/default/");
-	if( wxFile::Exists(path + _T("icons.bmp")) )
+	path = FindResourcePath(wxStandardPaths::Get().GetResourcesDir());
+	if( ! path.IsEmpty() )
+		return path;
+
+	path = FindResourcePath(wxStandardPaths::Get().GetDataDir());
+	if( ! path.IsEmpty() )
+		return path;
+
+	path = FindResourcePathFromParents(wxGetCwd());
+	if( ! path.IsEmpty() )
 		return path;
 
 	return wxEmptyString;
 }
 // ----------------------------------------------------------------------------
-static wxString FindThemePathFromCurrentDir(const wxString& theme)
+static wxString FindThemePath(const wxString& resourceRoot, const wxString& theme)
 {
-	wxFileName dir(wxGetCwd(), wxEmptyString);
-	dir.Normalize(wxPATH_NORM_DOTS | wxPATH_NORM_ABSOLUTE);
+	if( resourceRoot.IsEmpty() )
+		return wxEmptyString;
 
-	wxFileName home(wxGetHomeDir(), wxEmptyString);
-	home.Normalize(wxPATH_NORM_DOTS | wxPATH_NORM_ABSOLUTE);
-	wxString homePath = home.GetPath();
+	wxString path = resourceRoot + _T("theme/") + theme + _T("/");
+	if( wxFile::Exists(path + _T("icons.bmp")) )
+		return path;
 
-	while( true )
-	{
-		wxString path = FindThemePath(dir.GetPath(), theme);
-		if( ! path.IsEmpty() )
-			return path;
-
-		if( dir.GetPath() == homePath || dir.GetDirCount() == 0 )
-			break;
-
-		dir.RemoveLastDir();
-	}
+	path = resourceRoot + _T("theme/default/");
+	if( wxFile::Exists(path + _T("icons.bmp")) )
+		return path;
 
 	return wxEmptyString;
 }
@@ -196,26 +235,27 @@ wxString GetThemePath()
 	wxString theme;
 	GetConfig()->Read( GetUserConfigPath(_T("/setting/theme")) , & theme , _T("default") );
 
-	wxString resourceDir;
-	if( wxGetEnv(_T("BBMAN_RESOURCE_DIR"), &resourceDir) )
-	{
-		wxString path = FindThemePath(resourceDir, theme);
-		if( ! path.IsEmpty() )
-			return path;
-	}
-
-	wxString path = FindThemePathFromCurrentDir(theme);
+	wxString path = FindThemePath(GetResourcePath(), theme);
 	if( ! path.IsEmpty() )
 		return path;
 
 	return _T("theme/default/");
 }
 // ----------------------------------------------------------------------------
+wxString GetLocalePath()
+{
+	wxString root = GetResourcePath();
+	if( ! root.IsEmpty() && wxFileName::DirExists(root + _T("mo")) )
+		return root + _T("mo/");
+
+	return _T("./mo/");
+}
+// ----------------------------------------------------------------------------
 #include <wx/dir.h>
 #include <wx/choicdlg.h>
 void ShowThemeSelector(wxWindow *parent)
 {
-	wxDir dir( wxGetCwd() + _T("/theme") );
+	wxDir dir( GetResourcePath() + _T("theme") );
 	wxString dirname;
 	wxArrayString theme_list;
 	int now_theme_id = -1;

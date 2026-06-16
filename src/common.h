@@ -65,7 +65,9 @@ wxBitmap& GetProgramIcon(int icon_id);
 void MakeBitmapMask(wxBitmap& bmp);
 void AppendMenuItemWithBitmap(wxMenu *parent, int id, const wxString& item, wxBitmap& bmp);
 // ----------------------------------------------------------------------------
+wxString GetResourcePath();
 wxString GetThemePath();
+wxString GetLocalePath();
 void ShowThemeSelector(wxWindow *parent = NULL);
 // ----------------------------------------------------------------------------
 wxString CharPtrTowxString(const char *str);

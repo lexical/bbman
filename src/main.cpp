@@ -49,13 +49,14 @@ wxLocale *locale;
 void init()
 {
 
+	wxString localePath = GetLocalePath();
 #ifdef __UNIX__
 	setlocale( LC_ALL , "" );
-	bindtextdomain( "bbman", "./mo/" );
+	bindtextdomain( "bbman", wxStringToCharPtr(localePath) );
 	textdomain( "bbman" );
 #else
 	locale = new wxLocale( wxLANGUAGE_DEFAULT );
-	locale->AddCatalogLookupPathPrefix( _T("./mo/") );
+	locale->AddCatalogLookupPathPrefix( localePath );
 	locale->AddCatalog( "bbman" );
 //	wxMessageBox( locale->GetSysName() );
 #endif
