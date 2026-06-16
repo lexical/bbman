@@ -15,6 +15,20 @@
 
 #include "scd_terminal.h"
 
+#include <string>
+
+static wxString Big5BytesToWxString(const char *bytes, size_t len)
+{
+	static wxCSConv big5_conv("BIG5");
+	wxString text(bytes, big5_conv, len);
+	if( text.IsEmpty() && len > 0 )
+	{
+		for(size_t i=0;i<len;i++)
+			text.Append(wxUniChar(static_cast<unsigned char>(bytes[i])));
+	}
+	return text;
+}
+
 // ============================================================================
 
 static bool always_highlight = false;	//有些人電腦上字體會顯的特別暗, 這個選項讓他們可以把所有字都變成高亮度
@@ -204,14 +218,15 @@ SCD_Terminal::SCD_Terminal(wxWindow *win)
 // ----------------------------------------------------------------------------
 SCD_Terminal::~SCD_Terminal()
 {
-	for(int y=0;y<row_count;y++)	delete term_data[y];
-	delete term_data;
+	for(int y=0;y<row_count;y++)	delete[] term_data[y];
+	delete[] term_data;
 }
 // ----------------------------------------------------------------------------
 void SCD_Terminal::ResetTerminal()
 {
 	m_scroll_region_top = 0;
 	m_isset_scroll_region_bottom = false;
+	application_cursor_keys = false;
 }
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
@@ -269,7 +284,7 @@ void SCD_Terminal::setColumnRow(int _c, int _r)
 
 	TerminalChar **old_term_data = term_data;
 
-	term_data = new (TerminalChar*)[_r];
+	term_data = new TerminalChar*[_r];
 	for(int i=0;i<_r;i++)
 		term_data[i] = new TerminalChar[_c];
 
@@ -286,8 +301,8 @@ void SCD_Terminal::setColumnRow(int _c, int _r)
 	//清除舊的記憶體
 	if( old_term_data )
 	{
-     	for(int y=0;y<row_count;y++)	delete old_term_data[y];
-     	delete old_term_data;
+     	for(int y=0;y<row_count;y++)	delete[] old_term_data[y];
+     	delete[] old_term_data;
 	}
 
 	col_count = _c;
@@ -308,15 +323,18 @@ void SCD_Terminal::BeginDrawing(wxDC *dc)	//避免系統因連續多次變更資料內容而造成
 		parentWindow->GetCaret()->Move(-100, -100);
 		currentDC->SetFont( GetFont() );
 	}
-
-   	currentDC->BeginDrawing();
+#if !wxCHECK_VERSION(2, 9, 0)
+	currentDC->BeginDrawing();
+#endif
 	currentDC->SetPen(*wxTRANSPARENT_PEN);	//禁止 DrawRectangle() 時用 Pen 畫邊框
 }
 // ----------------------------------------------------------------------------
 void SCD_Terminal::EndDrawing()
 {
 	if( ! getVisible() )	return;
+#if !wxCHECK_VERSION(2, 9, 0)
 	if( currentDC != NULL ) currentDC->EndDrawing();
+#endif
 	currentDC = NULL;
 	updateCaret();
 }
@@ -412,6 +430,20 @@ void SCD_Terminal::CleanLineTail()
 
 	for(int x=cur_x;x<col_count;x++)
 		term_data[cur_y][x] = defaultCharProperty;
+}
+// ----------------------------------------------------------------------------
+void SCD_Terminal::ClearWideCharAt(int _x, int _y)
+{
+	if( ! ( is_X_in_bound(_x) && is_Y_in_bound(_y) ) )	return;
+
+	TerminalChar blank = now_char_property;
+	blank.ch = ' ';
+	blank.setCharType(TerminalChar::CH_CHAR);
+
+	if( term_data[_y][_x].getCharType() == TerminalChar::CH_WORDFIRST && is_X_in_bound(_x + 1) )
+		term_data[_y][_x + 1] = blank;
+	else if( term_data[_y][_x].getCharType() == TerminalChar::CH_WORDLAST && is_X_in_bound(_x - 1) )
+		term_data[_y][_x - 1] = blank;
 }
 // ----------------------------------------------------------------------------
 void SCD_Terminal::abs_InsertChar(int _v)
@@ -606,6 +638,7 @@ wxMessageBox(str);
 			input ++;
 
 			bool has_left_quote = false;
+			bool has_question = false;
 
 			if( *input == '[' )	input++;
 			else if( *input == ']' )	//ssh/telnet server pwd
@@ -649,7 +682,7 @@ wxMessageBox(str);
 				continue;
 			}
 
-			if( *input == '?' )	input++;	//開頭的 '?' 可略過
+			if( *input == '?' )	{ has_question = true; input++; }	//開頭的 '?' 可略過
 /*
   			if( input == end )	//如果 [控制碼開頭] 不完整, 則跳出
   			{
@@ -684,6 +717,14 @@ wxMessageBox(str);
 				{
      				switch( *input )
      				{
+					case 'h' :	// set mode
+						if( has_question && param_list[0] == 1 )
+							application_cursor_keys = true;
+						break;
+					case 'l' :	// reset mode
+						if( has_question && param_list[0] == 1 )
+							application_cursor_keys = false;
+						break;
      					case 'm' :	//顏色碼
 							if(param_list[0] < 0)
 								now_char_property = TerminalChar::getDefaultCharProperty();
@@ -775,6 +816,25 @@ wxMessageBox(str);
      						if(param_list[0] >= 0)	goRight( param_list[0] );
      						else	goRight(1);
        						break;
+     					case 'G' :	// cursor horizontal absolute
+     					case '`' :	// horizontal position absolute
+						{
+							int x = (param_list[0] > 0) ? param_list[0] - 1 : 0;
+							gotoXY(x, cur_y);
+						}
+        						break;
+     					case 'd' :	// vertical position absolute
+						{
+							int y = (param_list[0] > 0) ? param_list[0] - 1 : 0;
+							gotoXY(cur_x, y);
+						}
+        						break;
+     					case 's' :	// save cursor
+						server_stored_cur_pos = wxPoint(cur_x, cur_y);
+        						break;
+     					case 'u' :	// restore cursor
+						gotoXY(server_stored_cur_pos.x, server_stored_cur_pos.y);
+        						break;
      					case 'D' :	//游標左移
      						if(param_list[0] >= 0)	goLeft( param_list[0] );
      						else	goLeft(1);
@@ -815,7 +875,6 @@ wxMessageBox(str);
     			else if( *input == '\r' )	input++;
                	else	{	input--;	break;	}
 			}
-       		goLineHead();
 
 			//由於 goDown() 有可能會 ScrollDown()
 			//每一行的行索引將會有所變動
@@ -872,6 +931,7 @@ wxMessageBox(tmp_str + _T("\n\n") + wxString(begin) );
 			int c = 8 - cur_x % 8;
 			for(int i=0;i<c;i++)
 			{
+				ClearWideCharAt(cur_x, cur_y);
 				term_data[cur_y][cur_x] = now_char_property;
 				term_data[cur_y][cur_x].ch = ' ';
 				goRight();
@@ -891,6 +951,7 @@ wxMessageBox(tmp_str + _T("\n\n") + wxString(begin) );
 				else	goDown();
 			}
 
+			ClearWideCharAt(cur_x, cur_y);
 			term_data[cur_y][cur_x] = now_char_property;
 			term_data[cur_y][cur_x].ch = *input;
 
@@ -1231,7 +1292,7 @@ void SCD_Terminal::repaintChar(int _x, int _y)
 			}
 
 			dc->SetTextForeground( now_ch.getTextColor(isSelected) );
-			dc->DrawText( wxString(str, 2), _m , _n );
+			dc->DrawText( Big5BytesToWxString(str, 2), _m , _n );
 
       		if(blunderline)
       		{
@@ -1260,7 +1321,7 @@ cv.Convert( text, str );
 */
 			dc->SetTextForeground( now_ch.getTextColor(isSelected) );
 			dc->SetClippingRegion( _m, _n, char_width, char_height );
-			dc->DrawText( wxString(str, 2), _m , _n );
+			dc->DrawText( Big5BytesToWxString(str, 2), _m , _n );
 			dc->DestroyClippingRegion();
 
 			//顯示右半部
@@ -1274,7 +1335,7 @@ cv.Convert( text, str );
 			
 			dc->SetTextForeground( next_ch.getTextColor(isLastWordSelected) );
 			dc->SetClippingRegion( _m + char_width, _n, char_width, char_height );
-			dc->DrawText( wxString(str, 2), _m , _n );
+			dc->DrawText( Big5BytesToWxString(str, 2), _m , _n );
 			dc->DestroyClippingRegion();
 
       		if( blunderline )
@@ -1624,39 +1685,45 @@ wxString SCD_Terminal::GetSelectionContent(bool withANSI)	//取得所選取的文字
 		
 	TerminalChar last_char_prop = TerminalChar::getDefaultCharProperty();
 	
-	wxString buf = wxEmptyString, newlinestr = wxEmptyString;
-	if( withANSI )		buf += _T("\x1b[m");
+	std::string raw;
+	if( withANSI )		raw.append("\x1b[m");
 	while(1)
 	{
 
-		if( _y > end_y || (_y == end_y && _x > end_x) )	break;	//檢查邊界
+		if( _y > end_y || (_y == end_y && _x > end_x) )	break;	// check boundary
 
 		if( _x == 0 && _y > start_y )
 		{
-			buf.Append(_T("\r\n"));
+			raw.append("\r\n");
 			if( withANSI && _y < row_count)
-				buf.Append( term_data[_y][_x].getANSICode() );
+			{
+				wxString ansi = term_data[_y][_x].getANSICode();
+				wxCharBuffer ansi_buf = ansi.mb_str(wxConvUTF8);
+				if( ansi_buf.data() ) raw.append(ansi_buf.data());
+			}
 		}
 
-		if( _x == col_count || term_data[_y][_x].ch == '\0' )	//如果該換行了
+		if( _x == col_count || term_data[_y][_x].ch == '\0' )
 		{	_x = 0;	_y ++;	continue;	}
 
 		if( withANSI )
 		{
 			if( ! last_char_prop.withSameProperty( term_data[_y][_x] ) )
 			{
-				buf += term_data[_y][_x].getDiffANSICode( last_char_prop );
+				wxString ansi = term_data[_y][_x].getDiffANSICode( last_char_prop );
+				wxCharBuffer ansi_buf = ansi.mb_str(wxConvUTF8);
+				if( ansi_buf.data() ) raw.append(ansi_buf.data());
 				last_char_prop = term_data[_y][_x];
 			}
 		}
 				
-		buf.Append( term_data[_y][_x].ch );
+		raw.push_back( term_data[_y][_x].ch );
 		_x++;
 
 	}
-	if( withANSI )		buf += _T("\x1b[m");
+	if( withANSI )		raw.append("\x1b[m");
 
-	return buf;
+	return Big5BytesToWxString(raw.data(), raw.size());
 }    
 
 #ifdef __WXGTK__
@@ -1727,7 +1794,7 @@ void SCD_Terminal::OpenSelectionAsHyperlink()
 	}
 	link[i] = '\0';
 	OpenHyperlink(link);
-	delete link;
+	delete[] link;
 }
 // ----------------------------------------------------------------------------
 inline bool isEnglishChar(char c)

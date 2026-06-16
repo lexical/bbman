@@ -156,8 +156,10 @@ public:
 
 private:
 	wxPoint server_stored_cur_pos;
+	bool application_cursor_keys;
 
 public:
+	bool IsApplicationCursorKeys() const { return application_cursor_keys; }
 	SCD_Terminal(wxWindow *win);
 	~SCD_Terminal();
 
@@ -222,6 +224,7 @@ public:
  	void cleanScreen(int type = 2);			//清除螢幕
 	void CleanLineTail();		//清除行尾
 	void CleanLine(int _y);		//清除整行
+	void ClearWideCharAt(int _x, int _y);
 
 	void abs_InsertChar(int _v = 1);
 	void abs_DeleteChar(int _v = 1);

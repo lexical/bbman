@@ -25,7 +25,7 @@
 // ============================================================================
 
 //為了讓 SCD_Telnet 能接收 SocketEvent , 所以必須繼承 wxEvtHandler
-class SCD_Telnet : public SCD_Terminal , protected wxEvtHandler
+class SCD_Telnet : public SCD_Terminal , public wxEvtHandler
 {
 private:
 	wxString ip, name;

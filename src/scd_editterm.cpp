@@ -36,7 +36,7 @@ bool SCD_EditTerm::set_line_capacity(int _dc) //砞﹚程甧︽计
 	if( _dc < row_count )	return false;
 
 	TerminalChar **tmp_lines = term_data;
-	term_data = new (TerminalChar*)[_dc];
+	term_data = new TerminalChar*[_dc];
 	if(term_data==NULL)
 	{
 		term_data = tmp_lines;
@@ -44,7 +44,7 @@ bool SCD_EditTerm::set_line_capacity(int _dc) //砞﹚程甧︽计
 	}
 
 	for(int i=0;i<row_count;i++) term_data[i] = tmp_lines[i];
-	delete tmp_lines;
+	delete[] tmp_lines;
 
 	return true;
 }
@@ -436,7 +436,7 @@ void SCD_EditTerm::Paste(char *txt, bool withANSI)
 		for(int i=0;i<buf_len;i++)	term_data[ay][ax+i] = buf[i];
 	}
 
-	if(buf)	delete buf;
+	if(buf)	delete[] buf;
 	free(txt);
 
 	repaint();
@@ -540,8 +540,8 @@ void SCD_EditTerm::OnKeyDown(wxKeyEvent& event)
     		    	if( isCurrentAWord() )	goRight();
               		goRight();
                 	break;
-				case 312 :	keyPageUp();	break;	//page up
-				case 313 :	keyPageDown();	break;	//page down
+				case WXK_PAGEUP :	keyPageUp();	break;	//page up
+				case WXK_PAGEDOWN :	keyPageDown();	break;	//page down
 
 				default :
 //wxMessageBox(wxString::Format("%d", key) );

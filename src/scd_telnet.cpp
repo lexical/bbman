@@ -19,7 +19,7 @@
 bool debugging = false;
 // ============================================================================
 
-BEGIN_EVENT_TABLE(SCD_Telnet, SCD_Telnet)
+BEGIN_EVENT_TABLE(SCD_Telnet, wxEvtHandler)
 	EVT_SOCKET(0 , SCD_Telnet::OnSocketEvent)
 END_EVENT_TABLE()
 
@@ -82,7 +82,7 @@ void SCD_Telnet::CloseSocket()
 // ----------------------------------------------------------------------------
 inline void SCD_Telnet::DestroySocket()
 {
-	CloseSocket();
+	// Destruction must not synthesize wxSOCKET_LOST events back into this handler.
 	//不可以直接 delete sock
  	//因為 sock.Destroy 可以防止 sock 在 destroy 之後又接收到 socket event
 	sock.Destroy();
@@ -356,16 +356,16 @@ void SCD_Telnet::keyEnter()
 }
 // ----------------------------------------------------------------------------
 void SCD_Telnet::keyUp()
-{	UserSend("\x1b\x5b\x41");	}
+{	UserSend(IsApplicationCursorKeys() ? "\x1bOA" : "\x1b[A");	}
 // ----------------------------------------------------------------------------
 void SCD_Telnet::keyDown()
-{	UserSend("\x1b\x5b\x42");	}
+{	UserSend(IsApplicationCursorKeys() ? "\x1bOB" : "\x1b[B");	}
 // ----------------------------------------------------------------------------
 void SCD_Telnet::keyLeft()
-{	UserSend("\x1b\x5b\x44");	}
+{	UserSend(IsApplicationCursorKeys() ? "\x1bOD" : "\x1b[D");	}
 // ----------------------------------------------------------------------------
 void SCD_Telnet::keyRight()
-{	UserSend("\x1b\x5b\x43");	}
+{	UserSend(IsApplicationCursorKeys() ? "\x1bOC" : "\x1b[C");	}
 // ----------------------------------------------------------------------------
 void SCD_Telnet::keyPageUp()
 {	UserSend("\x1b\x5b\x35\x7e");	}
@@ -475,23 +475,39 @@ void SCD_Telnet::UserQuery_OnChar(char ch)
 // ----------------------------------------------------------------------------
 void SCD_Telnet::OnChar(wxKeyEvent& event)
 {
-	char key = event.GetKeyCode();
+	int key = event.GetKeyCode();
+#if wxCHECK_VERSION(2, 9, 0)
+	int unicode_key = event.GetUnicodeKey();
+	if( unicode_key != WXK_NONE )
+		key = unicode_key;
+#endif
 
 	if(IsUserQuerying())
 	{
-		if( ! event.ShiftDown() ) key = tolower(key);
-		UserQuery_OnChar(key);
+		if( key < 0x80 && ! event.ShiftDown() ) key = tolower(key);
+		if( key < 0x100 ) UserQuery_OnChar((char)key);
 		return;
 	}
 
 	UnIdleUser();
 
 	if( event.AltDown() )	event.Skip();
-	else
+	else if( key < 0x80 )
 	{
 //wxMessageBox( wxString::Format("OnChar : %%%02x -> %c", (unsigned int)key, (char)key) );
-		UserSend( &key, 1 );
+		char ch = (char)key;
+		UserSend( &ch, 1 );
 	}
+#if wxCHECK_VERSION(2, 9, 0)
+	else if( unicode_key != WXK_NONE )
+	{
+		static wxCSConv big5_conv("BIG5");
+		wxString text((wxChar)unicode_key);
+		wxCharBuffer buf = text.mb_str(big5_conv);
+		if( buf.data() != NULL )
+			UserSend( const_cast<char*>(buf.data()) );
+	}
+#endif
 }
 // ----------------------------------------------------------------------------
 void SCD_Telnet::OnKeyDown(wxKeyEvent& event)
@@ -576,7 +592,6 @@ void SCD_Telnet::OnKeyDown(wxKeyEvent& event)
 				case WXK_END :
 				case WXK_NUMPAD_END :	keyEnd();	break;
 				case WXK_INSERT :	output = "\x1b\x40";	break;
-				case WXK_NUMPAD_PRIOR :
 				case WXK_NUMPAD_DECIMAL :	output = ".";	break;	//鍵盤右邊, 數字鍵附近的 [小數點] 鍵
 
 				case WXK_UP :
@@ -594,13 +609,13 @@ void SCD_Telnet::OnKeyDown(wxKeyEvent& event)
 					if( isMultibyteWordDecetionEnabled() && isCurrentAWord() )	keyRight();
         			break;
 
-				case 312 :	keyPageUp();	break;	//page up
-				case 313 :	keyPageDown();	break;	//page down
+				case WXK_PAGEUP :	keyPageUp();	break;	//page up
+				case WXK_PAGEDOWN :	keyPageDown();	break;	//page down
 				case WXK_ESCAPE :	output = "\x1b";	break;
 
 				default :
 //wxMessageBox(wxString::Format("%d", key) );
-					if( key < 0xff )	event.Skip();	//for 雙位元字
+					event.Skip();	//for 雙位元字
 					break;
 			}
 		}
@@ -626,7 +641,7 @@ void SCD_Telnet::OnSocketEvent( wxSocketEvent &event )
 		}
 
 //     	while(1)
-		for(int kk=0;;kk++)
+		for(int kk=0; kk<16; kk++)
 		{
 			int buf_len = SocketRead(buf, 30000);
 			if(buf_len == 0)	break;
@@ -634,9 +649,12 @@ if(debugging)
 {
 wxString tmp_str;
 for(int i=0;i<buf_len;i++)
- tmp_str += wxString::Format("%02x(%c) ", buf[i] , isalnum(buf[i])?buf[i]:' ');
-buf[buf_len] = '\0';
-wxMessageBox(tmp_str + _T("\n\n") + wxString(buf) );
+{
+ unsigned char ch = buf[i];
+ wxUniChar printable((ch < 0x80 && isalnum(ch)) ? ch : ' ');
+ tmp_str += wxString::Format("%02x(%c) ", ch, printable);
+}
+wxMessageBox(tmp_str);
 }
 
 			unsigned char *e, *end;
@@ -644,7 +662,7 @@ wxMessageBox(tmp_str + _T("\n\n") + wxString(buf) );
 			end = buf + buf_len;
 			while( e < end )	//先檢查看看 buf 裡面有沒有 IAC (0xff)
 			{
-				if( *e == 0xff )	//IAC ( need to negotiation )
+				if( sock.GetType() == SOCK_TELNET && *e == 0xff )	//IAC ( need to negotiation )
    				{
 					SocketUnread( e , end - e );
       				break;
@@ -661,6 +679,7 @@ wxMessageBox(tmp_str + _T("\n\n") + wxString(buf) );
 			{
 				if( e < end && *e == 0xff );	//這行必須要加，不然遇到某些資料會進入無限迴圈 ( 例如資料 "\x1b[qqq\xff" )
 				else SocketUnread( e - unread_data_len , unread_data_len );
+				break;
 			}
 
 			if( scroll_count > 1 )
@@ -673,7 +692,7 @@ for(unsigned char *r=buf;r<e;r++)	str += wxString::Format("%c", *r);
 wxMessageBox(str);
 */
 
-			if( e < end && *e == 0xff )	//如果 server 要求 negotiation
+			if( sock.GetType() == SOCK_TELNET && e < end && *e == 0xff )	// server telnet negotiation
 				negotiation();
 			else
 			{
@@ -685,8 +704,8 @@ wxMessageBox(str);
 					if( ! username.IsEmpty() )
 					{
 						keyUp();	keyUp(); 	//兩次 [Up]
-    	  				UserSend( (char*)( username.c_str()) ); keyEnter();
-	      				UserSend( (char*)( password.c_str()) ); keyEnter();
+    	  				UserSend( wxStringToCharPtr(username) ); keyEnter();
+	      				UserSend( wxStringToCharPtr(password) ); keyEnter();
 					}
 					if( ! message.IsEmpty() )	UserSend_spacial( message );
 
@@ -755,7 +774,7 @@ wxMessageBox(str);
 
 	//也讓 parent window 處理這個 socket event
 	event.m_clientData = this;	//讓 EvtHandler 可以透過 e.GetClientData() 取得 this
-	getParentWindow()->ProcessEvent(event);
+	wxPostEvent(getParentWindow(), event);
 }
 
 void SCD_Telnet::close()
@@ -813,26 +832,13 @@ bool SCD_Telnet::connect(SiteInfo& _si)
 
 //	_si.protocol = SOCK_SSH;
 
-#ifndef BBMAN_NO_SSH
-	if( _si.protocol == SOCK_SSH )
+if( _si.protocol == SOCK_SSH )
 	{
 		sock.SetType( SOCK_SSH );
 		parse("Connecting ... ");
 	}
 	else
 		sock.SetType( SOCK_TELNET );
-#else
-	if( _si.protocol == SOCK_SSH )
-	{
-		parse("\x1b[1;33m");
-		parse( wxStringToCharPtr(gettext("Sorry, this BBMan is a no-SSH version.\nIf you want to connect SSH server, Please download the full version of BBMan.")) );
-		parse("\x1b[0m");
-//		CloseSocket();
-		return false;
-	}
-	else
-		sock.SetType( SOCK_TELNET );
-#endif
 
 
 /*
