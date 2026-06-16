@@ -777,7 +777,8 @@ bool frm_BBSList::LoadSiteList(wxTreeItemId  rootId)
 		}
 	}
 	
-	tree.Expand( rootId );
+	if( !tree.HasFlag(wxTR_HIDE_ROOT) )
+		tree.Expand( rootId );
 	
 	fclose(fp);
 	return true;
