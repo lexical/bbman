@@ -557,11 +557,8 @@ void SCD_Telnet::OnKeyDown(wxKeyEvent& event)
 			keyControl(key);
 			return;
 		}
-		if( ! event.ShiftDown() )	key = tolower(key);
-		UserSend( (char*)&key, 1 );
-#else
-		event.Skip();	//交給 OnChar event 處理
 #endif
+		event.Skip();	// let OnChar handle keyboard layout, Shift and IME text
 //wxMessageBox(wxString::Format("%d", key) );
 	}
 	else
