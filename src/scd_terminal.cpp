@@ -551,26 +551,12 @@ int SCD_Terminal::getLineLength(int _line)
 
 bool SCD_Terminal::isWord(char first, char last)
 {
-//	if(  (first>='\xa0' && first<='\xfe') &&
-	if(  (first>='\xa0' && first<='\xf9') &&
- 		( (last>='\x40' && last<='\x7e') || (last>'\xa0' && last<='\xfe') )  );
-	else return false;
+	unsigned char first_ch = (unsigned char)first;
+	unsigned char last_ch = (unsigned char)last;
 
-/*
-#if defined(__WXGTK__)	//GTK 下某些 Big5 保留區會造成 crash 所以要排除這些情形
-
-if( (unsigned char)first == 0x81 && (unsigned char)last >= 0x40 )	return false;	//使用者造字區
-if( (unsigned char)first >= 0x82 && (unsigned char)first <= 0xa0 )	return false;	//使用者造字區
-if( (unsigned char)first == 0xa3 && (unsigned char)last >= 0xc0 )	return false;	//控制符號
-if( (unsigned char)first == 0xc7 && (unsigned char)last >= 0xf3 )	return false;	//保留
-if( (unsigned char)first == 0xc8 )	return false;	//保留
-if( (unsigned char)first == 0xfa && (unsigned char)last >= 0x40 )	return false;	//使用者造字及及新常用字
-if( (unsigned char)first >= 0xfb )	return false;	//使用者造字及及新常用字
-
-#endif
-*/
-	return true;
-
+	return first_ch >= 0xa0 && first_ch <= 0xf9 &&
+		( (last_ch >= 0x40 && last_ch <= 0x7e) ||
+		  (last_ch > 0xa0 && last_ch < 0xfe) );
 }
 // ----------------------------------------------------------------------------
 bool SCD_Terminal::isCurrentAWord()	//游標目前所處位置是否為全形字的第一個 byte
@@ -691,27 +677,35 @@ wxMessageBox(str);
 			}
 */
 
-			int param_count , param_list[6];	//用來記錄控制碼的變數
+			const int param_list_size = 32;
+			int param_count, param_list[param_list_size];
 			param_count = 0;
-			param_list[0] = -1;
-			param_list[1] = -1;
+			for( int i=0; i<param_list_size; i++ )
+				param_list[i] = -1;
 
-  			while( input != end )	//開始分析控制碼
+			while( input != end )	// parse control code
   			{
-				if( isdigit( *input ) )
+				if( isdigit( (unsigned char)*input ) )
 				{
-					if( param_list[ param_count ] < 0 )
-         				param_list[ param_count ] = 0;
+					if( param_count < param_list_size - 1 )
+					{
+						if( param_list[ param_count ] < 0 )
+							param_list[ param_count ] = 0;
 
-					param_list[ param_count ] = param_list[ param_count ] * 10 + ( *input - '0' );
+						if( param_list[ param_count ] < 1000000 )
+							param_list[ param_count ] = param_list[ param_count ] * 10 + ( *input - '0' );
+					}
 				}
 				else if( *input == ';' )
 				{
-					if( param_list[ param_count ] < 0 )
-						param_list[param_count] = 0;
+					if( param_count < param_list_size - 1 )
+					{
+						if( param_list[ param_count ] < 0 )
+							param_list[param_count] = 0;
 
-					if(param_count < 5)	param_count ++;
-					param_list[ param_count + 1 ] = -1;
+						param_count ++;
+						param_list[ param_count ] = -1;
+					}
 				}
   				else //if( isalpha( *input ) )		//控制碼結尾
 				{
