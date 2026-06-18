@@ -92,6 +92,7 @@ void MakeBitmapMask(wxBitmap& bmp)
 #include <wx/file.h>
 #include <wx/filename.h>
 #include <wx/stdpaths.h>
+#include <wx/dir.h>
 void init_Icons()
 {
 	int i=0, k;
@@ -242,16 +243,78 @@ wxString GetThemePath()
 	return _T("theme/default/");
 }
 // ----------------------------------------------------------------------------
+static bool IsLocaleRoot(const wxString& root)
+{
+	if( root.IsEmpty() || ! wxFileName::DirExists(root) )
+		return false;
+
+	wxDir dir(root);
+	wxString lang;
+	bool ok = dir.GetFirst(&lang, wxEmptyString, wxDIR_DIRS);
+	while( ok )
+	{
+		if( wxFile::Exists(root + lang + _T("/LC_MESSAGES/bbman.mo")) )
+			return true;
+		ok = dir.GetNext(&lang);
+	}
+
+	return false;
+}
+// ----------------------------------------------------------------------------
+static wxString FindLocalePath(const wxString& baseDir)
+{
+	if( baseDir.IsEmpty() )
+		return wxEmptyString;
+
+	wxFileName base(baseDir, wxEmptyString);
+	base.Normalize(wxPATH_NORM_DOTS | wxPATH_NORM_ABSOLUTE);
+	wxString root = base.GetPathWithSep();
+
+	if( IsLocaleRoot(root) )
+		return root;
+
+	return wxEmptyString;
+}
+// ----------------------------------------------------------------------------
 wxString GetLocalePath()
 {
+	wxString localeDir;
+	if( wxGetEnv(_T("BBMAN_LOCALE_DIR"), &localeDir) )
+	{
+		wxString path = FindLocalePath(localeDir);
+		if( ! path.IsEmpty() )
+			return path;
+	}
+
 	wxString root = GetResourcePath();
-	if( ! root.IsEmpty() && wxFileName::DirExists(root + _T("mo")) )
-		return root + _T("mo/");
+	if( ! root.IsEmpty() )
+	{
+		wxString path = FindLocalePath(root + _T("mo"));
+		if( ! path.IsEmpty() )
+			return path;
+	}
+
+	wxFileName dataDir(wxStandardPaths::Get().GetDataDir(), wxEmptyString);
+	dataDir.Normalize(wxPATH_NORM_DOTS | wxPATH_NORM_ABSOLUTE);
+	if( dataDir.GetDirCount() > 0 )
+	{
+		dataDir.RemoveLastDir();
+		wxString path = FindLocalePath(dataDir.GetPathWithSep() + _T("locale"));
+		if( ! path.IsEmpty() )
+			return path;
+	}
+
+	wxString path = FindLocalePath(_T("/usr/local/share/locale"));
+	if( ! path.IsEmpty() )
+		return path;
+
+	path = FindLocalePath(_T("/usr/share/locale"));
+	if( ! path.IsEmpty() )
+		return path;
 
 	return _T("./mo/");
 }
 // ----------------------------------------------------------------------------
-#include <wx/dir.h>
 #include <wx/choicdlg.h>
 void ShowThemeSelector(wxWindow *parent)
 {

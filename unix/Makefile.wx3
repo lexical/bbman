@@ -7,12 +7,27 @@ CXX := g++
 CC := gcc
 WX_CXXFLAGS := $(shell wx-config --cxxflags)
 WX_LIBS := $(shell wx-config --libs)
+PKG_CONFIG ?= pkg-config
+LIBSECRET_CFLAGS := $(shell $(PKG_CONFIG) --cflags libsecret-1)
+LIBSECRET_LIBS := $(shell $(PKG_CONFIG) --libs libsecret-1)
 
-CPPFLAGS := -DBBMAN_NO_SSH -I../src
+PREFIX ?= /usr/local
+bindir ?= $(PREFIX)/bin
+datadir ?= $(PREFIX)/share
+appdatadir ?= $(datadir)/bbman
+desktopdir ?= $(datadir)/applications
+icondir ?= $(datadir)/icons/hicolor
+localedir ?= $(datadir)/locale
+INSTALL ?= install
+INSTALL_PROGRAM ?= $(INSTALL) -m 755
+INSTALL_DATA ?= $(INSTALL) -m 644
+INSTALL_DIR ?= $(INSTALL) -d
+
+CPPFLAGS := -DBBMAN_NO_SSH -DHAVE_LIBSECRET $(LIBSECRET_CFLAGS) -I../src
 CXXFLAGS := -g -O0 -std=gnu++17 -fno-rtti -fno-exceptions -Wall -Wextra
 CFLAGS := -std=gnu11 -Wall -Wextra
 LDFLAGS :=
-LDLIBS := $(WX_LIBS) -lutil
+LDLIBS := $(WX_LIBS) $(LIBSECRET_LIBS) -lutil
 
 COMMON_OBJ := \
 	obj/scd_terminal.o \
@@ -33,9 +48,12 @@ COMMON_OBJ := \
 	obj/scd_socket.o \
 	obj/scd_pty_ssh.o
 
-.PHONY: all clean
+.PHONY: all check-deps clean install
 
-all: $(BIN)
+all: check-deps $(BIN)
+
+check-deps:
+	@$(PKG_CONFIG) --exists libsecret-1 || { echo "libsecret-1 development files are required"; exit 1; }
 
 obj:
 	mkdir -p obj
@@ -48,3 +66,22 @@ obj/%.o: ../src/%.cpp | obj
 
 clean:
 	rm -f $(COMMON_OBJ) $(BIN)
+
+install: check-deps $(BIN)
+	$(INSTALL_DIR) $(DESTDIR)$(bindir)
+	$(INSTALL_PROGRAM) $(BIN) $(DESTDIR)$(bindir)/$(PROG)
+	$(INSTALL_DIR) $(DESTDIR)$(appdatadir)
+	rm -rf $(DESTDIR)$(appdatadir)/theme
+	tar --exclude=CVS -C .. -cf - theme | tar -C $(DESTDIR)$(appdatadir) -xf -
+	$(INSTALL_DIR) $(DESTDIR)$(desktopdir)
+	$(INSTALL_DATA) ../data/bbman.desktop $(DESTDIR)$(desktopdir)/bbman.desktop
+	$(INSTALL_DIR) $(DESTDIR)$(icondir)/16x16/apps $(DESTDIR)$(icondir)/32x32/apps
+	$(INSTALL_DATA) ../src/icon/bbman_16.xpm $(DESTDIR)$(icondir)/16x16/apps/bbman.xpm
+	$(INSTALL_DATA) ../src/icon/bbman_32.xpm $(DESTDIR)$(icondir)/32x32/apps/bbman.xpm
+	for langdir in ../mo/*; do \
+		if test -f "$$langdir/LC_MESSAGES/bbman.mo"; then \
+			lang=$$(basename "$$langdir"); \
+			$(INSTALL_DIR) "$(DESTDIR)$(localedir)/$$lang/LC_MESSAGES"; \
+			$(INSTALL_DATA) "$$langdir/LC_MESSAGES/bbman.mo" "$(DESTDIR)$(localedir)/$$lang/LC_MESSAGES/bbman.mo"; \
+		fi; \
+	done

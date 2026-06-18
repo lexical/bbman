@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=BBMan
+Comment=BBS terminal client
+Exec=bbman-wx3
+Icon=bbman
+Terminal=false
+Categories=System;TerminalEmulator;
