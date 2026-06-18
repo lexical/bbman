@@ -5,9 +5,9 @@ PROG = bbman
 SRCDIR = /root/BBMan-src
 BIN  = obj/$(PROG)
 
-INCS = -I../src/ -I../src/libssh/ -I../src/libssh/include/libssh/ -I$(SRCDIR)/src/libssh/include/ -I/usr/local/include/
+INCS = -I../src/ -I../legacy/ssh-libssh/ -I../legacy/ssh-libssh/libssh/ -I../legacy/ssh-libssh/libssh/include/libssh/ -I$(SRCDIR)/legacy/ssh-libssh/libssh/include/ -I/usr/local/include/
 #INCS = -I../src/ -I/usr/local/include/
-LIBS = `wxgtk2-2.4-config --libs` -L../src/libssh/libssh -lssl -lz -lcrypto
+LIBS = `wxgtk2-2.4-config --libs` -L../legacy/ssh-libssh/libssh/libssh -lssl -lz -lcrypto
 #LIBS = `wxgtk2-2.4-config --libs`
 
 CPP  = g++
@@ -84,74 +84,74 @@ obj/bookmark.o: ../src/bookmark.cpp
 obj/telnet_panel.o: ../src/telnet_panel.cpp
 	$(WXCPP) -c ../src/telnet_panel.cpp -o obj/telnet_panel.o $(CXXFLAGS)
 
-obj/auth.o: ../src/libssh/libssh/auth.c
-	$(CC) -c ../src/libssh/libssh/auth.c -o obj/auth.o $(CFLAGS)
+obj/auth.o: ../legacy/ssh-libssh/libssh/libssh/auth.c
+	$(CC) -c ../legacy/ssh-libssh/libssh/libssh/auth.c -o obj/auth.o $(CFLAGS)
 
-obj/base64.o: ../src/libssh/libssh/base64.c
-	$(CC) -c ../src/libssh/libssh/base64.c -o obj/base64.o $(CFLAGS)
+obj/base64.o: ../legacy/ssh-libssh/libssh/libssh/base64.c
+	$(CC) -c ../legacy/ssh-libssh/libssh/libssh/base64.c -o obj/base64.o $(CFLAGS)
 
-obj/buffer.o: ../src/libssh/libssh/buffer.c
-	$(CC) -c ../src/libssh/libssh/buffer.c -o obj/buffer.o $(CFLAGS)
+obj/buffer.o: ../legacy/ssh-libssh/libssh/libssh/buffer.c
+	$(CC) -c ../legacy/ssh-libssh/libssh/libssh/buffer.c -o obj/buffer.o $(CFLAGS)
 
-obj/channels.o: ../src/libssh/libssh/channels.c
-	$(CC) -c ../src/libssh/libssh/channels.c -o obj/channels.o $(CFLAGS)
+obj/channels.o: ../legacy/ssh-libssh/libssh/libssh/channels.c
+	$(CC) -c ../legacy/ssh-libssh/libssh/libssh/channels.c -o obj/channels.o $(CFLAGS)
 
-obj/client.o: ../src/libssh/libssh/client.c
-	$(CC) -c ../src/libssh/libssh/client.c -o obj/client.o $(CFLAGS)
+obj/client.o: ../legacy/ssh-libssh/libssh/libssh/client.c
+	$(CC) -c ../legacy/ssh-libssh/libssh/libssh/client.c -o obj/client.o $(CFLAGS)
 
-obj/connect.o: ../src/libssh/libssh/connect.c
-	$(CC) -c ../src/libssh/libssh/connect.c -o obj/connect.o $(CFLAGS)
+obj/connect.o: ../legacy/ssh-libssh/libssh/libssh/connect.c
+	$(CC) -c ../legacy/ssh-libssh/libssh/libssh/connect.c -o obj/connect.o $(CFLAGS)
 
-obj/crypt.o: ../src/libssh/libssh/crypt.c
-	$(CC) -c ../src/libssh/libssh/crypt.c -o obj/crypt.o $(CFLAGS)
+obj/crypt.o: ../legacy/ssh-libssh/libssh/libssh/crypt.c
+	$(CC) -c ../legacy/ssh-libssh/libssh/libssh/crypt.c -o obj/crypt.o $(CFLAGS)
 
-obj/dh.o: ../src/libssh/libssh/dh.c
-	$(CC) -c ../src/libssh/libssh/dh.c -o obj/dh.o $(CFLAGS)
+obj/dh.o: ../legacy/ssh-libssh/libssh/libssh/dh.c
+	$(CC) -c ../legacy/ssh-libssh/libssh/libssh/dh.c -o obj/dh.o $(CFLAGS)
 
-obj/error.o: ../src/libssh/libssh/error.c
-	$(CC) -c ../src/libssh/libssh/error.c -o obj/error.o $(CFLAGS)
+obj/error.o: ../legacy/ssh-libssh/libssh/libssh/error.c
+	$(CC) -c ../legacy/ssh-libssh/libssh/libssh/error.c -o obj/error.o $(CFLAGS)
 
-obj/gzip.o: ../src/libssh/libssh/gzip.c
-	$(CC) -c ../src/libssh/libssh/gzip.c -o obj/gzip.o $(CFLAGS)
+obj/gzip.o: ../legacy/ssh-libssh/libssh/libssh/gzip.c
+	$(CC) -c ../legacy/ssh-libssh/libssh/libssh/gzip.c -o obj/gzip.o $(CFLAGS)
 
-obj/kex.o: ../src/libssh/libssh/kex.c
-	$(CC) -c ../src/libssh/libssh/kex.c -o obj/kex.o $(CFLAGS)
+obj/kex.o: ../legacy/ssh-libssh/libssh/libssh/kex.c
+	$(CC) -c ../legacy/ssh-libssh/libssh/libssh/kex.c -o obj/kex.o $(CFLAGS)
 
-obj/keyfiles.o: ../src/libssh/libssh/keyfiles.c
-	$(CC) -c ../src/libssh/libssh/keyfiles.c -o obj/keyfiles.o $(CFLAGS)
+obj/keyfiles.o: ../legacy/ssh-libssh/libssh/libssh/keyfiles.c
+	$(CC) -c ../legacy/ssh-libssh/libssh/libssh/keyfiles.c -o obj/keyfiles.o $(CFLAGS)
 
-obj/keys.o: ../src/libssh/libssh/keys.c
-	$(CC) -c ../src/libssh/libssh/keys.c -o obj/keys.o $(CFLAGS)
+obj/keys.o: ../legacy/ssh-libssh/libssh/libssh/keys.c
+	$(CC) -c ../legacy/ssh-libssh/libssh/libssh/keys.c -o obj/keys.o $(CFLAGS)
 
-obj/misc.o: ../src/libssh/libssh/misc.c
-	$(CC) -c ../src/libssh/libssh/misc.c -o obj/misc.o $(CFLAGS)
+obj/misc.o: ../legacy/ssh-libssh/libssh/libssh/misc.c
+	$(CC) -c ../legacy/ssh-libssh/libssh/libssh/misc.c -o obj/misc.o $(CFLAGS)
 
-obj/options.o: ../src/libssh/libssh/options.c
-	$(CC) -c ../src/libssh/libssh/options.c -o obj/options.o $(CFLAGS)
+obj/options.o: ../legacy/ssh-libssh/libssh/libssh/options.c
+	$(CC) -c ../legacy/ssh-libssh/libssh/libssh/options.c -o obj/options.o $(CFLAGS)
 
-obj/packet.o: ../src/libssh/libssh/packet.c
-	$(CC) -c ../src/libssh/libssh/packet.c -o obj/packet.o $(CFLAGS)
+obj/packet.o: ../legacy/ssh-libssh/libssh/libssh/packet.c
+	$(CC) -c ../legacy/ssh-libssh/libssh/libssh/packet.c -o obj/packet.o $(CFLAGS)
 
-obj/sftp.o: ../src/libssh/libssh/sftp.c
-	$(CC) -c ../src/libssh/libssh/sftp.c -o obj/sftp.o $(CFLAGS)
+obj/sftp.o: ../legacy/ssh-libssh/libssh/libssh/sftp.c
+	$(CC) -c ../legacy/ssh-libssh/libssh/libssh/sftp.c -o obj/sftp.o $(CFLAGS)
 
-obj/string.o: ../src/libssh/libssh/string.c
-	$(CC) -c ../src/libssh/libssh/string.c -o obj/string.o $(CFLAGS)
+obj/string.o: ../legacy/ssh-libssh/libssh/libssh/string.c
+	$(CC) -c ../legacy/ssh-libssh/libssh/libssh/string.c -o obj/string.o $(CFLAGS)
 
-obj/wrapper.o: ../src/libssh/libssh/wrapper.c
-	$(CC) -c ../src/libssh/libssh/wrapper.c -o obj/wrapper.o $(CFLAGS)
+obj/wrapper.o: ../legacy/ssh-libssh/libssh/libssh/wrapper.c
+	$(CC) -c ../legacy/ssh-libssh/libssh/libssh/wrapper.c -o obj/wrapper.o $(CFLAGS)
 
-obj/scd_wxssh.o: ../src/scd_wxssh/scd_wxssh.cpp
-	$(WXCPP) -c ../src/scd_wxssh/scd_wxssh.cpp -o obj/scd_wxssh.o $(CXXFLAGS)
+obj/scd_wxssh.o: ../legacy/ssh-libssh/scd_wxssh/scd_wxssh.cpp
+	$(WXCPP) -c ../legacy/ssh-libssh/scd_wxssh/scd_wxssh.cpp -o obj/scd_wxssh.o $(CXXFLAGS)
 
 obj/scd_socket.o: ../src/scd_socket.cpp
 	$(WXCPP) -c ../src/scd_socket.cpp -o obj/scd_socket.o $(CXXFLAGS)
 
-obj/scd_wxsftp.o: ../src/scd_wxssh/scd_wxsftp.cpp
-	$(WXCPP) -c ../src/scd_wxssh/scd_wxsftp.cpp -o obj/scd_wxsftp.o $(CXXFLAGS)
+obj/scd_wxsftp.o: ../legacy/ssh-libssh/scd_wxssh/scd_wxsftp.cpp
+	$(WXCPP) -c ../legacy/ssh-libssh/scd_wxssh/scd_wxsftp.cpp -o obj/scd_wxsftp.o $(CXXFLAGS)
 
-obj/frm_sftp.o: ../src/frm_sftp.cpp
-	$(WXCPP) -c ../src/frm_sftp.cpp -o obj/frm_sftp.o $(CXXFLAGS)
+obj/frm_sftp.o: ../legacy/ssh-libssh/frm_sftp.cpp
+	$(WXCPP) -c ../legacy/ssh-libssh/frm_sftp.cpp -o obj/frm_sftp.o $(CXXFLAGS)
 
 #BBMan_private.res: BBMan_private.rc 
 #	$(WINDRES) -i BBMan_private.rc -I rc -o BBMan_private.res -O coff  --include-dir D:/Dev-Cpp/include

@@ -16,7 +16,9 @@
 
 #include "login.h"
 #include "bookmark.h"
+#ifndef BBMAN_NO_SSH
 #include "frm_sftp.h"
+#endif
 
 enum { ICON_CLOSE, ICON_CONNECTING, ICON_CONNECTED, ICON_MESSAGE };
 
