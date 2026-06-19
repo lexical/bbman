@@ -12,6 +12,7 @@
 #include <pty.h>
 #include <sys/ioctl.h>
 #include <sys/wait.h>
+#include <cstring>
 #include <unistd.h>
 
 SCD_PtySSH::SCD_PtySSH()
@@ -262,4 +263,16 @@ void SCD_PtySSH::Unread(const void *buffer, wxUint32 nbytes)
 wxUint32 SCD_PtySSH::LastCount()
 {
 	return last_count;
+}
+
+void SCD_PtySSH::SetWindowSize(int cols, int rows)
+{
+	if( master_fd < 0 || cols <= 0 || rows <= 0 )
+		return;
+
+	struct winsize size;
+	memset(&size, 0, sizeof(size));
+	size.ws_col = cols;
+	size.ws_row = rows;
+	ioctl(master_fd, TIOCSWINSZ, &size);
 }

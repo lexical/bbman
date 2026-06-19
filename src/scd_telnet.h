@@ -77,6 +77,7 @@ public:
 				, wxString _user = wxEmptyString , wxString _passwd = wxEmptyString , wxString _message = wxEmptyString );
 	bool connect(SiteInfo& si);
 	bool reconnect();
+	const SiteInfo& getSiteInfo() const { return site_info; }
 	void close();
 	inline bool isUserClosed()	{	return user_closed;	}
 

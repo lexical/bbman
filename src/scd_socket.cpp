@@ -203,6 +203,17 @@ wxUint32 SCD_Socket::LastCount()
 	else return 0;
 }
 // ----------------------------------------------------------------------------
+void SCD_Socket::SetWindowSize(int cols, int rows)
+{
+#ifdef BBMAN_NO_SSH
+	if( m_type == SOCK_SSH )
+		ssh_sock->SetWindowSize(cols, rows);
+#else
+	wxUnusedVar(cols);
+	wxUnusedVar(rows);
+#endif
+}
+// ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
 void SCD_Socket::SetEventHandler(wxEvtHandler& handler, int id)

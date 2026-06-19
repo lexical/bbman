@@ -26,11 +26,12 @@ typedef struct SiteInfo
 public:
 	wxString name, ip;
 	int port;
-	bool autoopen;	//啟動程式時自動開啟
+	bool autoopen;	// auto-open when program starts
 	wxString username;	//自動登入
 	wxString message;	//連線後 (或自動登入後) 自動送出的 BBMan 格式化訊息
 	wxString password;
 	int protocol;	//telnet? ssh?
+	wxString connection_username;	// URL/profile transport user, not persisted
 
 public:
 

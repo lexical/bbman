@@ -81,6 +81,12 @@ char* wxStringToCharPtr(const wxString &str)
 	return const_cast<char*>(buf.data());
 }
 // ----------------------------------------------------------------------------
+wxCharBuffer wxStringToBig5Buffer(const wxString &str)
+{
+	static wxCSConv big5_conv("BIG5");
+	return str.mb_str(big5_conv);
+}
+// ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
 #include <wx/imaglist.h>
@@ -724,7 +730,7 @@ wxString getLinkProgram(LINK_TYPE _t)
 			else
 			{
 #if defined(__WXGTK__)
-				program_path = _T("mozilla");
+				program_path = _T("xdg-open");
 #else
 				program_path = _T("C:\\Program Files\\Internet Explorer\\IEXPLORE.EXE");
 #endif
@@ -736,7 +742,7 @@ wxString getLinkProgram(LINK_TYPE _t)
 			else
 			{
 #if defined(__WXGTK__)
-				program_path = _T("mozilla");
+				program_path = _T("xdg-open");
 #else
 				program_path = _T("C:\\Program Files\\Internet Explorer\\IEXPLORE.EXE");
 #endif
@@ -747,7 +753,7 @@ wxString getLinkProgram(LINK_TYPE _t)
 			else
 			{
 #if defined(__WXGTK__)
-				program_path = _T("mozilla");
+				program_path = _T("xdg-open");
 #else
 				program_path = _T("C:\\Program Files\\Internet Explorer\\IEXPLORE.EXE");
 #endif

@@ -27,6 +27,9 @@
 #include <wx/utils.h>	//::wxGetHostName()
 #include <wx/choicdlg.h>	//::wxGetMultipleChoice()
 
+#include <map>
+#include <vector>
+
 #include "scd_tabctrl.h"
 #include "scd_telnet.h"
 #include "telnet_panel.h"
@@ -57,6 +60,9 @@ private:
 
 	bool isClosed;
 
+	std::map<SCD_Telnet*, std::vector<SiteInfo> > pending_candidates;
+	std::map<SCD_Telnet*, size_t> pending_candidate_index;
+
 	void CloseAllTerminals();
 	void ReloadBookmark();	//Åª¨ú®ÑÅÒ¦Cªí
 	void ReloadBookmark(wxMenu *parent, wxString config_path, int &id);
@@ -68,6 +74,9 @@ private:
 	int  getTelnetCount();
 
 public:
+	std::vector<SiteInfo> BuildConnectionCandidates(wxString addr, wxString name = wxEmptyString);
+	bool TryNextConnectionCandidate(SCD_Telnet *t);
+
 	// ctor(s)
 	BBS_Frame(const wxString& title, const wxPoint& pos, const wxSize& size,
 	long style = wxDEFAULT_FRAME_STYLE | wxNO_FULL_REPAINT_ON_RESIZE );

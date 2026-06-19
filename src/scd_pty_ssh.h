@@ -50,6 +50,7 @@ public:
 	void Unread(const void *buffer, wxUint32 nbytes);
 	wxUint32 LastCount();
 
+	void SetWindowSize(int cols, int rows);
 	void SetEventHandler(wxEvtHandler& handler, int id = -1);
 	void SetClientData(void *data);
 	void* GetClientData();

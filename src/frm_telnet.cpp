@@ -545,27 +545,22 @@ void BBS_Frame::connect(int protocol, wxString ip, int port, wxString name = wxE
 	connect(si);
 }
 // ----------------------------------------------------------------------------
-void BBS_Frame::connect( wxString addr, wxString name )
+std::vector<SiteInfo> BBS_Frame::BuildConnectionCandidates(wxString addr, wxString name)
 {
-	// addr: protocol://user:pass@server-ip:port
-	// protocol can be ignored (default is telnet)
-	// user:pass can be ignored
-	// pass can be ignored
-	// port can be ignored (default 22 in ssh, 23 in telnet)
-
+	std::vector<SiteInfo> candidates;
 	SiteInfo si;
 	si.Init();
 	si.name = name;
+	bool explicit_protocol = false;
 
 	addr.Trim();
-
-	//determine the protocol
 	si.protocol = SOCK_TELNET;
 
 	int pos = addr.First( _T("://") );
-	if( pos >= 0 )	//if specified the protocol
+	if( pos >= 0 )
 	{
 		wxString protocol_str = addr.Mid(0, pos);
+		explicit_protocol = true;
 		addr = addr.Mid(pos + 3);
 
 		if( protocol_str == _T("ssh") )	si.protocol = SOCK_SSH;
@@ -574,33 +569,76 @@ void BBS_Frame::connect( wxString addr, wxString name )
 		else
 		{
 			wxMessageBox( wxString(gettext("Unknown protocol")) + _T(" : ") + protocol_str );
-			return;
+			return candidates;
 		}
 	}
 
-	//check user:password info
-	if( addr.Find('@') != -1 )	//if addr contains '@', it contains username
+	if( addr.Find('@') != -1 )
 	{
 		wxString username = addr.BeforeFirst('@');
+		si.connection_username = username.BeforeFirst(':');
 		addr = addr.AfterFirst('@');
-
-		if( username.Find(':') != -1 )	//if username contains ':', it contains password
-		{
-			si.password = username.AfterFirst(':');
-			username = username.BeforeFirst(':');
-		}
-		si.username = username;
 	}
 
 	si.port = (si.protocol == SOCK_SSH) ? 22 : 23 ;
 	if( addr.Find( ':' ) != -1 )
 	{
-		addr.AfterFirst(':').ToLong( (long*) &(si.port) );
+		long port_value;
+		if( addr.AfterFirst(':').ToLong(&port_value) )
+			si.port = port_value;
 		addr = addr.BeforeFirst(':');
 	}
 
 	si.ip = addr;
-	connect(si);
+	if( explicit_protocol || ! si.connection_username.IsEmpty() )
+	{
+		candidates.push_back(si);
+		return candidates;
+	}
+
+	if( addr.CmpNoCase(_T("ptt.cc")) == 0 || addr.CmpNoCase(_T("ptt2.cc")) == 0 )
+	{
+		SiteInfo c = si;
+		c.protocol = SOCK_SSH;
+		c.port = 22;
+		c.connection_username = _T("bbs");
+		candidates.push_back(c);
+
+		c = si;
+		c.protocol = SOCK_TELNET;
+		c.port = 23;
+		c.connection_username = _T("bbs");
+		candidates.push_back(c);
+
+		c = si;
+		c.protocol = SOCK_SSH;
+		c.port = 22;
+		c.connection_username = wxEmptyString;
+		candidates.push_back(c);
+
+		c = si;
+		c.protocol = SOCK_TELNET;
+		c.port = 23;
+		c.connection_username = wxEmptyString;
+		candidates.push_back(c);
+		return candidates;
+	}
+
+	candidates.push_back(si);
+	return candidates;
+}
+// ----------------------------------------------------------------------------
+void BBS_Frame::connect( wxString addr, wxString name )
+{
+	std::vector<SiteInfo> candidates = BuildConnectionCandidates(addr, name);
+	if( candidates.empty() )	return;
+
+	connect(candidates[0]);
+	if( now_telnet && candidates.size() > 1 )
+	{
+		pending_candidates[now_telnet] = candidates;
+		pending_candidate_index[now_telnet] = 0;
+	}
 }
 // ----------------------------------------------------------------------------
 void BBS_Frame::connect(SiteInfo &si)
@@ -628,7 +666,7 @@ void BBS_Frame::connect(SiteInfo &si)
 		tab->SetItemImage( next_tab_index, ICON_CONNECTING );
 	}
 
-	now_telnet->connect( si.protocol, si.ip, si.port , si.name , si.username , si.password , si.message );
+	now_telnet->connect( si );
 
 	tab->SetSelection( next_tab_index );
 }
@@ -740,6 +778,8 @@ void BBS_Frame::OnQuit(wxCommandEvent& WXUNUSED(event))
 // ----------------------------------------------------------------------------
 void BBS_Frame::CloseAllTerminals()
 {
+	pending_candidate_index.clear();
+	pending_candidates.clear();
 	panel->DetachTelnet();
 	now_telnet = NULL;
 
@@ -938,6 +978,33 @@ void BBS_Frame::OnTimer(wxTimerEvent& event)
 		now_telnet->setBlinkCharVisibility( ! now_telnet->getBlinkCharVisibility() );
 }
 // ----------------------------------------------------------------------------
+bool BBS_Frame::TryNextConnectionCandidate(SCD_Telnet *t)
+{
+	std::map<SCD_Telnet*, std::vector<SiteInfo> >::iterator it = pending_candidates.find(t);
+	if( it == pending_candidates.end() )
+		return false;
+
+	size_t next = pending_candidate_index[t] + 1;
+	if( next >= it->second.size() )
+	{
+		pending_candidate_index.erase(t);
+		pending_candidates.erase(it);
+		return false;
+	}
+
+	pending_candidate_index[t] = next;
+	SiteInfo si = it->second[next];
+	int tab_id = tab->GetItemIndex(t);
+	if( tab_id >= 0 )
+	{
+		wxString tab_title = si.name.IsEmpty() ? si.ip : si.name;
+		tab->SetItemText(tab_id, tab_title);
+		tab->SetItemImage(tab_id, ICON_CONNECTING);
+	}
+	t->connect(si);
+	return true;
+}
+// ----------------------------------------------------------------------------
 void BBS_Frame::OnSocketEvent( wxSocketEvent &e )
 {
 	if( isClosed )	return;
@@ -958,15 +1025,21 @@ void BBS_Frame::OnSocketEvent( wxSocketEvent &e )
 			tab->SetItemImage( i , ICON_CONNECTED );
 		else	//如果連線中斷了
 		{
-			if( tab->GetItemImage(i) == ICON_CONNECTING )	//如果不是因為連不上而斷線 (因為如果是先連上才斷線的話, imageid 應該等於 ICON_CONNECTED , 如果 imageid == ICON_CONNECTING 則代表沒有連上過)
+			if( tab->GetItemImage(i) == ICON_CONNECTING )	//如果正是因為連不上而斷線 (因為如果是正連上才斷線的話, imageid 應該等於 ICON_CONNECTED , 如果 imageid == ICON_CONNECTING 則就表沒有連上過)
 			{
+				if( TryNextConnectionCandidate(t) )
+				{
+					UpdateToolbarUI();
+					return;
+				}
 				tab->SetItemImage( i , ICON_CLOSE );
 				t->parse( wxStringToCharPtr( wxString( _T("\x1b[1;1H\x1b[1;5;33;43m ") ) + gettext("Connection fail ( maybe server out-of-service, or wrong address )") + wxString(_T(" \x1b[m")) ) );
 			}
 			else if( ! t->isUserClosed() && t->getConnectTime() < 10 )	//如果連線時間不到十秒鐘就被斷線, 則重新連線
 			{
 				tab->SetItemImage( i , ICON_CONNECTING );
-				t->reconnect();
+				if( ! TryNextConnectionCandidate(t) )
+					t->reconnect();
 			}
 			else
 			{
@@ -1490,6 +1563,8 @@ void BBS_Frame::DeleteTerminal(int id)
 	t = (SCD_Telnet*) tab->GetItemData(id);
 	now_telnet = NULL;
 	t->close();
+	pending_candidate_index.erase(t);
+	pending_candidates.erase(t);
 	tab->DeleteItem(id);
 	delete t;
 }

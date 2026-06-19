@@ -20,10 +20,15 @@
 
 void SiteInfo::Init()
 {
-	name = ip = username = message = password = wxEmptyString;
+	name = wxEmptyString;
+	ip = wxEmptyString;
+	username = wxEmptyString;
+	message = wxEmptyString;
+	password = wxEmptyString;
 	port = 23;
 	autoopen = false;
 	protocol = SOCK_TELNET;
+	connection_username = wxEmptyString;
 }
 // ----------------------------------------------------------------------------
 static const wxChar *SITEINFO_V2_PREFIX = _T("BBMAN_SITEINFO_V2:");

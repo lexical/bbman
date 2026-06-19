@@ -16,7 +16,9 @@
 
 #include "scd_terminal.h"
 #include "main.h"
+
 bool debugging = false;
+
 // ============================================================================
 
 BEGIN_EVENT_TABLE(SCD_Telnet, wxEvtHandler)
@@ -181,7 +183,10 @@ bool SCD_Telnet::SetNAWS(int _c, int _r)	//§ïÅÜ telnet ³s½uªº¦æ¦C¼Æ
 	buf[3] = '\x00';	buf[4] = (char)_c;	buf[5] = '\x00';
 	buf[6] = (char)_r;	buf[7] = '\xff';	buf[8] = '\xf0';
 
-	UserSend( (char*)buf, 9);
+	if( sock.GetType() == SOCK_SSH )
+		sock.SetWindowSize(_c, _r);
+	else
+		UserSend( (char*)buf, 9);
 
 	setColumnRow( _c , _r );
 	repaint(true);
@@ -231,7 +236,9 @@ void SCD_Telnet::UserSend(char *buf, int len = -1)
 // ----------------------------------------------------------------------------
 void SCD_Telnet::UserSend(wxString buf)
 {
-    UserSend( wxStringToCharPtr(buf) );
+	wxCharBuffer big5_buf = wxStringToBig5Buffer(buf);
+	if( big5_buf.data() )
+		UserSend( const_cast<char*>(big5_buf.data()) );
 }
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
@@ -361,16 +368,16 @@ void SCD_Telnet::keyEnter()
 }
 // ----------------------------------------------------------------------------
 void SCD_Telnet::keyUp()
-{	UserSend(IsApplicationCursorKeys() ? "\x1bOA" : "\x1b[A");	}
+{	UserSend("\x1b[A");	}
 // ----------------------------------------------------------------------------
 void SCD_Telnet::keyDown()
-{	UserSend(IsApplicationCursorKeys() ? "\x1bOB" : "\x1b[B");	}
+{	UserSend("\x1b[B");	}
 // ----------------------------------------------------------------------------
 void SCD_Telnet::keyLeft()
-{	UserSend(IsApplicationCursorKeys() ? "\x1bOD" : "\x1b[D");	}
+{	UserSend("\x1b[D");	}
 // ----------------------------------------------------------------------------
 void SCD_Telnet::keyRight()
-{	UserSend(IsApplicationCursorKeys() ? "\x1bOC" : "\x1b[C");	}
+{	UserSend("\x1b[C");	}
 // ----------------------------------------------------------------------------
 void SCD_Telnet::keyPageUp()
 {	UserSend("\x1b\x5b\x35\x7e");	}
@@ -443,7 +450,9 @@ void SCD_Telnet::PasteFromClipboard(bool withANSI)	//±q°Å¶KÃ¯¤WÅª¨ú¦r¦ê, ¨Ã¥B¶Ç°
 	wxString text = GetTextFromClipboard();
 	if( text.IsEmpty() )	return;
 
-	Paste( wxStringToCharPtr(text) , withANSI );
+	wxCharBuffer big5_buf = wxStringToBig5Buffer(text);
+	if( big5_buf.data() )
+		Paste( const_cast<char*>(big5_buf.data()) , withANSI );
 }
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
@@ -699,15 +708,14 @@ wxMessageBox(str);
 			else
 			{
 				if( need_to_autologin	//¦Û°Êµn¤J
-					&& sock.GetType() == SOCK_TELNET	//³o¬O±M¬° telnet ³]­pªº¦Û°Êµn¤J, ssh ¤£¾A¥Î
 					&& buf_len > 100 )	
 				{
 	    	  		need_to_autologin = false;
 					if( ! username.IsEmpty() )
 					{
 						keyUp();	keyUp(); 	//¨â¦¸ [Up]
-    	  				UserSend( wxStringToCharPtr(username) ); keyEnter();
-	      				UserSend( wxStringToCharPtr(password) ); keyEnter();
+							UserSend( username ); keyEnter();
+							UserSend( password ); keyEnter();
 					}
 					if( ! message.IsEmpty() )	UserSend_spacial( message );
 
@@ -789,12 +797,13 @@ void SCD_Telnet::close()
 bool SCD_Telnet::reconnect()
 {
 	if( ! IsDisconnected() ) 	return false;
-	return	connect( sock.GetType(), getIP(), getPort(), getName() , username , password , message );
+	return connect(site_info);
 }
 bool SCD_Telnet::connect(int _protocol, wxString _ip , int _port , wxString _name
 	, wxString _user, wxString _passwd, wxString _message )
 {
 	SiteInfo _si;
+	_si.Init();
 	_si.ip = _ip;
 	_si.port = _port;
 	_si.name = _name;
@@ -862,10 +871,18 @@ if( _si.protocol == SOCK_SSH )
 #endif
 
 	wxIPV4address addr;
-	addr.Hostname(ip);
-	addr.Service(port);
+	if( ! addr.Hostname(ip) || ! addr.Service(port) )
+	{
+		parse("Invalid address\r\n");
+		connect_state = 0;
+		return false;
+	}
 	connect_state = 1;
-	SocketConnect(addr, false, _si.username);
+	if( ! SocketConnect(addr, false, _si.connection_username) )
+	{
+		connect_state = 0;
+		return false;
+	}
 
 	start_time = wxGetLocalTime();
 
