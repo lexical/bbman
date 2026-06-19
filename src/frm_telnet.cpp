@@ -771,7 +771,10 @@ void BBS_Frame::OnInputLine(wxCommandEvent& event)
 // event handlers
 
 void BBS_Frame::OnActivate(wxActivateEvent& event)
-{	panel->SetFocus();	}
+{
+	if( event.GetActive() )	panel->SetFocus();
+	event.Skip();
+}
 // ----------------------------------------------------------------------------
 void BBS_Frame::OnQuit(wxCommandEvent& WXUNUSED(event))
 {	Close();	}	//
