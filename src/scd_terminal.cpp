@@ -24,7 +24,7 @@ static wxString Big5BytesToWxString(const char *bytes, size_t len)
 	if( text.IsEmpty() && len > 0 )
 	{
 		for(size_t i=0;i<len;i++)
-			text.Append(wxUniChar(static_cast<unsigned char>(bytes[i])));
+			text.Append(_T("?"));
 	}
 	return text;
 }
@@ -489,18 +489,17 @@ void SCD_Terminal::ScrollUp(int top, int bottom, int _v)	//§â«ü©w½d³òªº¨C¤@¦æ©¹¤
 		term_data[y-_v] = term_data[y];
 
 	wxDC *dc = getDC();
-	if(dc != NULL)
-	{
-		int _w, _h;
-		_w = col_count * char_width;
-		_h = ( bottom - top + 1 - _v ) * char_height;
-		dc->Blit( 0, top*char_height, _w , _h , dc, 0, (top+_v)*char_height );
-	}
 
 	for(int i=0;i<_v;i++)
 	{
 		term_data[bottom-_v+1+i] = tmp_lines[i];
 		CleanLine(bottom-_v+1+i);
+	}
+
+	if(dc != NULL)
+	{
+		for(int y=top;y<=bottom;y++)
+			repaintLine(y);
 	}
 }
 // ----------------------------------------------------------------------------
@@ -523,18 +522,17 @@ void SCD_Terminal::ScrollDown(int top, int bottom, int _v)
 		term_data[y+_v] = term_data[y];
 
 	wxDC *dc = getDC();
-	if(dc != NULL)
-	{
-		int _w, _h;
-		_w = col_count * char_width;
-		_h = ( bottom - top + 1 - _v ) * char_height;
-		dc->Blit( 0, (top+_v)*char_height, _w , _h , dc, 0, top*char_height );
-	}
 
 	for(int i=0;i<_v;i++)
 	{
 		term_data[top+i] = tmp_lines[i];
 		CleanLine(top+i);
+	}
+
+	if(dc != NULL)
+	{
+		for(int y=top;y<=bottom;y++)
+			repaintLine(y);
 	}
 }
 // ----------------------------------------------------------------------------
@@ -657,10 +655,20 @@ wxMessageBox(str);
 						last_line_index = cur_y;
 						input++;
 						break;
-					case 'M' :	//scroll up
-						ScrollDown();
+					case 'M' :	// reverse index
+						if( line_updated )
+						{
+							adjustLineCharInfo( last_line_index );
+							repaintLine( last_line_index );
+							line_updated = false;
+						}
+						if( cur_y == m_scroll_region_top )
+							ScrollDown();
+						else
+							goUp();
+						last_line_index = cur_y;
 						input++;
-         				break;
+						break;
 					default :
 						input++;
 						break;
@@ -784,6 +792,12 @@ wxMessageBox(str);
 							m_scroll_region_top = tmp;
 							}
      						break;
+						case 'S' :	// scroll up n lines
+							ScrollUp(param_list[0] > 0 ? param_list[0] : 1);
+							break;
+						case 'T' :	// scroll down n lines
+							ScrollDown(param_list[0] > 0 ? param_list[0] : 1);
+							break;
      					case 'r' :	//«ü©w±²°Êµøµ¡ªº½d³ò
 							m_isset_scroll_region_bottom = false;
 							if( param_list[0] < 0 )	m_scroll_region_top = 0;
