@@ -29,6 +29,8 @@ CFLAGS := -std=gnu11 -Wall -Wextra
 LDFLAGS :=
 LDLIBS := $(WX_LIBS) $(LIBSECRET_LIBS) -lutil
 
+HEADERS := $(wildcard ../src/*.h)
+
 COMMON_OBJ := \
 	obj/scd_terminal.o \
 	obj/login.o \
@@ -61,7 +63,7 @@ obj:
 $(BIN): obj $(COMMON_OBJ)
 	$(CXX) $(COMMON_OBJ) -o $@ $(LDFLAGS) $(LDLIBS)
 
-obj/%.o: ../src/%.cpp | obj
+obj/%.o: ../src/%.cpp $(HEADERS) | obj
 	$(CXX) $(WX_CXXFLAGS) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
 
 clean:
@@ -73,6 +75,7 @@ install: check-deps $(BIN)
 	$(INSTALL_DIR) $(DESTDIR)$(appdatadir)
 	rm -rf $(DESTDIR)$(appdatadir)/theme
 	tar --exclude=CVS -C .. -cf - theme | tar -C $(DESTDIR)$(appdatadir) -xf -
+	$(INSTALL_DATA) ../sites.dat $(DESTDIR)$(appdatadir)/sites.dat
 	$(INSTALL_DIR) $(DESTDIR)$(desktopdir)
 	$(INSTALL_DATA) ../data/bbman.desktop $(DESTDIR)$(desktopdir)/bbman.desktop
 	$(INSTALL_DIR) $(DESTDIR)$(icondir)/16x16/apps $(DESTDIR)$(icondir)/32x32/apps

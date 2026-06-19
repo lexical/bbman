@@ -15,6 +15,7 @@
 #include "bookmark.h"
 
 #include <wx/imaglist.h>
+#include <wx/file.h>
 #include <wx/statline.h>
 #include "login.h"
 
@@ -740,7 +741,11 @@ void frm_BBSList::OnMouseDoubleClick(wxMouseEvent& event)
 // ----------------------------------------------------------------------------
 bool frm_BBSList::LoadSiteList(wxTreeItemId  rootId)
 {
-	FILE *fp = wxFopen( _T("sites.dat") , _T("r") );
+	wxString site_list = GetResourcePath() + _T("sites.dat");
+	if( ! wxFile::Exists(site_list) )
+		site_list = _T("sites.dat");
+
+	FILE *fp = wxFopen( site_list , _T("r") );
 	if(fp==NULL)	return false;
 
 
