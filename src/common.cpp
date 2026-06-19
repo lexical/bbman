@@ -541,6 +541,38 @@ static const int BBMAN_DEFAULT_WIN_HEIGHT = 550;
 #endif
 
 
+static void AutoConnectBookmarks(wxString config_path)
+{
+	wxString name, str;
+	long cookie;
+	bool ret;
+
+	GetConfig()->SetPath(config_path);
+	ret = GetConfig()->GetFirstGroup( name , cookie );
+	while( ret )
+	{
+		AutoConnectBookmarks(config_path + _T("/") + name);
+
+		GetConfig()->SetPath(config_path);
+		ret = GetConfig()->GetNextGroup( name , cookie );
+	}
+
+	GetConfig()->SetPath(config_path);
+	ret = GetConfig()->GetFirstEntry( name , cookie );
+	while( ret )
+	{
+		if( GetConfig()->Read( name , &str ) )
+		{
+			SiteInfo si;
+			si.Set(str);
+			if( si.autoopen )	telnet_frame->connect(si);
+		}
+
+		GetConfig()->SetPath(config_path);
+		ret = GetConfig()->GetNextEntry( name , cookie );
+	}
+}
+
 void ShowTelnet()
 {
 	telnet_frame = new BBS_Frame(_T("BBMan"),
@@ -562,21 +594,7 @@ void ShowTelnet()
 	}
 
 	//開啟有設定自動開啟的 BBS
-	SiteInfo si;
- 	GetConfig()->SetPath( GetUserConfigPath(_T("/bookmark/")) );
-	wxString name, str;
-	long id;
-	bool ret;
-	ret = GetConfig()->GetFirstEntry( name , id );
-	while( ret )
-	{
-		if( GetConfig()->Read( name , &str ) )
-		{
-			si.Set(str);
-			if( si.autoopen )	telnet_frame->connect(si);
-		}
-		ret = GetConfig()->GetNextEntry( name , id );
-	}
+	AutoConnectBookmarks( GetUserConfigPath(_T("/bookmark")) );
 	telnet_frame->Show(TRUE);
 	telnet_frame->ShowSpecifiedTerminal(0);
 	//

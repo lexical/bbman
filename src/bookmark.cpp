@@ -26,6 +26,17 @@ enum { MENU_BEGIN, RDBX_PROTOCOL, CHK_AUTOLOGIN, CHK_AUTOCONNECT,
 enum { ID_TEXT_BEGIN, ID_TEXT_NAME, ID_TEXT_IP, ID_TEXT_PORT, ID_TEXT_USERNAME, ID_TEXT_PASSWORD, ID_TEXT_MESSAGE, ID_TEXT_END };
 // ============================================================================
 
+static wxString SiteListBig5ToWxString(const char *text)
+{
+	static wxCSConv big5_conv(_T("BIG5"));
+	wxString value(text, big5_conv);
+	if( value.IsEmpty() && text[0] != '\0' )
+		value = wxString::FromUTF8(text);
+	value.Trim();
+	value.Trim(false);
+	return value;
+}
+
 bool ShowFavoriteEditor(wxWindow *parent, SiteInfo *si)
 {
 	frm_Favorite_Edit frm(parent);
@@ -232,6 +243,8 @@ void frm_Favorite_Edit::SaveFavorites()
     wxString root_path = GetUserConfigPath( _T("/bookmark") );
 	GetConfig()->DeleteGroup(root_path);
 	SaveFavorites(list_root, root_path);
+	if( ! GetConfig()->Flush() )
+		wxLogWarning(_T("Unable to save favorites."));
 
 	bl_favorite_modified = true;
 }
@@ -759,17 +772,17 @@ bool frm_BBSList::LoadSiteList(wxTreeItemId  rootId)
 	int deep = 0;
 	now_root_Id = rootId;
 	
-	wxChar buf[1024];
-	while( wxFgets( buf, 1024, fp ) != NULL )
+	char buf[1024];
+	while( fgets( buf, sizeof(buf), fp ) != NULL )
 	{
 		switch( buf[0] )
 		{
 			case 's':	//define a site
-				tree.AppendItem( now_root_Id , buf+1 , ITEM_SITE );
+				tree.AppendItem( now_root_Id , SiteListBig5ToWxString(buf+1) , ITEM_SITE );
 				break;
 			case 'd':	//mkdir
 				parent_node_Id[ deep++ ] = now_root_Id;
-				now_root_Id = tree.AppendItem( now_root_Id , buf+1, ITEM_FOLDER );
+				now_root_Id = tree.AppendItem( now_root_Id , SiteListBig5ToWxString(buf+1), ITEM_FOLDER );
 				break;
 			case '\n':
 			case '\r':

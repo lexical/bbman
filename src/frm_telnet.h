@@ -66,6 +66,7 @@ private:
 	void CloseAllTerminals();
 	void ReloadBookmark();	//Åª¨ú®ÑÅÒ¦Cªí
 	void ReloadBookmark(wxMenu *parent, wxString config_path, int &id);
+	void connectSingle(SiteInfo &si);
 
 	void ShowPreviousTelnet();
 	void ShowNextTelnet();
@@ -75,6 +76,7 @@ private:
 
 public:
 	std::vector<SiteInfo> BuildConnectionCandidates(wxString addr, wxString name = wxEmptyString);
+	std::vector<SiteInfo> BuildConnectionCandidates(const SiteInfo& si);
 	bool TryNextConnectionCandidate(SCD_Telnet *t);
 
 	// ctor(s)

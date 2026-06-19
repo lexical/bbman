@@ -628,12 +628,52 @@ std::vector<SiteInfo> BBS_Frame::BuildConnectionCandidates(wxString addr, wxStri
 	return candidates;
 }
 // ----------------------------------------------------------------------------
+std::vector<SiteInfo> BBS_Frame::BuildConnectionCandidates(const SiteInfo& si)
+{
+	std::vector<SiteInfo> candidates;
+
+	if( ! si.connection_username.IsEmpty() )
+	{
+		candidates.push_back(si);
+		return candidates;
+	}
+
+	if( si.ip.CmpNoCase(_T("ptt.cc")) == 0 || si.ip.CmpNoCase(_T("ptt2.cc")) == 0 )
+	{
+		SiteInfo c = si;
+		c.protocol = SOCK_SSH;
+		c.port = 22;
+		c.connection_username = _T("bbs");
+		candidates.push_back(c);
+
+		c = si;
+		c.protocol = SOCK_TELNET;
+		c.port = 23;
+		c.connection_username = _T("bbs");
+		candidates.push_back(c);
+
+		c = si;
+		c.protocol = SOCK_SSH;
+		c.port = 22;
+		candidates.push_back(c);
+
+		c = si;
+		c.protocol = SOCK_TELNET;
+		c.port = 23;
+		candidates.push_back(c);
+		return candidates;
+	}
+
+	candidates.push_back(si);
+	return candidates;
+}
+// ----------------------------------------------------------------------------
 void BBS_Frame::connect( wxString addr, wxString name )
 {
 	std::vector<SiteInfo> candidates = BuildConnectionCandidates(addr, name);
 	if( candidates.empty() )	return;
 
-	connect(candidates[0]);
+	connectSingle(candidates[0]);
 	if( now_telnet && candidates.size() > 1 )
 	{
 		pending_candidates[now_telnet] = candidates;
@@ -642,6 +682,19 @@ void BBS_Frame::connect( wxString addr, wxString name )
 }
 // ----------------------------------------------------------------------------
 void BBS_Frame::connect(SiteInfo &si)
+{
+	std::vector<SiteInfo> candidates = BuildConnectionCandidates(si);
+	if( candidates.empty() )	return;
+
+	connectSingle(candidates[0]);
+	if( now_telnet && candidates.size() > 1 )
+	{
+		pending_candidates[now_telnet] = candidates;
+		pending_candidate_index[now_telnet] = 0;
+	}
+}
+// ----------------------------------------------------------------------------
+void BBS_Frame::connectSingle(SiteInfo &si)
 {
 	int next_tab_index = -1;
 
