@@ -201,10 +201,21 @@ wxString GetResourcePath()
 			return path;
 	}
 
-	wxString path = FindResourcePathFromParents(
-		wxFileName(wxStandardPaths::Get().GetExecutablePath()).GetPath());
+	wxFileName exePath(wxStandardPaths::Get().GetExecutablePath());
+	wxString exeDir = exePath.GetPath();
+	wxString path = FindResourcePathFromParents(exeDir);
 	if( ! path.IsEmpty() )
 		return path;
+
+	wxFileName installDataDir(exeDir, wxEmptyString);
+	installDataDir.Normalize(wxPATH_NORM_DOTS | wxPATH_NORM_ABSOLUTE);
+	if( installDataDir.GetDirCount() > 0 )
+	{
+		installDataDir.RemoveLastDir();
+		path = FindResourcePath(installDataDir.GetPathWithSep() + _T("share/bbman"));
+		if( ! path.IsEmpty() )
+			return path;
+	}
 
 	path = FindResourcePath(wxStandardPaths::Get().GetResourcesDir());
 	if( ! path.IsEmpty() )

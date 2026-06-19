@@ -86,5 +86,12 @@ install: check-deps $(BIN)
 			lang=$$(basename "$$langdir"); \
 			$(INSTALL_DIR) "$(DESTDIR)$(localedir)/$$lang/LC_MESSAGES"; \
 			$(INSTALL_DATA) "$$langdir/LC_MESSAGES/bbman.mo" "$(DESTDIR)$(localedir)/$$lang/LC_MESSAGES/bbman.mo"; \
+			case "$$lang" in \
+			*.Big5) \
+				utf8lang=$${lang%.Big5}; \
+				$(INSTALL_DIR) "$(DESTDIR)$(localedir)/$$utf8lang/LC_MESSAGES"; \
+				$(INSTALL_DATA) "$$langdir/LC_MESSAGES/bbman.mo" "$(DESTDIR)$(localedir)/$$utf8lang/LC_MESSAGES/bbman.mo"; \
+				;; \
+			esac; \
 		fi; \
 	done
