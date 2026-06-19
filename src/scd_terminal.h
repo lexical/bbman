@@ -162,6 +162,8 @@ public:
 	bool IsApplicationCursorKeys() const { return application_cursor_keys; }
 	SCD_Terminal(wxWindow *win);
 	~SCD_Terminal();
+	SCD_Terminal(const SCD_Terminal&) = delete;
+	SCD_Terminal& operator=(const SCD_Terminal&) = delete;
 
 	void ResetTerminal();	//用來重置 terminal 設定, 每次重新連線時必須呼叫
 

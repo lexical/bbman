@@ -92,6 +92,7 @@ static bool StoreSiteInfoSecretWithLibsecret(const SiteInfo *si, const wxString&
 
 static wxString LoadSiteInfoSecretWithLibsecret(const SiteInfo *si, const wxString& field)
 {
+	static bool warned = false;
 	wxString port = wxString::Format(_T("%d"), si->port);
 	wxString protocol = wxString::Format(_T("%d"), si->protocol);
 
@@ -112,9 +113,24 @@ static wxString LoadSiteInfoSecretWithLibsecret(const SiteInfo *si, const wxStri
 		"protocol", protocolUtf8.data(),
 		NULL);
 	if( error != NULL )
+	{
+		if( ! warned )
+		{
+			wxString msg = wxString::FromUTF8(error->message);
+			wxLogWarning(_T("Unable to read BBMan keyring secrets: %s"), msg);
+			warned = true;
+		}
 		g_error_free(error);
+	}
 	if( secret == NULL )
+	{
+		if( ! warned )
+		{
+			wxLogWarning(_T("Unable to find BBMan keyring secret for %s"), field);
+			warned = true;
+		}
 		return wxEmptyString;
+	}
 
 	wxString value = wxString::FromUTF8(secret);
 	secret_password_free(secret);

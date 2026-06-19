@@ -767,17 +767,22 @@ wxString getLinkProgram(LINK_TYPE _t)
 
 void OnLinkClicked( char *link, LINK_TYPE _t)
 {
+	wxString url = CharPtrTowxString(link);
+
 	switch(_t)
 	{
 		case LINK_TELNET:
-			telnet_frame->connect( CharPtrTowxString(link) );
+			telnet_frame->connect( url );
 			break;
 		case LINK_HTTP:
 		case LINK_HTTPS:
 		case LINK_FTP:
 		case LINK_SFTP:
 		case LINK_EMAIL:
-			wxExecute( wxString::Format( getLinkProgram(_t) + _T(" %s"), link) );
+			if( _t == LINK_EMAIL && url.Find(_T(':')) == wxNOT_FOUND )
+				url = _T("mailto:") + url;
+			if( ! wxLaunchDefaultBrowser(url) )
+				wxLogWarning(_T("Unable to open hyperlink: %s"), url);
 			break;
 		default : break;
 	}

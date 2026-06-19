@@ -37,6 +37,8 @@ private:
 public:
 	SCD_PtySSH();
 	~SCD_PtySSH();
+	SCD_PtySSH(const SCD_PtySSH&) = delete;
+	SCD_PtySSH& operator=(const SCD_PtySSH&) = delete;
 
 	bool Connect(wxIPV4address& address, wxString username);
 	void Close();
