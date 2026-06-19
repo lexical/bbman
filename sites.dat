@@ -665,6 +665,7 @@ s雲科大藍天使	bbs.yuntech.edu.tw
 s輔英科技大學天使站	bbs.fy.edu.tw
 s樹德科技大學	bbs.stu.edu.tw
 s龍華科技大學龍崗豪情	bbs.lhu.edu.tw
+s虎尾科技大學計中尋夢園	bbs.nfu.edu.tw
 
 d師範學院
 s北市師院松梅戀曲	bbs.tmtc.edu.tw
@@ -709,8 +710,6 @@ s宜蘭技院土匪窩	cvbbs.twbbs.org
 s宜蘭技院紅樓頂尖 (N/A)	exbbs.ilantech.edu.tw
 s宜蘭技院電機風馳電掣	eebbs.ilantech.edu.tw
 s宜蘭技院蘭雨情懷	ilantech.twbbs.org
-s虎技計中尋夢園	bbs.nhit.edu.tw
-s虎技機製款款柔情	bbs.me.nhit.edu.tw
 s南榮電子位元城市	bbs.ee.njtc.edu.tw
 s屏東商業技術學院	bbs.npic.edu.tw
 s建國星光夜語	bbs.cktc.edu.tw
@@ -1430,25 +1429,380 @@ s昶陽資訊澎湖水產	bbs.phmhs.phc.edu.tw
 s洄瀾小築	oceanic.twbbs.org
 s唭哩岸上的低語	chilian.twbbs.org
 
-d香港站台
-sE-fever (port3333)	bbs.e-fever.org
-sH.K.I_BBS (bbs/hkibbs)	bbs.org.hk
-s長眠地下資訊站	zzzzbbs.org
-s香港大學 (bbs/hkubbs)	compsoc.hku.hk
-s香港浸會大學	bbs.comp.hkbu.edu.hk
-s香港科技大學	engbbs.ust.hk
-s香港科技大學SISbbs (bbs/sisbbs)	sisbbs.ust.hk
+d	大陸教育網十大BBS↑
+s北京大學 一塌糊塗 20040913被關	ytht.net
+s清華大學 水木清華	smth.org
+s南京大學 小百合	bbs.nju.edu.cn
+s復旦大學 日月光華	bbs.fudan.sh.cn
+s北京大學 北大未名	bbs.pku.edu.cn
+s華中理工 白雲黃鶴	bbs.whnet.edu.cn
+s西安交大 兵馬俑	bbs.xanet.edu.cn
+s上海交大 飲水思源	bbs.sjtu.edu.cn
+s南開大學 我愛南開	bbs.nankai.edu.cn
+s華南理工 木棉站	bbs.gznet.edu.cn
+
+d	大陸教育網BBS大全_多支持big5
+d	清華大學
+s水木清華★	smth.org
+s水木清華(SSH)	smth.org:22
+s7#奇景	166.111.3.245
+s7#奇景(SSH)	166.111.3.245:22
+s虛擬世界	166.111.154.35
+sHappy BBS	166.111.160.66
+s聽濤站	166.111.162.88
+s聽濤站(SSH)	166.111.162.88:22
+s自在心語(SSH)	166.111.72.12:22
+s自在心語	166.111.72.12
+s經管家園	166.111.164.21
+s經管家園(SSH)	166.111.164.21:22
+s大話西游(清華zixia)☆	zixia.net
+s大話西遊(SSH)	202.205.10.8:22
+s大話西遊(SSH)(2222埠)	202.205.10.8:2222
+sKissU	166.111.3.243
+s自由空間	166.111.172.66
+s自由空間(SSH)	166.111.172.66:22
+s溫馨小屋	166.111.161.221
+s第六星際	202.112.54.2
+s荷塘月色	166.111.30.161
+s綠緣	219.224.187.23
+d	暫時無法連接
+s自由世界	166.111.48.196
+
+
+d	北京大學
+s北大未名★	bbs.pku.edu.cn
+s大話西遊(北大)	162.105.245.5
+scs963	162.105.6.250
+s數學學院(新)	bbs.math.pku.edu.cn
+s數學學院(新)(SSH)	162.105.70.3:31222
+sBTBBS	btbbs.org
+s天網搜索論壇	bbs.bingle.com.cn
+s微電之光	162.105.77.61
+s桃花潭	thtpku.3322.org
+d	暫時無法連接
+s一塌糊塗■紀念	ytht.net
+s一塌糊塗(SSH)-Try to remeber	bbs.ytht.net:22
+s數學學院(老)	162.105.69.116
+s生物資訊	162.105.250.143
+
+
+d	華北：北京
+s中國人大 天地人大☆	bbs.ruc.edu.cn
+s中科院_科苑星空★	kyxk.net
+s中科院 科苑星空(SSH)	210.77.17.20:22
+s中科院 曙光站(智慧電腦中心)	159.226.41.166
+s中科院 藍天站(大氣物理所)	159.226.62.67
+s中國農大 五色土☆	202.205.80.137
+s北郵 真情流露☆	bupt.org
+s北京郵電 北郵人	forum.byr.edu.cn
+s北京郵電 鴻雁傳情	oldbbs.byr.edu.cn
+s北師大 木鐸校園論壇www	www.muduo.net:80
+s北京工大 知新園	202.112.78.8
+s北京化工 勝古朝陽	bbs.buct.edu.cn
+s北京科大 幻想空間	202.204.59.204
+s北京航空航太 未來花園	202.112.137.7
+s北方交大 藍色寶石	bbs.Bluegem.org
+s北方交大 紅果園	bbs.bjtu.edu.cn
+s北方工大 西山莊園	202.204.25.3
+s對外經濟貿易大學 小天鵝	bbs.uibe.edu.cn
+d	暫時無法連接
+s北師大 京師網事	bbs.bnu.edu.cn
+s北師大 木鐸金聲	mdjs.org
+s北京郵電 網路驚魂	0.0.0.0
+s燕山大學 風鈴屋	bbs.ysu.edu.cn
+
+
+d	華北：天津、河北、山西
+s天津大學 天大求實☆	bbs.tju.edu.cn
+s天津大學 天大求實_SSH	202.113.13.188:2000
+s南開大學 我愛南開★	bbs.nankai.edu.cn
+s河北大學 燕趙BBS	bbs.hbu.edu.cn
+s山西大學 亦狐BBS	bbs.sxu.edu.cn
+s太原理工 雲開月明	bbs.tyut.edu.cn
+s太原理工圖書館 書海之星	bbs.lib.tyut.edu.cn
+d	暫時無法連接
+s內蒙古大學 塞外風情	bbs.imu.edu.cn
+
+
+d	華東：上海、南京
+s復旦大學 日月光華★	bbs.fudan.edu.cn
+s上海交大 飲水思源★	bbs.sjtu.edu.cn
+s同濟大學 同舟共濟	bbs.tongji.edu.cn
+s同濟大學 同舟共濟_ssh	bbs.tongji.edu.cn:22
+s華東理工大學 梅隴客棧	bbs.ecust.edu.cn
+s中科院上海分院 生命玄機	bbs.cst.sh.cn
+s月滿滬江	202.120.223.56
+s南京大學 小百合★	bbs.nju.edu.cn
+s南京大學 小百合_big5	bbs.nju.edu.cn:2323
+s南京大學 百草園_百合二站	202.119.32.101
+s南京大學 石頭城	202.119.44.17
+s南京理工 星海之舟	bbs.njust.edu.cn
+s南京郵電 紫金飛鴻	202.119.230.80
+s東南大學 虎踞龍盤	bbs.seu.edu.cn
+d	暫時無法連接
+s復旦大學 燕曦_水源小百合可穿梭	starweb.vicp.net
+
+
+d	華東：山東江蘇浙江安徽江西福建
+s中國科大 瀚海星雲★	bbs.ustc.edu.cn
+s解放軍電子工程 蜀山秀水	bbs.eei.edu.cn
+s浙江大學 海納百川	bbs.zju.edu.cn
+s浙江大學 笑書亭_66站_Fterm故鄉	cu.cn-bbs.org:6666
+s浙江大學 笑書亭_66站_遺址	bbs.dot66.net:6666
+s浙江大學 縹緲水雲間_88站	ise.vicp.net
+s浙江紹興 聽雨軒	bbs.yymm.net
+s寧波大學 數字潮甬	210.33.23.32
+s山東大學 泉韻心聲	bbs.sdu.edu.cn
+s山東大學 岱北聆泉	daibei.net
+s河海大學 水上明珠	bbs.hhu.edu.cn
+s廈門大學 鼓浪聽濤☆	bbs.xmu.edu.cn
+s廈門大學 山澗雲雪	sjyx.3322.org
+s福州大學 庭芳苑	bbs.fzu.edu.cn
+s集美大學 集美學村	bbs.jmu.edu.cn
+s江蘇大學 光天化日(惡人谷)	210.28.76.3
+s南通大學 江風海韻_原南通師院	210.29.64.16
+s中國礦業大學 放鶴亭	202.119.199.87
+s杭州電子科技 圍爐夜話	210.32.32.9
+d	暫時無法連接
+s共青森林	SMMU.cn-bbs.org:3333
+s廈門大學 古廟鐘聲	cs3.edu.cn
+s南昌大學 滕王閣序	bbs.ncu.edu.cn
+s江西師大 中正社區	http://www.jxsd.cn:80
+s煙臺大學 煙雨樓臺www	bbs.ytu.edu.cn
+
+
+d	華南：廣東、廣西、深圳
+s華南理工大學 華南木棉	bbs.gznet.edu.cn
+s華南理工 w18技術交流	w18scut.3322.org
+s華南師範大學 陶園BBS	bbs.scnu.edu.cn
+s華南農業大學 東籬采菊	bbs.scau.edu.cn
+s廣東工業大學 南國飄香	bbs.gdut.edu.cn
+s暨南大學 暨南園	bbs.jnu.edu.cn
+s中山大學 逸仙時空	bbs.zsu.edu.cn
+s汕頭大學 鬱金香BBS	bbs.stu.edu.cn
+s深圳大學 荔園晨風	bbs.szu.edu.cn
+s深圳大學 荔園晨風_公網	210.21.223.239
+s廣西師範大學 煙雨灕江	bbs.gxnu.edu.cn
+s桂林電子工業學院 灕江夜話	bbs.gliet.edu.cn
+s桂林電子工業學院 灕江夜話_公網	gliet.edu.cn
+s翠亨茶寮(公網)	211.96.233.1
+d	暫時無法連接
+s半邊海	hace.cn-bbs.org
+s磨盤山	bbs.glnc.edu.cn
+sztBBS	bbs.ztbbs.org
+
+
+d	西南：四川、重慶
+s四川大學 藍色星空	lsxk.org
+s成都理工 綠茵BBS	bbs.cdut.edu.cn
+s重慶郵電 幽幽黃桷蘭	bbs.cqupt.edu.cn
+s西南交大 錦城驛站	bbs.swjtu.edu.cn
+s西南財經 草堂茗香	bbs.fancysky.net
+s西南民族師範 筆山書院	bbs.qxntc.edu.cn
+d	暫時無法連接
+s電子科技大學 一網深情	bbs.uestc.edu.cn
+s零起點	zero.cn-bbs.org
+
+
+d	華中：湖南、湖北、河南
+s華中科大 白雲黃鶴★	bbs.whnet.edu.cn
+s華中科大 亭台水榭	ttsx.cn-bbs.org
+s華中科大 亭台水榭_SSH	ttsx.cn-bbs.org:2222
+s華中科大 喻信星空	bbs.eistar.net:2600
+s華中師大 桂子山莊	bbs.ccnu.edu.cn
+s武漢大學 珞珈山水☆	bbs.whu.edu.cn
+s中南大學 雲麓園	bbs.csu.edu.cn
+s中南大學 雲麓園_SSH	bbs.csu.edu.cn:22
+s中國地質大學 侏羅紀公園	bbs.cug.edu.cn
+s鄭州大學 鄭大綠城_測試	bbs.zzu.edu.cn:2323
+d	暫時無法連接
+s華中科大 青年園	iwant.cn-bbs.org
+s華中科大 愚人樂園	fool.cn-bbs.org:8888
+s鄭州大學 鄭大綠城	bbs.zzu.edu.cn
+
+
+d	東北，西北
+s東北大學 白山黑水	bbs.neu.edu.cn
+s吉林大學 牡丹園☆	bbs.jlu.edu.cn
+s大連理工 碧海青天	bbs.dlut.edu.cn
+s大連醫科大學 濱海浩蓮	bbs.dlmedu.edu.cn
+s哈工大 紫丁香☆	bbs.hit.edu.cn
+s哈工大 紫丁香_SSH	bbs.hit.edu.cn:22
+s西安交大 兵馬俑★	bbs.xjtu.edu.cn
+s西安交大 UNIX編程	202.108.204.149:2323
+s西安電子科技大學 雁塔晨鐘	bbs.xidian.edu.cn
+s蘭州大學 思雨小語	siyu.cn-bbs.org
+d	暫時無法連接
+s北極星	bjsing.net
+s北極星(SSH)	bjsing.net:22
+s光光灌水站	29bbs.wox.org
+
+
+
+d	大陸公眾網BBS
+s派派bbs sopai.com☆	sopai.com
+s派派bbs sopai.net_ssh	sopai.net:22
+s兩全其美 lqqm.com☆	lqqm.com
+s兩全其美 lqqm.net_教育網	lqqm.net
+s中山聯通 翠亨茶寮	bbs.zsuninet.com
+s汕頭電信 黃金海岸	bbs.754.cn
+s北大中國 未明空間	mitbbs.cn
+s深圳 一網情深	bbs.sz1net.com
+s中國CISCO論壇	bbs.ccxx.net
+d	提供公網功能變數名稱的教育網BBS
+s水木清華_國外	proxy.smth.org
+s南京大學 小百合_公網	lilybbs.net
+s北京郵電 北郵人_公網	forum.byr.cn
+s復旦大學 日月光華_公網	bbs.fudan.sh.cn
+s河北大學 燕趙BBS_公網	tobbs.hbu.edu.cn
+s中國科大 瀚海星雲_公網	ustcbbs.ustc.edu.cn
+
+d	暫時無法連接
+s水木清華_公網	proxy4.smth.org
+
+
+d	香港BBS
+s香港地 HKDAY★_web	hkday.net
+s香港地 HKDAY_ssh	bbs.hkday.net:22
+s香港網站 HKIBBS_web	bbs.org.hk
+s香港科技大學 eng	engbbs.ust.hk
+s香港大學(限校內訪問)	compsoc.hku.hk
 s紅磨坊	redbbs.org
+d	CERNET免費ip_香港地區
+s香港科技大學工學院	engbbs.ust.hk
+s香港浸會大學	bbs.comp.hkbu.edu.hk
+s香港中文大學 人間仙境gb	cssa.hn.org:2323
+
+d	暫時無法連接
+s香港科技大學 sis	sisbbs.ust.hk
+s請用流覽器訪問：BBSHK翠	http://www.bbshk.com:80
+s請用流覽器訪問：香港互動	http://www.hkwbbs.com:80
+s長眠地下資訊站	zzzzbbs.org
+sE-fever	bbs.e-fever.org:3333
 s葡萄樹	vine.org.hk
 
-d海外各地
-s馬里蘭大學ITCZ_BBS (大氣與海洋專業站)	itcz.twbbs.org
-sMalaysia (202.56.157.31)	bbs.myonehost.com
-s未名空間(北大海外站) (Prot:24)	bbs.mit.edu
-s西雅圖愛逗空間BBS	bbs.idlespace.net
-s馬來西亞網路社區	bbs.myonehost.com
-s聖荷西95112	bbs.banbanli.net
-s澳洲糟了誤上賊船	bbs.overseas.net.au
-s澳洲藍色天空資訊站	bbs.bluesky.net.au
-s飄雪的城市	van.twbbs.org
 
+d	臺灣BBS(部分)
+s臺灣大學 批踢踢實業坊★_web	ptt.cc
+s臺灣大學 批踢踢兔	ptt2.cc
+s臺灣大學 批踢踢三	ptt3.cc
+s臺灣 小魚的紫色花園_已併入ptt	ptt.cc
+s臺灣大學 椰林風情☆	bbs.ntu.edu.tw
+s臺灣清華大學 楓橋驛站	bbs.cs.nthu.edu.tw
+s臺灣中山大學 美麗之島	bbs.nsysu.edu.tw
+s臺灣元智大學 風之塔	bbs.yzu.edu.tw
+s臺灣新竹交大 無名小站★	wretch.csie.nctu.edu.tw
+s臺灣淡江大學 蛋捲廣場	bbs.tku.edu.tw
+s臺灣BBS聯盟之 不良牛牧場★	zoo.twbbs.org
+s臺灣BBS聯盟之 盈月繁星	ms.twbbs.org
+s臺灣BBS聯盟之 洗屁屁小站	cpp.twbbs.org
+sYahoo!奇摩大摩域GB	bbs.kimo.com.tw
+s臺灣itoc 動力核心	processor.tfcis.org
+s臺灣中央情報局	bbs.e-cia.net
+sKKcity臺灣bbs城邦★_700個分站	bbs.kkcity.com
+d	CERNET免費IP_臺灣_新竹交大
+s無名小站_web★	wretch.csie.nctu.edu.tw
+s咖啡因	caffeine.iem.nctu.edu.tw
+s伊電園	eden.ee.nctu.edu.tw
+sCCCA快樂坊	bbs.ccca.nctu.edu.tw
+s電物(伊比鴨鴨)	bbs.ep.nctu.edu.tw
+s交大資科	bbs.cis.nctu.edu.tw
+s交大管科	Cinderella.ms.nctu.edu.tw
+s交大機械	bbs.me.nctu.edu.tw
+s交大資工 鳳凰城	bbs.csie.nctu.edu.tw
+s交大運工管 網路芳鄰	bbs.tem.nctu.edu.tw
+
+d	暫時無法連接
+s工管站	bbs.iem.nctw.edu.tw
+s交大電控	www.cn.nctu.edu.tw 
+s交大臺灣文化	twserv.csie.nctu.edu.tw
+
+d	另有1400個臺灣BBS地址簿下載
+s《全球華語BBS位址簿》協作更新	sopai.com
+
+
+d	海外華語BBS
+s美國斯坦福大學 牧場物語	bbs.stanford.edu
+s美國伊利諾大學 又愛又喜	bbs.cssa.uiuc.edu
+s美國西雅圖 愛逗空間big5	bbs.idlespace.net
+s美國哥倫比亞大學 藍蘋果	columbiabbs.com
+s美國留美管理學會	bbs.ppunion.org
+s北大美國 未明空間 麻省理工	mitbbs.com
+s北大美國 未明空間 麻省理工ip	69.25.77.83:232
+s南開美國 異域桃源	yyty.org
+s英國 康莊BBS_www	kangzhuang.ucam.org
+s英國 達特茅斯 biggreen_www	bbs.dartmouth.edu
+s澳大利亞 藍色天空big5	bbs.bluesky.net.au
+s馬來西亞 網路社區	bbs.myonehost.com
+s新加坡南洋理工 北緯一度	155.69.144.139:2000
+d	有華人的地方就有華語BBS！
+
+d	暫時無法連接
+s瑞典 自由空間fsbbs.org	193.11.231.129:3000
+s澳洲 誤上賊船 bbs.overseas.net	202.61.254.193
+s加拿大 飄雪的城市van.twbbs.org	209.53.47.230
+s北大美國 未明空_edu	bbs.mit.edu:24
+s美 馬里蘭大學itcz.twbbs.org	129.2.9.80
+s美 聖荷西95112 bbs.banbanli.ne	64.0.150.33
+s美國猶他州州立大學 風雲再起	129.123.8.220
+s美國北德克薩斯大學 北德之家	UNT.cn-bbs.org:6789
+s美國賓夕法尼亞大學 費城中國人	Philly.cn-bbs.org 
+
+
+d	清醒專輯
+s山西亦狐 -穿梭ptt和hkday	bbs.sxu.edu.cn
+s中山翠亨 -穿梭ptt和hkday	bbs.zsuninet.com
+s農大五色土 -穿梭ptt和牧場	202.205.80.137
+s蘭大思雨 -穿梭hkday/mit/牧場等	siyu.cn-bbs.org
+s清華happyBBS -穿梭ptt	happynet.org
+s清華自由空間 -穿梭ptt	166.111.172.66
+s天大求實 -穿梭ptt	bbs.tju.edu.cn
+s大話西遊 -穿梭ptt和自定義	211.151.89.114
+s我愛南開 -穿梭自定義	bbs.nankai.edu.cn
+s南京理工 -穿梭自定義	bbs.njust.edu.cn
+s派派bbs -穿梭自定義	bbs.sopai.com
+s西交兵馬俑 -穿梭異域桃園	bbs.xjtu.edu.cn
+d	大陸訪問港臺BBS示範_gb
+s臺灣 無名小站 big5顯示	wretch.csie.nctu.edu.tw
+s臺灣 無名小站 gb顯示	wretch.csie.nctu.edu.tw
+s臺灣 無名小站 ID+點登陸	wretch.csie.nctu.edu.tw
+sfterm的bug，臺灣ptt_ssh出錯	ptt.cc:22
+sfterm經socks代理連接ptt	ptt.cc
+sfterm經socks代理連接hkday_ssh	hkday.net:22
+
+d	港臺訪問大陸BBS示範_big5
+s派派bbs_gb顯示	bbs.sopai.com
+s派派bbs_big5顯示	bbs.sopai.com
+s派派bbs_ID+點登陸	bbs.sopai.com
+s華南理工 木棉站ID_ID+點登陸	bbs.gznet.edu.cn
+s南京大學 小百合_埠2323	218.94.36.113:2323
+
+
+d	糊塗專輯
+s教育網十大BBS之首：一塌糊塗	20040913被關閉
+sytht.net 原始功能變數名稱及IP	162.105.31.222
+sytht.org 全站唯讀_再次被關	202.205.10.222:22
+sytht.org 全站唯讀(公網ip)	211.151.89.67:22
+sytht美國鏡像，限境外訪問	come.homelinux.net
+sytht美國web站，限境外訪問	http://24.91.195.144:80
+sytht版 香港地BBS	hkday.net
+sytht版 香港地BBS_ssh	hkday.net:22
+sytht版 臺灣批踢踢	ptt.cc
+sytht版 美國牧場物語	bbs.stanford.edu
+sytht版 派派BBS	sopai.net
+sytht版 派派BBS_ssh	sopai.net:22
+sytht版 兩全其美	lqqm.net
+sytht流浪者樂園 H站	127.0.0.1
+sytht流浪者樂園 I站	127.0.0.1
+sytht流浪者樂園 J站	127.0.0.1:22
+sytht流浪者樂園 K站	127.0.0.1:22
+d	糊塗糊塗，你還能活過來嗎？
+
+
+d	New_2005新增地址
+s臺灣 虎尾科技大學 計中尋夢園	bbs.nfu.edu.tw
+s臺灣 國立宜蘭大學 蘭雨情懷	bbs.niu.edu.tw
+
+d	BBSview《全球華語BBS瞭望》
+s全球華語BBS位址簿 協作更新	sopai.net
+'結束	
