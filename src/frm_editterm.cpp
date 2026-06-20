@@ -171,7 +171,7 @@ void frame_EditTerm::OnFile(wxCommandEvent& event)
 
         		editterm->abs_CleanAll();
 //        		editterm->parse( (char*) content.c_str() );
-				editterm->Paste( wxStringToCharPtr(content) , true );
+				editterm->Paste( content , true );
         		editterm->gotoXY(0,0);
         		editterm->ScrollToCaret();
 //				editterm->repaint();
@@ -225,7 +225,7 @@ void frame_EditTerm::OnEdit(wxCommandEvent& event)
 			wxString line = wxGetTextFromUser( gettext("Please enter message you want to send"), gettext("Input a line"), wxEmptyString );
 #endif
 			if( ! line.IsEmpty() )
-				editterm->Paste( wxStringToCharPtr(line) , false );         	
+				editterm->Paste( line , false );
 			break;
 	}    
 }

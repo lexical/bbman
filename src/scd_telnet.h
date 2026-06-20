@@ -96,7 +96,7 @@ public:
 	void keyEnd();
 	void keyControl(char ch);
 
-	void Paste(char *txt, bool withANSI);
+	void Paste(const wxString& text, bool withANSI);
  	void PasteFromClipboard(bool withANSI);	//從剪貼簿上讀取字串, 並且傳送給 server
 
 	SCD_Socket* GetSocket()	{	return &sock;	}

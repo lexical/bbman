@@ -814,7 +814,7 @@ void BBS_Frame::OnInputLine(wxCommandEvent& event)
 	wxString line = wxGetTextFromUser( gettext("Please enter message you want to send"), gettext("Input a line"), wxEmptyString );
 #endif
 	if( ! line.IsEmpty() )
-		now_telnet->Paste( wxStringToCharPtr(line) , true );
+		now_telnet->Paste( line , true );
 }
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------

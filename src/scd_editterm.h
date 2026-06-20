@@ -71,7 +71,7 @@ public:
 
 
 	void PasteFromClipboard(bool withANSI);
-	void Paste(char *txt, bool withANSI);
+	void Paste(const wxString& text, bool withANSI);
 
 	void OnAsciiChar(char ch);
 

@@ -25,11 +25,11 @@ SCD_EditTerm::SCD_EditTerm(wxWindow *win) : SCD_Terminal(win)
 }
 SCD_EditTerm::~SCD_EditTerm()
 {
-}    
+}
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
-bool SCD_EditTerm::set_line_capacity(int _dc) //³]©w³Ì¤j¥i®e¯Çªº¦æ¼Æ
+bool SCD_EditTerm::set_line_capacity(int _dc) //è¨­å®šæœ€å¤§å¯å®¹ç´çš„è¡Œæ•¸
 {
     int row_count;
 	getColumnRowCount(NULL , & row_count );
@@ -49,13 +49,13 @@ bool SCD_EditTerm::set_line_capacity(int _dc) //³]©w³Ì¤j¥i®e¯Çªº¦æ¼Æ
 	return true;
 }
 // ----------------------------------------------------------------------------
-bool SCD_EditTerm::ensure_line_capacity(int _lc)	//½T«O¦³ _lc ¦æ¥i¥H¨Ï¥Î
+bool SCD_EditTerm::ensure_line_capacity(int _lc)	//ç¢ºä¿æœ‰ _lc è¡Œå¯ä»¥ä½¿ç”¨
 {
 	if( _lc <= line_capacity )	return true;
 	else return set_line_capacity( _lc + 100 );
 }
 // ----------------------------------------------------------------------------
-TerminalChar* SCD_EditTerm::AllocNewLine()	//°t¸m¤@¦æ©Ò»İªº°O¾ĞÅéªÅ¶¡
+TerminalChar* SCD_EditTerm::AllocNewLine()	//é…ç½®ä¸€è¡Œæ‰€éœ€çš„è¨˜æ†¶é«”ç©ºé–“
 {
     int col_count;
 	getColumnRowCount( &col_count , NULL );
@@ -78,10 +78,10 @@ void SCD_EditTerm::abs_AddLines(int line_index , int line_count )
 
 	int move_count = row_count - line_index;
 	for(int c=0 , s=row_count-1 , d=s+line_count ; c<move_count ; c++ , s--, d--)
-		term_data[d] = term_data[s];	//·h²¾¦æ
-	for(int i=0;i<line_count;i++)	//·s¼W¦æ
+		term_data[d] = term_data[s];	//æ¬ç§»è¡Œ
+	for(int i=0;i<line_count;i++)	//æ–°å¢è¡Œ
 		term_data[i+line_index] = AllocNewLine();
-		
+
 	updateScrollBar(row_count + line_count);
 }
 // ----------------------------------------------------------------------------
@@ -91,9 +91,9 @@ void SCD_EditTerm::abs_DeleteLines(int line_index , int line_count )
     int col_count, row_count;
 	getColumnRowCount(&col_count , & row_count );
 
- 	for(int i=0;i<line_count;i++)	delete term_data[i + line_index];	//§R°£¦æ¸ê®Æ
- 	for(int d=line_index , s=line_index+line_count ; s < row_count ; s++ , d++ )
- 		term_data[d] = term_data[s];	//·h²¾¦æ¸ê®Æ
+	for(int i=0;i<line_count;i++)	delete term_data[i + line_index];	//åˆªé™¤è¡Œè³‡æ–™
+	for(int d=line_index , s=line_index+line_count ; s < row_count ; s++ , d++ )
+		term_data[d] = term_data[s];	//æ¬ç§»è¡Œè³‡æ–™
 
 	ensure_line_capacity(row_count - line_count);
 	updateScrollBar(row_count - line_count);
@@ -112,20 +112,20 @@ void SCD_EditTerm::abs_CleanAll()
 // ----------------------------------------------------------------------------
 void SCD_EditTerm::keyEnter()
 {
-   	int x, y;
-   	getXY(&x, &y);
+	int x, y;
+	getXY(&x, &y);
 
-   	int col_count, row_count;
-   	getColumnRowCount(&col_count, &row_count);
+	int col_count, row_count;
+	getColumnRowCount(&col_count, &row_count);
 
-   	if( term_data[y][x].getCharType() == TerminalChar::CH_WORDLAST )
-   		x--;	//­Y´å¼Ğ¦b¥ş§Î¦rªº¤¤¶¡, «h¥ª²¾¤@®æ
+	if( term_data[y][x].getCharType() == TerminalChar::CH_WORDLAST )
+		x--;	//è‹¥æ¸¸æ¨™åœ¨å…¨å½¢å­—çš„ä¸­é–“, å‰‡å·¦ç§»ä¸€æ ¼
 
-   	int move_len = getLineLength() - x;
-   	if(move_len < 0)	move_len = 0;
+	int move_len = getLineLength() - x;
+	if(move_len < 0)	move_len = 0;
 
 
-	abs_AddLines( y + 1 );	//·s¼W¤@¦æ, ´¡¤J¦b¤U¤@¦æ
+	abs_AddLines( y + 1 );	//æ–°å¢ä¸€è¡Œ, æ’å…¥åœ¨ä¸‹ä¸€è¡Œ
 
 	TerminalChar dch = TerminalChar::getDefaultCharProperty();
 
@@ -135,24 +135,24 @@ void SCD_EditTerm::keyEnter()
 		term_data[y][x+i] = dch;
 	}
 
-   	goDown();
-   	goLineHead();
+	goDown();
+	goLineHead();
 	repaint();
 
 	blChanged = true;
 }
 // ----------------------------------------------------------------------------
-void SCD_EditTerm::JoinLine(int _line)	//©M¤U¤@¦æ¦X¨Ö
+void SCD_EditTerm::JoinLine(int _line)	//å’Œä¸‹ä¸€è¡Œåˆä½µ
 {
 	if( _line == -1 )	getXY( NULL , &_line );
 
-   	int col_count, row_count;
-   	getColumnRowCount(&col_count, &row_count);
-   	if( _line + 1 >= row_count )	return;
+	int col_count, row_count;
+	getColumnRowCount(&col_count, &row_count);
+	if( _line + 1 >= row_count )	return;
 
-   	int now_line_len = getLineLength(_line);
-   	if( now_line_len == col_count )	return;
-   	int next_line_len = getLineLength(_line+1);
+	int now_line_len = getLineLength(_line);
+	if( now_line_len == col_count )	return;
+	int next_line_len = getLineLength(_line+1);
 
 	int move_len = col_count - now_line_len;
 	if( move_len > next_line_len )	move_len = next_line_len;
@@ -160,25 +160,25 @@ void SCD_EditTerm::JoinLine(int _line)	//©M¤U¤@¦æ¦X¨Ö
 	if( term_data[_line+1][move_len-1].getCharType() == TerminalChar::CH_WORDFIRST )
 		move_len --;
 
-	for(int i=0;i<move_len;i++)	//§â¤U¤@¦æªº«e­±ªº¦r¦ê½Æ»s¨ì³o¦æªº¦æ§À, ª½¨ì³o¦æº¡¤F©Î¬O¤U¦æ¨SªF¦è¥i½Æ»s¤F¬°¤î
+	for(int i=0;i<move_len;i++)	//æŠŠä¸‹ä¸€è¡Œçš„å‰é¢çš„å­—ä¸²è¤‡è£½åˆ°é€™è¡Œçš„è¡Œå°¾, ç›´åˆ°é€™è¡Œæ»¿äº†æˆ–æ˜¯ä¸‹è¡Œæ²’æ±è¥¿å¯è¤‡è£½äº†ç‚ºæ­¢
 		term_data[_line][i+now_line_len] = term_data[_line+1][i];
 
-	for(int i=move_len;i<next_line_len;i++)	//§â¤U¦æ¦æ§Àªº¦r¦ê©¹«e·h
+	for(int i=move_len;i<next_line_len;i++)	//æŠŠä¸‹è¡Œè¡Œå°¾çš„å­—ä¸²å¾€å‰æ¬
 		term_data[_line+1][i-move_len] = term_data[_line+1][i];
 
 	TerminalChar dch = TerminalChar::getDefaultCharProperty();
-	for(int i=1;i<=move_len;i++)	//²M°£¤U¦æ¦æ§À
+	for(int i=1;i<=move_len;i++)	//æ¸…é™¤ä¸‹è¡Œè¡Œå°¾
 		term_data[_line+1][next_line_len-i] = dch;
 
-	if( move_len > 0 && move_len < next_line_len )	//¦pªG¤U¦æÁÙ¦³³Ñ¾l¸ê®Æ, «h­«Ã¸³o¦æ©M¤U¦æ
+	if( move_len > 0 && move_len < next_line_len )	//å¦‚æœä¸‹è¡Œé‚„æœ‰å‰©é¤˜è³‡æ–™, å‰‡é‡ç¹ªé€™è¡Œå’Œä¸‹è¡Œ
 	{
 		wxClientDC dc( getParentWindow() );
 		BeginDrawing(&dc);
 		repaintLine(_line);
 		repaintLine(_line+1);
- 		EndDrawing();
+		EndDrawing();
 	}
-	else	//§_«h, §R°£¤U¦æ, ¥ş³¡­«Ã¸
+	else	//å¦å‰‡, åˆªé™¤ä¸‹è¡Œ, å…¨éƒ¨é‡ç¹ª
 	{
 		abs_DeleteLines( _line + 1 );
 		repaint();
@@ -191,18 +191,18 @@ void SCD_EditTerm::keyBackspace()
 {
 	int x, y;
 	getXY(&x, &y);
-	if( x == 0 )	//¦pªG´å¼Ğ¦b¦æ­º
+	if( x == 0 )	//å¦‚æœæ¸¸æ¨™åœ¨è¡Œé¦–
 	{
-       	if( y == 0 )	return;	//¦pªG¦b²Ä¤@¦æ´N¸õ¥X
-       	goUp();
-       	keyEnd();
-       	JoinLine();
+	if( y == 0 )	return;	//å¦‚æœåœ¨ç¬¬ä¸€è¡Œå°±è·³å‡º
+	goUp();
+	keyEnd();
+	JoinLine();
 	}
 	else
 	{
 		if( isLeftAWord() )	goLeft();
-	    goLeft();
-    	keyDelete();
+	goLeft();
+	keyDelete();
 	}
 
 	blChanged = true;
@@ -210,43 +210,43 @@ void SCD_EditTerm::keyBackspace()
 // ----------------------------------------------------------------------------
 void SCD_EditTerm::keyDelete()
 {
-	//¦pªG¥Ø«e´å¼Ğ³B©ó¥ş«¬¦rªº¤¤¶¡«hÅı´å¼Ğ¥ª²¾¤@®æ
+	//å¦‚æœç›®å‰æ¸¸æ¨™è™•æ–¼å…¨å‹å­—çš„ä¸­é–“å‰‡è®“æ¸¸æ¨™å·¦ç§»ä¸€æ ¼
 	int x, y;
 	getXY(&x, &y);
 
-	if( x >= getLineLength() )	//¦pªG´å¼Ğ¦b¦æ§À, «h¦X¨Ö¤U¤@¦æ
+	if( x >= getLineLength() )	//å¦‚æœæ¸¸æ¨™åœ¨è¡Œå°¾, å‰‡åˆä½µä¸‹ä¸€è¡Œ
 	{
-   		JoinLine();
-   		return;
+		JoinLine();
+		return;
 	}
 
 
 	if( term_data[y][x].getCharType() == TerminalChar::CH_WORDLAST )
-	{	goLeft();	x--;	}	//­Y´å¼Ğ¦b¥ş§Î¦rªº¤¤¶¡, «h¥ª²¾¤@®æ
+	{	goLeft();	x--;	}	//è‹¥æ¸¸æ¨™åœ¨å…¨å½¢å­—çš„ä¸­é–“, å‰‡å·¦ç§»ä¸€æ ¼
 
 	int col_count;
 	getColumnRowCount(&col_count , NULL);
 
 
 	TerminalChar dch = TerminalChar::getDefaultCharProperty();
-	if( isCurrentAWord() )	//­Y´å¼Ğ¥Ø«e¦b¤¤¤å¦r¶}ÀY, «h¤@¦¸§R°£¨â­Ó¦r¤¸
+	if( isCurrentAWord() )	//è‹¥æ¸¸æ¨™ç›®å‰åœ¨ä¸­æ–‡å­—é–‹é ­, å‰‡ä¸€æ¬¡åˆªé™¤å…©å€‹å­—å…ƒ
 	{
- 		for(int i=x+2;i<col_count;i++)
-	 		term_data[y][i-2] = term_data[y][i];
+		for(int i=x+2;i<col_count;i++)
+			term_data[y][i-2] = term_data[y][i];
 		term_data[y][col_count-1] = dch;
 		term_data[y][col_count-2] = dch;
 	}
-	else    //§_«h, ¤@¦¸¥u§R°£¤@­Ó¦r¤¸
+	else    //å¦å‰‡, ä¸€æ¬¡åªåˆªé™¤ä¸€å€‹å­—å…ƒ
 	{
 		for(int i=x+1;i<col_count;i++)
-	 		term_data[y][i-1] = term_data[y][i];
+			term_data[y][i-1] = term_data[y][i];
 		term_data[y][col_count-1] = dch;
 	}
 
-	adjustLineCharInfo();	//SCD_Terminal::adjustLineCharInfo() ¥i¼Ğ¥Ü³Q§ïÅÜªº³o¦æªº¥ş«¬¦r¥b«¬¦r
+	adjustLineCharInfo();	//SCD_Terminal::adjustLineCharInfo() å¯æ¨™ç¤ºè¢«æ”¹è®Šçš„é€™è¡Œçš„å…¨å‹å­—åŠå‹å­—
 	blChanged = true;
 
-	//­«Ã¸
+	//é‡ç¹ª
 	wxClientDC dc( getParentWindow() );
 	BeginDrawing(&dc);
 	repaintLine();
@@ -269,21 +269,21 @@ void SCD_EditTerm::keyDown()
 // ----------------------------------------------------------------------------
 void SCD_EditTerm::keyPageUp()
 {
-   	int x, y;
-   	getXY(&x, &y);
+	int x, y;
+	getXY(&x, &y);
 	int line_count_in_view = getLineCountInView();
 
-   	y = y - (line_count_in_view - 1);
+	y = y - (line_count_in_view - 1);
 	if(y < 0)	y = 0;
 
-   	gotoXY(x,y);
-   	ScrollToCaret();
+	gotoXY(x,y);
+	ScrollToCaret();
 }
 // ----------------------------------------------------------------------------
 void SCD_EditTerm::keyPageDown()
 {
-   	int x, y;
-   	getXY(&x, &y);
+	int x, y;
+	getXY(&x, &y);
 	int line_count_in_view = getLineCountInView();
 
 	int row_count;
@@ -292,13 +292,13 @@ void SCD_EditTerm::keyPageDown()
 	y = y + line_count_in_view - 1;
 	if( y >= row_count - 1 )	y = row_count - 1;
 
-   	gotoXY(x, y);
-   	ScrollToCaret();
+	gotoXY(x, y);
+	ScrollToCaret();
 }
 // ----------------------------------------------------------------------------
 void SCD_EditTerm::DeleteLineTail()
 {
-	//¦pªG¥Ø«e´å¼Ğ³B©ó¥ş«¬¦rªº¤¤¶¡«hÅı´å¼Ğ¥ª²¾¤@®æ
+	//å¦‚æœç›®å‰æ¸¸æ¨™è™•æ–¼å…¨å‹å­—çš„ä¸­é–“å‰‡è®“æ¸¸æ¨™å·¦ç§»ä¸€æ ¼
 	int x, y;
 	getXY(&x, &y);
 	if( term_data[y][x].getCharType() == TerminalChar::CH_WORDLAST )
@@ -316,10 +316,10 @@ void SCD_EditTerm::DeleteLineTail()
 // ----------------------------------------------------------------------------
 void SCD_EditTerm::DeleteLine()
 {
-   	int y , row_count;
-   	getXY(NULL, &y);
-   	getColumnRowCount(NULL , &row_count);
-	if( y == row_count - 1 )	return;	//¦pªG¦b¦æ§À, «h¸õ¥X
+	int y , row_count;
+	getXY(NULL, &y);
+	getColumnRowCount(NULL , &row_count);
+	if( y == row_count - 1 )	return;	//å¦‚æœåœ¨è¡Œå°¾, å‰‡è·³å‡º
 
 	abs_DeleteLines();
 	repaint();
@@ -347,28 +347,28 @@ void SCD_EditTerm::setSelectionProperty(int type, bool b, int color)
 	{
 		for(int j=0;j<col_count;j++)
 		{
-		    if( i == sy && j < sx )	continue;
-		    if( i == ey && j > ex )	continue;
+		if( i == sy && j < sx )	continue;
+		if( i == ey && j > ex )	continue;
 
 			switch( type )
 			{
-			    case 0 :
-           		{
-			        TerminalChar & tch = term_data[i][j];
-			        ch = tch.ch;
-			        default_tch.setCharType( tch.getCharType() );
-			        tch = default_tch;
-			        tch.ch = ch;
-           			break;
+			case 0 :
+		{
+			TerminalChar & tch = term_data[i][j];
+			ch = tch.ch;
+			default_tch.setCharType( tch.getCharType() );
+			tch = default_tch;
+			tch.ch = ch;
+			break;
 				}
-			    case 1 : term_data[i][j].setBlink(b);	break;
-			    case 2 : term_data[i][j].setHighlight(b);	break;
-			    case 3 : term_data[i][j].setUnderline(b);	break;
-			    case 4 : term_data[i][j].setTextColor(color);	break;
-			    case 5 : term_data[i][j].setBgColor(color);	break;
+			case 1 : term_data[i][j].setBlink(b);	break;
+			case 2 : term_data[i][j].setHighlight(b);	break;
+			case 3 : term_data[i][j].setUnderline(b);	break;
+			case 4 : term_data[i][j].setTextColor(color);	break;
+			case 5 : term_data[i][j].setBgColor(color);	break;
 			}
 		}
- 		repaintLine(i);
+		repaintLine(i);
 	}
 
 	if( type == 1 )	setHasBlinkChar(true);
@@ -380,15 +380,18 @@ void SCD_EditTerm::PasteFromClipboard(bool withANSI)
 {
 	wxString text = GetTextFromClipboard();
 	if( text.IsEmpty() )	return;
-	else Paste( wxStringToCharPtr(text) , withANSI );
+	Paste( text , withANSI );
 }
 // ----------------------------------------------------------------------------
-void SCD_EditTerm::Paste(char *txt, bool withANSI)
+void SCD_EditTerm::Paste(const wxString& text, bool withANSI)
 {
-	txt = strdup( wxStringToCharPtr( GetLineWrapedString(txt) ) );
+	(void)withANSI;
+	wxString wrapped = GetLineWrapedString(text);
+	wxCharBuffer big5_buf = wxStringToBig5Buffer(wrapped);
+	char *wrapped_txt = strdup( big5_buf.data() ? const_cast<char*>(big5_buf.data()) : "" );
 
-	//­pºâ±ı¶K¤Wªº¤å¦rÁ`¦@¦³´X¦æ
-	char *p = txt;
+	//è¨ˆç®—æ›è¡Œæ¬¡æ•¸
+	char *p = wrapped_txt;
 	int newline_count = 0;
 	while( *p != '\0' )
 	{
@@ -399,12 +402,12 @@ void SCD_EditTerm::Paste(char *txt, bool withANSI)
 	int col_count;
 	getColumnRowCount( &col_count, NULL );
 
-	int bx, by;	//¶K¤W«eªº´å¼Ğ®y¼Ğ
+	int bx, by;	//è²¼ä¸Šå‰çš„æ¸¸æ¨™ä½ç½®
 	getXY(&bx , &by);
-	abs_AddLines( by+1 , newline_count );	//·s¼W¦æ¼Æ
+	abs_AddLines( by+1 , newline_count );	//æ–°å¢åŠ è¡Œ
 
 	if( term_data[by][bx].getCharType() == TerminalChar::CH_WORDLAST )
-	{	goLeft();	bx --;	}	//­Y´å¼Ğ¦b¥ş§Î¦r¤¤¶¡, «h¥ª²¾¤@®æ
+	{	goLeft();	bx --;	}	//å¦‚æœæ¸¸æ¨™åœ¨ä¸­æ–‡å­—ä¸Šï¼Œå‰‡å·¦ç§»ä¸€æ ¼
 
 	int b_line_len = getLineLength();
 	int buf_len = b_line_len - bx;
@@ -412,33 +415,33 @@ void SCD_EditTerm::Paste(char *txt, bool withANSI)
 	if( buf_len > 0 )
 	{
 		buf = new TerminalChar[ buf_len ];
-		for(int i=0;i<buf_len;i++)	buf[i] = term_data[by][bx+i];	//½Æ»s¶K¤W«eªº¦æ§À
+		for(int i=0;i<buf_len;i++)	buf[i] = term_data[by][bx+i];	//å‚™ä»½è²¼ä¸Šå‰æ¸¸æ¨™å¾Œé¢çš„å­—
 	}
 
-	DeleteLineTail();	//§R°£¶K¤W«eªº¦æ§À
+	DeleteLineTail();	//åˆªé™¤è²¼ä¸Šå‰æ¸¸æ¨™å¾Œé¢çš„å­—
 
-   	EnableDrawing(false);
-	parse(txt);	//¶K¤W¤å¦r
+	EnableDrawing(false);
+	parse(wrapped_txt);	//è²¼ä¸Šå­—ä¸²
 	EnableDrawing(true);
+
+	free(wrapped_txt);
 
 	if( buf_len > 0 )
 	{
-		int ax, ay;	//¶K¤W«áªº´å¼Ğ®y¼Ğ
+		int ax, ay;	//è²¼ä¸Šå¾Œçš„æ¸¸æ¨™åº§æ¨™
 		getXY(&ax , &ay);
 
-		//§â [¶K¤W«eªº¦æ§À¤å¦r] ½Æ»s¨ì [¶K¤W«áªº¦æ§À]
+		//æŠŠ [è²¼ä¸Šå‰çš„è¡Œå°¾æ–‡å­—] è¤‡è£½åˆ° [è²¼ä¸Šå¾Œçš„è¡Œå°¾]
 		if( ax + buf_len <= col_count );
 		else
 		{
 			abs_AddLines( ay+1 );
-   			ax = 0;	ay ++;
+			ax = 0;	ay ++;
 		}
 		for(int i=0;i<buf_len;i++)	term_data[ay][ax+i] = buf[i];
 	}
 
 	if(buf)	delete[] buf;
-	free(txt);
-
 	repaint();
 
 	blChanged = true;
@@ -450,7 +453,7 @@ void SCD_EditTerm::OnAsciiChar(char ch)
 	getXY(&x, &y);
 
 	int col_count;
-   	getColumnRowCount(&col_count, NULL);
+	getColumnRowCount(&col_count, NULL);
 
 	for(int i=col_count-1;i>x;i--)	term_data[y][i] = term_data[y][i-1];
 	if(x > 0)	term_data[y][x] = term_data[y][x-1];
@@ -473,19 +476,19 @@ void SCD_EditTerm::OnMouseLeftDown(wxMouseEvent& event)
     int x, y;
     MouseXY_to_TextXY( event.GetX(), event.GetY(), x, y);
     gotoXY(x,y);
-    if( term_data[y][x].getCharType() == TerminalChar::CH_WORDLAST )	goLeft();	//½T«O¥Ñ¼Ğ¤£·|°±¦b¥ş§Î¦rªº²Ä¤G­Ó byte
+    if( term_data[y][x].getCharType() == TerminalChar::CH_WORDLAST )	goLeft();	//ç¢ºä¿ç”±æ¨™ä¸æœƒåœåœ¨å…¨å½¢å­—çš„ç¬¬äºŒå€‹ byte
 }
 // ----------------------------------------------------------------------------
 void SCD_EditTerm::OnMouseMotion(wxMouseEvent& event)
 {
     SCD_Terminal::OnMouseMotion(event);
 
-    if( selectState == 2 )	//¥¿¦b¿ï¨ú¤å¦r¤¤
+    if( selectState == 2 )	//æ­£åœ¨é¸å–æ–‡å­—ä¸­
 	{
-	    int x, y;
-	    MouseXY_to_TextXY( event.GetX(), event.GetY(), x, y);
-    	gotoXY(x,y);
-	    if( term_data[y][x].getCharType() == TerminalChar::CH_WORDLAST )	goLeft();	//½T«O¥Ñ¼Ğ¤£·|°±¦b¥ş§Î¦rªº²Ä¤G­Ó byte
+	int x, y;
+	MouseXY_to_TextXY( event.GetX(), event.GetY(), x, y);
+	gotoXY(x,y);
+	if( term_data[y][x].getCharType() == TerminalChar::CH_WORDLAST )	goLeft();	//ç¢ºä¿ç”±æ¨™ä¸æœƒåœåœ¨å…¨å½¢å­—çš„ç¬¬äºŒå€‹ byte
 	}
 }
 // ----------------------------------------------------------------------------
@@ -496,7 +499,7 @@ void SCD_EditTerm::OnChar(wxKeyEvent& event)
 	int key = event.GetKeyCode();
 //	wxMessageBox( wxString::Format("%d", key) );
 	OnAsciiChar( (char)key );
-}    
+}
 // ----------------------------------------------------------------------------
 void SCD_EditTerm::OnKeyDown(wxKeyEvent& event)
 {
@@ -505,14 +508,14 @@ void SCD_EditTerm::OnKeyDown(wxKeyEvent& event)
 	if( key == WXK_DELETE )	keyDelete();
 //	else if( key == WXK_RETURN || )	keyEnter();	//[Enter]
 	else if( key == WXK_BACK )	keyBackspace();	//back space
-	else if( key == 395 )	OnAsciiChar('.');	//Áä½L¥kÃä, ¼Æ¦rÁäªşªñªº [¤p¼ÆÂI] Áä
-//	else if( isascii(key) )		event.Skip();	//¥æµ¹ OnChar event ³B²z
-	else if( key < 0x80 && ! iscntrl(key) )	event.Skip();	//¥æµ¹ OnChar event ³B²z
+	else if( key == 395 )	OnAsciiChar('.');	//éµç›¤å³é‚Š, æ•¸å­—éµé™„è¿‘çš„ [å°æ•¸é»] éµ
+//	else if( isascii(key) )		event.Skip();	//äº¤çµ¦ OnChar event è™•ç†
+	else if( key < 0x80 && ! iscntrl(key) )	event.Skip();	//äº¤çµ¦ OnChar event è™•ç†
 	else
 	{
-		if( key >= 326 && key <= 335 )	//¦pªG¬OÁä½L¥kÃäªº¼Æ¦rÁä
+		if( key >= 326 && key <= 335 )	//å¦‚æœæ˜¯éµç›¤å³é‚Šçš„æ•¸å­—éµ
 		{
-  			char ch = (char)(key - 326) + '0';
+			char ch = (char)(key - 326) + '0';
 			parse( (char*)&ch , 1 );
 		}
 		else
@@ -532,20 +535,20 @@ void SCD_EditTerm::OnKeyDown(wxKeyEvent& event)
 				case WXK_INSERT :	break;
 				case WXK_UP :		goUp();		break;
 				case WXK_DOWN :		keyDown();	break;
-				case WXK_LEFT :		
-           			if( isLeftAWord() )	goLeft();
-           			goLeft();
-              		break;
-				case WXK_RIGHT :	
-    		    	if( isCurrentAWord() )	goRight();
-              		goRight();
-                	break;
+				case WXK_LEFT :
+			if( isLeftAWord() )	goLeft();
+			goLeft();
+		break;
+				case WXK_RIGHT :
+			if( isCurrentAWord() )	goRight();
+		goRight();
+	break;
 				case WXK_PAGEUP :	keyPageUp();	break;	//page up
 				case WXK_PAGEDOWN :	keyPageDown();	break;	//page down
 
 				default :
 //wxMessageBox(wxString::Format("%d", key) );
-					if( key < 0xff )	event.Skip();	//for Âù¦ì¤¸¦r
+					if( key < 0xff )	event.Skip();	//for é›™ä½å…ƒå­—
 					break;
 			}
 		}

@@ -381,7 +381,8 @@ public:
 	{	return blEnableDoubleByteDetection;	}
 
 protected:
-	wxString GetLineWrapedString(char *txt);	//將 txt 做自動斷行, 使每一行的字數不會超過指定的長度
+	wxString GetLineWrapedString(char *txt);
+	wxString GetLineWrapedString(const wxString& text);	//將 txt 做自動斷行, 使每一行的字數不會超過指定的長度
 public:
 	static void SetLineWrapedLength(int len);	//設定自動斷行的長度
 	static int GetLineWrapedLength();

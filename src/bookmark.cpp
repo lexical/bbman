@@ -28,7 +28,7 @@ enum { ID_TEXT_BEGIN, ID_TEXT_NAME, ID_TEXT_IP, ID_TEXT_PORT, ID_TEXT_USERNAME, 
 
 static wxString SiteListBig5ToWxString(const char *text)
 {
-	static wxCSConv big5_conv(_T("BIG5"));
+	static wxCSConv big5_conv(_T("BIG5HKSCS"));
 	wxString value(text, big5_conv);
 	if( value.IsEmpty() && text[0] != '\0' )
 		value = wxString::FromUTF8(text);
@@ -193,7 +193,7 @@ void frm_Favorite_Edit::OnDataChanged(wxCommandEvent& event)
 				txtPassword->Enable(b);
 			}
 			break;
-			
+
 	}
 
 }
@@ -211,8 +211,8 @@ void frm_Favorite_Edit::LoadFavorites(wxTreeItemId parent, wxString config_path)
 	bool ret;
 	wxTreeItemId child;
 
-	//Åª¨ú¸ê®Æ§¨
- 	GetConfig()->SetPath(config_path);
+	//è®€å–è³‡æ–™å¤¾
+	GetConfig()->SetPath(config_path);
 	ret = GetConfig()->GetFirstGroup( name , id );
 	while( ret )
 	{
@@ -224,8 +224,8 @@ void frm_Favorite_Edit::LoadFavorites(wxTreeItemId parent, wxString config_path)
 		ret = GetConfig()->GetNextGroup( name , id );
 	}
 
-	//Åª¨ú site
- 	GetConfig()->SetPath(config_path);
+	//è®€å– site
+	GetConfig()->SetPath(config_path);
 	ret = GetConfig()->GetFirstEntry( name , id );
 	while( ret )
 	{
@@ -251,7 +251,7 @@ void frm_Favorite_Edit::SaveFavorites()
 // ----------------------------------------------------------------------------
 void frm_Favorite_Edit::SaveFavorites(wxTreeItemId parent, wxString config_path)
 {
- 	GetConfig()->SetPath( config_path );
+	GetConfig()->SetPath( config_path );
 
 	wxTreeItemIdValue cookie;
 	wxTreeItemId child;
@@ -262,7 +262,7 @@ void frm_Favorite_Edit::SaveFavorites(wxTreeItemId parent, wxString config_path)
 	while(child.IsOk())
 	{
 		child_text = m_GetNodeText(child);
-     	int child_img = tree.GetItemImage(child);
+	int child_img = tree.GetItemImage(child);
 
 		if(child_img == ICON_DIR)
 			child_name = wxString::Format("%03d ", index) + child_text;
@@ -273,15 +273,15 @@ void frm_Favorite_Edit::SaveFavorites(wxTreeItemId parent, wxString config_path)
 			child_name = wxString::Format("%03d ", index) + si.name;
 		}
 
-     	child_path = config_path + _T("/") + child_name;
+	child_path = config_path + _T("/") + child_name;
 		if( child_img == ICON_DIR )
-  		{
+		{
 			if( tree.ItemHasChildren(child) )
 				SaveFavorites(child, child_path);
 		}
 		else
 			GetConfig()->Write( child_path, child_text );
-			
+
 		child = tree.GetNextChild(parent, cookie);
 
 		index ++;
@@ -295,7 +295,7 @@ void frm_Favorite_Edit::AddFavorite(SiteInfo *si)
 	tree.SelectItem(new_item);
 	txtName->SetSelection(-1,-1);
 	if( si->protocol == SOCK_SSH )
-		rdbxProtocol->SetStringSelection(_T("SSH"));	//³o¦æ·|¨Ï focus ¶]¨ì rdbxProtocol...
+		rdbxProtocol->SetStringSelection(_T("SSH"));	//é€™è¡Œæœƒä½¿ focus è·‘åˆ° rdbxProtocol...
 	txtName->SetFocus();
 	bl_selected_item_setting_changed = true;
 }
@@ -361,9 +361,9 @@ void frm_Favorite_Edit::OnButton(wxCommandEvent& event)
 				{
 					next_item = tree.GetNextVisible(next_item);
 					if( !next_item.IsOk() )	return;
-					if( tree.GetItemImage(next_item) == ICON_DIR )	//¦pªG next_item ¬O¸ê®Æ§¨, «h·s¼W¦Ü next_item ©³¤U¦¨¬°²Ä¤@­Ó child
+					if( tree.GetItemImage(next_item) == ICON_DIR )	//å¦‚æœ next_item æ˜¯è³‡æ–™å¤¾, å‰‡æ–°å¢è‡³ next_item åº•ä¸‹æˆç‚ºç¬¬ä¸€å€‹ child
 						new_item = m_PrependItem(next_item, site_desc, sel_item_img);
-					else	//·s¼W¦Ü next_item ¤§«á
+					else	//æ–°å¢è‡³ next_item ä¹‹å¾Œ
 						new_item = m_InsertItem( tree.GetItemParent(next_item), next_item, site_desc, sel_item_img);
 				}
 				else
@@ -372,9 +372,9 @@ void frm_Favorite_Edit::OnButton(wxCommandEvent& event)
 					if( !next_item.IsOk() )	return;
 					next_item = tree.GetPrevVisible(next_item);
 					if( !next_item.IsOk() )	return;
-					if( tree.GetItemImage(next_item) == ICON_DIR )	//¦pªG next_item ¬O¸ê®Æ§¨, «h·s¼W¦Ü next_item ©³¤U¦¨¬°²Ä¤@­Ó child
+					if( tree.GetItemImage(next_item) == ICON_DIR )	//å¦‚æœ next_item æ˜¯è³‡æ–™å¤¾, å‰‡æ–°å¢è‡³ next_item åº•ä¸‹æˆç‚ºç¬¬ä¸€å€‹ child
 						new_item = m_AppendItem(next_item, site_desc, sel_item_img);
-					else	//·s¼W¦Ü next_item ¤§«á
+					else	//æ–°å¢è‡³ next_item ä¹‹å¾Œ
 					{
 						new_item = m_InsertItem( tree.GetItemParent(next_item), next_item, site_desc, sel_item_img);
 					}
@@ -382,7 +382,7 @@ void frm_Favorite_Edit::OnButton(wxCommandEvent& event)
 
 
 //				tmp_item = m_InsertItem( tree.GetItemParent(next_item) , next_item, site_desc, sel_item_img );
-				if( sel_item_img == ICON_DIR ) CopyTreeItem(sel_item, new_item); //¦pªG¬O¸ê®Æ§¨«h½Æ»s¾ã­Ó¸ê®Æ§¨µ²ºc
+				if( sel_item_img == ICON_DIR ) CopyTreeItem(sel_item, new_item); //å¦‚æœæ˜¯è³‡æ–™å¤¾å‰‡è¤‡è£½æ•´å€‹è³‡æ–™å¤¾çµæ§‹
 				tree.Delete(sel_item);
 				tree.SelectItem(new_item);
 			}
@@ -470,7 +470,7 @@ void frm_Favorite_Edit::CopyTreeItem(wxTreeItemId src, wxTreeItemId tar)
 	src_child = tree.GetFirstChild(src, cookie);
 	while(src_child.IsOk())
 	{
-     	int src_child_img = tree.GetItemImage(src_child);
+	int src_child_img = tree.GetItemImage(src_child);
 		tar_child = m_AppendItem( tar, m_GetNodeText(src_child), src_child_img );
 		if( tree.ItemHasChildren(src_child) )	CopyTreeItem(src_child, tar_child);
 		src_child = tree.GetNextChild(src, cookie);
@@ -488,7 +488,7 @@ void frm_Favorite_Edit::OnItemSelected(wxTreeEvent& event)
 	int sel_item_img = tree.GetItemImage(sel_item);
 	wxString site_desc = m_GetNodeText( sel_item );
 
-	if(sel_item_img == ICON_SITE)	//¦pªG¿ï¨úªº¬O¯¸¥xª«¥ó
+	if(sel_item_img == ICON_SITE)	//å¦‚æœé¸å–çš„æ˜¯ç«™å°ç‰©ä»¶
 	{
 		SiteInfo si;
 		si.Init();
@@ -498,9 +498,9 @@ void frm_Favorite_Edit::OnItemSelected(wxTreeEvent& event)
 		txtIP->Enable(true);	txtIP->SetValue( si.ip );
 		txtPort->Enable(true);	txtPort->SetValue( wxString::Format("%d", si.port) );
 //		int i = (si.protocol == SOCK_SSH) ? 1 : 0;
-//		rdbxProtocol->SetSelection(i);	//SetSelection ·|³y¦¨ wxMSW 2.4.2 crash
+//		rdbxProtocol->SetSelection(i);	//SetSelection æœƒé€ æˆ wxMSW 2.4.2 crash
 		wxString t = (si.protocol == SOCK_SSH) ? _T("SSH") : _T("BBS / Telnet");
-		rdbxProtocol->Enable(true);	rdbxProtocol->SetStringSelection(t);	//³o¦æ·|¨Ï focus ¶]¨ì rdbxProtocol...
+		rdbxProtocol->Enable(true);	rdbxProtocol->SetStringSelection(t);	//é€™è¡Œæœƒä½¿ focus è·‘åˆ° rdbxProtocol...
 		tree.SetFocus();
 		chkAutoConnectAtStartup->Enable(true);	chkAutoConnectAtStartup->SetValue( si.autoopen );
 		txtUsername->Enable(true);	txtUsername->SetValue( si.username );
@@ -508,15 +508,15 @@ void frm_Favorite_Edit::OnItemSelected(wxTreeEvent& event)
 		txtMessage->Enable(true);	txtMessage->SetValue( si.message );
 		chkAutoLogin->Enable(true);	chkAutoLogin->SetValue( ! si.username.IsEmpty() );
 	}
-	else	//¦pªG¿ï¨úªº¬O¸ê®Æ§¨
+	else	//å¦‚æœé¸å–çš„æ˜¯è³‡æ–™å¤¾
 	{
 		txtName->SetValue(site_desc);
 
 		txtIP->Enable(false);	txtIP->SetValue( wxEmptyString );
 		txtPort->Enable(false);	txtPort->SetValue( wxEmptyString );
 //		int i = (si.protocol == SOCK_SSH) ? 1 : 0;
-//		rdbxProtocol->SetSelection(i);	//SetSelection ·|³y¦¨ wxMSW 2.4.2 crash
-		rdbxProtocol->Enable(false);	rdbxProtocol->SetStringSelection(_T("BBS / Telnet"));	//³o¦æ·|¨Ï focus ¶]¨ì rdbxProtocol...
+//		rdbxProtocol->SetSelection(i);	//SetSelection æœƒé€ æˆ wxMSW 2.4.2 crash
+		rdbxProtocol->Enable(false);	rdbxProtocol->SetStringSelection(_T("BBS / Telnet"));	//é€™è¡Œæœƒä½¿ focus è·‘åˆ° rdbxProtocol...
 		tree.SetFocus();
 		chkAutoLogin->Enable(false);	chkAutoLogin->SetValue(false);
 		chkAutoConnectAtStartup->Enable(false);	chkAutoConnectAtStartup->SetValue(false);
@@ -541,13 +541,13 @@ frm_Favorite_Edit::frm_Favorite_Edit(wxWindow *parent)
 	tree.Bind(wxEVT_TREE_END_DRAG, &frm_Favorite_Edit::OnTreeEndDrag, this);
 	tree.Bind(wxEVT_TREE_KEY_DOWN, &frm_Favorite_Edit::OnTreeKeyDown, this);
 
-	//¸ü¤J¹Ï¥Ü
+	//è¼‰å…¥åœ–ç¤º
 	wxImageList *img_list = new wxImageList(16,16, true, 2);
 	img_list->Add( GetProgramIcon(BBMAN_ICON_DIR) );
 	img_list->Add( GetProgramIcon(BBMAN_ICON_SITE) );
 	tree.AssignImageList(img_list);
 
-	wxGridSizer *btn_sizer = new wxGridSizer(3, 6, 6);	//°t¸m©Ò¦³«ö¶s¦ì¸m
+	wxGridSizer *btn_sizer = new wxGridSizer(3, 6, 6);	//é…ç½®æ‰€æœ‰æŒ‰éˆ•ä½ç½®
 	btn_sizer->Add( new wxButton(this, MENU_MOVEUP, gettext("Move Up"))  , 0 , wxEXPAND | wxALL );
 	btn_sizer->Add( new wxButton(this, MENU_MKDIR, gettext("New Folder")), 0 , wxEXPAND | wxALL );
 	btn_sizer->Add( new wxButton(this, MENU_COPY, gettext("Copy"))  , 0 , wxEXPAND | wxALL );
@@ -564,7 +564,7 @@ frm_Favorite_Edit::frm_Favorite_Edit(wxWindow *parent)
 	tree_btn_sizer->Add( &tree , 1, wxGROW | wxALL );
 	tree_btn_sizer->Add( btn_sizer , 0, wxGROW | wxALL , 6 );
 
-	wxFlexGridSizer *edit_sizer = new wxFlexGridSizer(2, 10, 6);	//°t¸m©Ò¦³ wxTextCtrl ©M wxStaticText
+	wxFlexGridSizer *edit_sizer = new wxFlexGridSizer(2, 10, 6);	//é…ç½®æ‰€æœ‰ wxTextCtrl å’Œ wxStaticText
 	edit_sizer->AddGrowableCol(1);
 	edit_sizer->Add( new wxStaticText(this, -1, gettext("Site name"))  , 0 , wxALIGN_CENTER_VERTICAL );
 	edit_sizer->Add( txtName = new wxTextCtrl(this, ID_TEXT_NAME)  , 1 , wxEXPAND | wxALL );
@@ -637,7 +637,7 @@ bool frm_BBSList::getSiteInfo(wxString &_addr, wxString &_name)
 {
 	wxTreeItemId nodeId = tree.GetSelection();
 	if( nodeId.IsOk()
- 		&& tree.GetItemImage( nodeId ) == ITEM_SITE )	//¦Ó¥B¸Ó item ¬O¤@­Ó site
+		&& tree.GetItemImage( nodeId ) == ITEM_SITE )	//è€Œä¸”è©² item æ˜¯ä¸€å€‹ site
 	{
 		wxString txt = tree.GetItemText(nodeId);
 
@@ -688,7 +688,7 @@ void frm_BBSList::OnSearch(wxCommandEvent& event)
 	wxString tmp, name = txtSearch.GetValue();
 	name.Trim();
 	if( name.IsEmpty() )	return;
-	
+
 	wxTreeItemId next, now, orig = tree.GetSelection();
 	now = orig;
 	wxTreeItemIdValue cookie;
@@ -707,7 +707,7 @@ void frm_BBSList::OnSearch(wxCommandEvent& event)
 				while(true)
 				{
 					now = tree.GetItemParent(now);
-					if( !now.IsOk() )	//¹J¨ì root node
+					if( !now.IsOk() )	//é‡åˆ° root node
 					{
 						now = tree.GetRootItem();
 						now = tree.GetFirstChild(now, cookie);
@@ -721,13 +721,13 @@ void frm_BBSList::OnSearch(wxCommandEvent& event)
 		}
 
 		tmp = tree.GetItemText(now);
-		if( tmp.First(name) >= 0 )	//¦pªG§ä¨ì¤F
+		if( tmp.First(name) >= 0 )	//å¦‚æœæ‰¾åˆ°äº†
 		{
 			tree.SelectItem(now);
 			return;
 		}
 
-		if( now == orig )	//§ä¹L©Ò¦³¸`ÂI, ¦ı¨S¦³²Å¦Xªº
+		if( now == orig )	//æ‰¾éæ‰€æœ‰ç¯€é», ä½†æ²’æœ‰ç¬¦åˆçš„
 		{
 			wxMessageBox( gettext("not found") );
 			return;
@@ -746,7 +746,7 @@ void frm_BBSList::OnMouseDoubleClick(wxMouseEvent& event)
 {
 	wxTreeItemId nodeId = tree.GetSelection();
 	if( nodeId.IsOk()
- 		&& tree.GetItemImage( nodeId ) == ITEM_SITE )	//¦Ó¥B¸Ó item ¬O¤@­Ó site
+		&& tree.GetItemImage( nodeId ) == ITEM_SITE )	//è€Œä¸”è©² item æ˜¯ä¸€å€‹ site
 	{
 		EndModal(wxID_OK);
 	}
@@ -771,7 +771,7 @@ bool frm_BBSList::LoadSiteList(wxTreeItemId  rootId)
 	wxTreeItemId  now_root_Id , parent_node_Id[1000];
 	int deep = 0;
 	now_root_Id = rootId;
-	
+
 	char buf[1024];
 	while( fgets( buf, sizeof(buf), fp ) != NULL )
 	{
@@ -794,10 +794,10 @@ bool frm_BBSList::LoadSiteList(wxTreeItemId  rootId)
 				break;
 		}
 	}
-	
+
 	if( !tree.HasFlag(wxTR_HIDE_ROOT) )
 		tree.Expand( rootId );
-	
+
 	fclose(fp);
 	return true;
 }
