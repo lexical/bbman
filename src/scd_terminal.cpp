@@ -64,6 +64,16 @@ static wxString Big5BytesToWxString(const char *bytes, size_t len)
 	return text;
 }
 
+static bool MatchTerminalAscii(TerminalChar **term_data, int y, int x, const char *text)
+{
+	for(int i=0;text[i] != '\0';i++)
+	{
+		if( term_data[y][x+i].getCharType() != TerminalChar::CH_CHAR )	return false;
+		if( tolower((unsigned char)term_data[y][x+i].ch) != text[i] )	return false;
+	}
+	return true;
+}
+
 // ============================================================================
 
 static bool always_highlight = false;	//有些人電腦上字體會顯的特別暗, 這個選項讓他們可以把所有字都變成高亮度
@@ -1134,32 +1144,24 @@ else if( (unsigned char)first == 0xa0 )
 		link_start_x = -1;
 		if( term_data[_y][x].ch == ':' && term_data[_y][x+1].ch == '/' && term_data[_y][x+2].ch == '/' )
 		{
-			if( x >= 6 )
-			{
-				if( term_data[_y][x-6].ch == 't' && term_data[_y][x-5].ch == 'e' &&
-					term_data[_y][x-4].ch == 'l' && term_data[_y][x-3].ch == 'n' &&
-					term_data[_y][x-2].ch == 'e' && term_data[_y][x-1].ch == 't' )
-				{	link_start_x = x - 6;	term_data[_y][x-6].setLinkType( LINK_TELNET );	}
-			}
-			if( x >= 4 )
-			{
-				if( term_data[_y][x-4].ch == 'h' && term_data[_y][x-3].ch == 't' &&
-					term_data[_y][x-2].ch == 't' && term_data[_y][x-1].ch == 'p' )
-				{	link_start_x = x - 4;	term_data[_y][x-4].setLinkType( LINK_HTTP );	}
-				else if( term_data[_y][x-4].ch == 's' && term_data[_y][x-3].ch == 'f' &&
-					term_data[_y][x-2].ch == 't' && term_data[_y][x-1].ch == 'p' )
-				{	link_start_x = x - 4;	term_data[_y][x-4].setLinkType( LINK_SFTP );	}
-			}
-			if( x >= 3 )
-			{
-				if( term_data[_y][x-3].ch == 'f' && term_data[_y][x-2].ch == 't' &&
-					term_data[_y][x-1].ch == 'p' )
-				{	link_start_x = x - 3;	term_data[_y][x-3].setLinkType( LINK_FTP );	}
-				else if( term_data[_y][x-3].ch == 'b' && term_data[_y][x-2].ch == 'b' &&
-					term_data[_y][x-1].ch == 's' )
-				{	link_start_x = x - 3;	term_data[_y][x-3].setLinkType( LINK_TELNET );	}
-			}
+			if( x >= 6 && MatchTerminalAscii(term_data, _y, x-6, "telnet") )
+			{	link_start_x = x - 6;	term_data[_y][link_start_x].setLinkType( LINK_TELNET );	}
+			else if( x >= 5 && MatchTerminalAscii(term_data, _y, x-5, "https") )
+			{	link_start_x = x - 5;	term_data[_y][link_start_x].setLinkType( LINK_HTTPS );	}
+			else if( x >= 4 && MatchTerminalAscii(term_data, _y, x-4, "http") )
+			{	link_start_x = x - 4;	term_data[_y][link_start_x].setLinkType( LINK_HTTP );	}
+			else if( x >= 4 && MatchTerminalAscii(term_data, _y, x-4, "sftp") )
+			{	link_start_x = x - 4;	term_data[_y][link_start_x].setLinkType( LINK_SFTP );	}
+			else if( x >= 3 && MatchTerminalAscii(term_data, _y, x-3, "ftp") )
+			{	link_start_x = x - 3;	term_data[_y][link_start_x].setLinkType( LINK_FTP );	}
+			else if( x >= 3 && MatchTerminalAscii(term_data, _y, x-3, "bbs") )
+			{	link_start_x = x - 3;	term_data[_y][link_start_x].setLinkType( LINK_TELNET );	}
 
+		}
+		else if( x + 3 < col_count && MatchTerminalAscii(term_data, _y, x, "www.") )
+		{
+			link_start_x = x;
+			term_data[_y][link_start_x].setLinkType( LINK_HTTP );
 		}
 		else if(term_data[_y][x].ch == '@' && term_data[_y][x].getCharType() == TerminalChar::CH_CHAR )
 		{
