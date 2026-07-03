@@ -138,6 +138,19 @@ static wxString LoadSiteInfoSecretWithLibsecret(const SiteInfo *si, const wxStri
 }
 #endif
 
+static void ShowSiteInfoSecretLoadWarning(const wxString& field)
+{
+	static bool shown = false;
+	if( shown ) return;
+	shown = true;
+
+	wxMessageBox(
+		wxString::Format(_T("Unable to load BBMan keyring secret for %s.\n\n")
+			_T("Saved site passwords or auto-login messages stored in the ")
+			_T("keyring will be empty for this session."), field.c_str()),
+		_T("BBMan keyring"), wxOK | wxICON_WARNING);
+}
+
 static wxString StoreSiteInfoSecret(const SiteInfo *si, const wxString& field, const wxString& value)
 {
 	if( value.IsEmpty() )
@@ -172,6 +185,7 @@ static wxString LoadSiteInfoSecret(const SiteInfo *si, const wxString& field, co
 		wxUnusedVar(field);
 #endif
 
+		ShowSiteInfoSecretLoadWarning(field);
 		return wxEmptyString;
 	}
 

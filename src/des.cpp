@@ -52,6 +52,7 @@ typedef struct des_key {
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <vector>
 
 #define Bzero(x,y) memset(x,0,y)
 #define rotl32(x,n)   (((x) << ((word32)(n))) | ((x) >> (32 - (word32)(n))))
@@ -719,44 +720,158 @@ WIN32DLL_DEFINE word32 _mcrypt_algorithm_version()
 
 void SCD_des_encrypt(char *password, char *data)
 {
+	if( password == NULL || data == NULL ) return;
+
 	DES_KEY key;
 	int len = strlen( data );
 
 	_mcrypt_set_key( &key , password, strlen(password) );
 
-	for(int i=0;i<len;i+=8)
+	for(int i=0;i + 8<=len;i+=8)
 		_mcrypt_encrypt( &key , data + i );
 }
 
 void SCD_des_decrypt(char *password, char *data)
 {
+	if( password == NULL || data == NULL ) return;
+
 	DES_KEY key;
 	int len = strlen( data );
 
 	_mcrypt_set_key( &key , password, strlen(password) );
 
-	for(int i=0;i<len;i+=8)
+	for(int i=0;i + 8<=len;i+=8)
 		_mcrypt_decrypt( &key , data + i );
 }
 
 
 #include "des.h"
+static const wxChar *SCD_DES_V2_PREFIX = _T("DES2:");
+
+static bool SCD_hex_decode(const wxString& hex, std::vector<unsigned char>& out)
+{
+	wxCharBuffer buf = hex.ToUTF8();
+	const char *text = buf.data();
+	if( text == NULL ) return false;
+
+	size_t len = strlen(text);
+	if( len % 2 != 0 ) return false;
+
+	out.clear();
+	out.reserve(len / 2);
+	for( size_t i = 0; i < len; i += 2 )
+	{
+		int hi = h2n(text[i]);
+		int lo = h2n(text[i + 1]);
+		if( hi < 0 || lo < 0 ) return false;
+		out.push_back((unsigned char)((hi << 4) | lo));
+	}
+	return true;
+}
+
+static wxString SCD_hex_encode(const std::vector<unsigned char>& data)
+{
+	static const wxChar hex[] = _T("0123456789abcdef");
+	wxString out;
+	out.Alloc(data.size() * 2);
+	for( size_t i = 0; i < data.size(); i++ )
+	{
+		unsigned char ch = data[i];
+		out += hex[(ch >> 4) & 0x0f];
+		out += hex[ch & 0x0f];
+	}
+	return out;
+}
+
+static void SCD_des_crypt_buffer(const char *password, std::vector<unsigned char>& data, bool encrypt)
+{
+	if( data.empty() ) return;
+
+	DES_KEY key;
+	_mcrypt_set_key(&key, const_cast<char*>(password), strlen(password));
+	for( size_t i = 0; i + 8 <= data.size(); i += 8 )
+	{
+		char *block = reinterpret_cast<char*>(&data[i]);
+		if( encrypt ) _mcrypt_encrypt(&key, block);
+		else _mcrypt_decrypt(&key, block);
+	}
+}
+
+static std::vector<unsigned char> SCD_wxstring_to_utf8_bytes(const wxString& text)
+{
+	std::vector<unsigned char> bytes;
+	wxCharBuffer buf = text.utf8_str();
+	const char *data = buf.data();
+	if( data == NULL ) return bytes;
+
+	size_t len = strlen(data);
+	bytes.insert(bytes.end(), data, data + len);
+	return bytes;
+}
+
+static wxString SCD_wxstring_from_utf8_bytes(const unsigned char *data, size_t len)
+{
+	if( data == NULL || len == 0 ) return wxEmptyString;
+	return wxString(reinterpret_cast<const char*>(data), wxConvUTF8, len);
+}
+
 wxString SCD_des_decrypt(wxString _password , wxString _encoded_data)
 {
-	char buf[1000];
-	strcpy( buf , wxStringToCharPtr(_encoded_data) );
-	h2c(buf);
-	SCD_des_decrypt( wxStringToCharPtr(_password) , buf );
-	return buf;
+	wxCharBuffer password_buf = _password.utf8_str();
+	const char *password = password_buf.data() ? password_buf.data() : "";
+
+	wxString prefix(SCD_DES_V2_PREFIX);
+	if( _encoded_data.StartsWith(prefix) )
+	{
+		std::vector<unsigned char> data;
+		if( ! SCD_hex_decode(_encoded_data.Mid(prefix.Length()), data) )
+			return wxEmptyString;
+		if( data.size() < 8 || data.size() % 8 != 0 )
+			return wxEmptyString;
+
+		SCD_des_crypt_buffer(password, data, false);
+		size_t len = ((size_t)data[0] << 24) |
+			((size_t)data[1] << 16) |
+			((size_t)data[2] << 8) |
+			(size_t)data[3];
+		if( len > data.size() - 4 )
+			return wxEmptyString;
+		return SCD_wxstring_from_utf8_bytes(&data[4], len);
+	}
+
+	std::vector<unsigned char> legacy;
+	if( ! SCD_hex_decode(_encoded_data, legacy) )
+		return wxEmptyString;
+	if( legacy.empty() ) return wxEmptyString;
+	while( legacy.size() % 8 != 0 )
+		legacy.push_back(0);
+
+	SCD_des_crypt_buffer(password, legacy, false);
+	size_t len = 0;
+	while( len < legacy.size() && legacy[len] != 0 )
+		len++;
+	return SCD_wxstring_from_utf8_bytes(legacy.data(), len);
 }
 
 wxString SCD_des_encrypt(wxString _password , wxString _decoded_data)
 {
-	char buf[1000];
-	strcpy( buf , wxStringToCharPtr(_decoded_data) );
-	SCD_des_encrypt( wxStringToCharPtr(_password) , buf );
-	c2h(buf);
-	return buf;
+	wxCharBuffer password_buf = _password.utf8_str();
+	const char *password = password_buf.data() ? password_buf.data() : "";
+	std::vector<unsigned char> plain = SCD_wxstring_to_utf8_bytes(_decoded_data);
+
+	std::vector<unsigned char> data;
+	data.reserve(4 + plain.size() + 8);
+	size_t len = plain.size();
+	data.push_back((unsigned char)((len >> 24) & 0xff));
+	data.push_back((unsigned char)((len >> 16) & 0xff));
+	data.push_back((unsigned char)((len >> 8) & 0xff));
+	data.push_back((unsigned char)(len & 0xff));
+	data.insert(data.end(), plain.begin(), plain.end());
+	while( data.size() % 8 != 0 )
+		data.push_back(0);
+
+	SCD_des_crypt_buffer(password, data, true);
+	return wxString(SCD_DES_V2_PREFIX) + SCD_hex_encode(data);
 }
 
 /*
