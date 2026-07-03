@@ -52,7 +52,9 @@ void init()
 	wxString localePath = GetLocalePath();
 #ifdef __UNIX__
 	setlocale( LC_ALL , "" );
-	bindtextdomain( "bbman", wxStringToCharPtr(localePath) );
+	wxCharBuffer localePathBuf = localePath.mb_str(wxConvFile);
+	if( localePathBuf.data() )
+		bindtextdomain( "bbman", localePathBuf.data() );
 	textdomain( "bbman" );
 #else
 	locale = new wxLocale( wxLANGUAGE_DEFAULT );

@@ -73,14 +73,6 @@ wxString CharPtrTowxString(const char *str)
 	return wxString( mb.cMB2WC(str) );
 }
 // ----------------------------------------------------------------------------
-char* wxStringToCharPtr(const wxString &str)
-{
-	static wxMBConvUTF8 mb;
-	static wxCharBuffer buf;
-	buf = str.mb_str(mb);
-	return const_cast<char*>(buf.data());
-}
-// ----------------------------------------------------------------------------
 wxCharBuffer wxStringToBig5Buffer(const wxString &str)
 {
 	static wxCSConv big5_conv("BIG5HKSCS");
@@ -397,7 +389,6 @@ void CopyToClipboard(wxString text , bool comm_with_other)
 /*
     if (wxTheClipboard->Open())
     {
-//      wxTheClipboard->SetData( new wxTextDataObject( CharPtrTowxString(Big5ToUnicode(wxStringToCharPtr(text))) ) );
 //      wxTheClipboard->SetData( new wxTextDataObject( text ) );
         wxTheClipboard->SetData( new wxTextDataObject(text) );
         wxTheClipboard->Close();
@@ -434,13 +425,9 @@ wxString GetTextFromClipboard(bool comm_with_other)
     }
 
 
-//	text = UTF8_To_Big5( wxStringToCharPtr(text) );
-
 #ifdef __WXGTK__
 	/*if(comm_with_other && text.IsEmpty() )*/	//text = ShowPasteDialog();
 #endif
-
-//	text = UTF8_To_Big5( wxStringToCharPtr(text) );
 
 	return text;
 }

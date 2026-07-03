@@ -1089,7 +1089,12 @@ void BBS_Frame::OnSocketEvent( wxSocketEvent &e )
 					return;
 				}
 				tab->SetItemImage( i , ICON_CLOSE );
-				t->parse( wxStringToCharPtr( wxString( _T("\x1b[1;1H\x1b[1;5;33;43m ") ) + gettext("Connection fail ( maybe server out-of-service, or wrong address )") + wxString(_T(" \x1b[m")) ) );
+				wxString msg = wxString( _T("\x1b[1;1H\x1b[1;5;33;43m ") )
+					+ gettext("Connection fail ( maybe server out-of-service, or wrong address )")
+					+ wxString(_T(" \x1b[m"));
+				wxCharBuffer msg_buf = msg.utf8_str();
+				if( msg_buf.data() )
+					t->parse( const_cast<char*>(msg_buf.data()) );
 			}
 			else if( ! t->isUserClosed() && t->getConnectTime() < 10 )	//如果連線時間不到十秒鐘就被斷線, 則重新連線
 			{
@@ -1100,7 +1105,11 @@ void BBS_Frame::OnSocketEvent( wxSocketEvent &e )
 			else
 			{
 				tab->SetItemImage( i , ICON_CLOSE );
-				t->parse( wxStringToCharPtr( wxString( _T("\x1b[1;1H\x1b[1;5;33;43m ") ) + gettext("Disconnected") + wxString(_T(" \x1b[m")) ) );
+				wxString msg = wxString( _T("\x1b[1;1H\x1b[1;5;33;43m ") )
+					+ gettext("Disconnected") + wxString(_T(" \x1b[m"));
+				wxCharBuffer msg_buf = msg.utf8_str();
+				if( msg_buf.data() )
+					t->parse( const_cast<char*>(msg_buf.data()) );
 			}
 		}
 
@@ -1111,7 +1120,7 @@ void BBS_Frame::OnSocketEvent( wxSocketEvent &e )
 		if( t->isBell() )	//看看經過 SCD_Telnet::parse() 之後, 有沒有 '\a' 這個字元 (也就是檢查有沒有其他人丟水球進來)
 		{
 			if( ((SCD_Telnet*)tab->GetItemData(tab->GetSelection()))->getUserIdleTime() > 60 )	//如果使用者閒置超過一分鐘才自動切換至來訊連線
-			tab->SetSelection(i);	//有人丟水球進來的話, 則切換到該 telnet 畫面
+				tab->SetSelection(i);	//有人丟水球進來的話, 則切換到該 telnet 畫面
 
 			tab->SetItemImage( i, ICON_MESSAGE );	//修改連線標籤的圖示提醒使用者有水球
 //			wxBell();
@@ -1122,11 +1131,11 @@ void BBS_Frame::OnSocketEvent( wxSocketEvent &e )
 				wxString msg;
 				if( GetConfig()->Read( GetUserConfigPath(_T("/setting/auto_reply")) , & msg ) )	//如果有設定自動回覆水球機制
 				{
-			t->keyControl('R');
-	 				t->UserSend( wxStringToCharPtr(msg) );
-	 				t->keyEnter();
-	 				t->UserSend( "Y" );
-	 				t->keyEnter();
+					t->keyControl('R');
+					t->UserSend(msg);
+					t->keyEnter();
+					t->UserSend(wxString(_T("Y")));
+					t->keyEnter();
 				}
 			}
 		}
@@ -1464,7 +1473,6 @@ void BBS_Frame::OnTool(wxCommandEvent& event)
 				}
 				wxString path = wxFileSelector( _T("匯出 BBMan 設定值") , wxEmptyString, _T("BBMan設定.reg"), _T("reg") , _T("Windows 登錄檔|*.reg") , wxFD_SAVE | wxFD_OVERWRITE_PROMPT , this );
 				if( path.empty() )	return;
-				RegSaveKey( HKEY_CURRENT_USER , wxStringToCharPtr(path), NULL );
 */
 /*
 #elif defined(__WXGTK__)
@@ -1612,8 +1620,14 @@ void BBS_Frame::DeleteTerminal(int id)
 	int img = tab->GetItemImage(id);
 
 	if( img == ICON_CONNECTED || img == ICON_MESSAGE )
-		if( wxNO == wxMessageBox( wxString::Format( gettext("Are you sure to close connection [ %d. %s ] ?") , id+1 , wxStringToCharPtr(tab->GetItemText(id)) ) , wxEmptyString, wxYES_NO ) )
+	{
+		wxString tab_text = tab->GetItemText(id);
+		wxString prompt = wxString::Format(
+			gettext("Are you sure to close connection [ %d. %s ] ?"),
+			id + 1, tab_text.c_str());
+		if( wxNO == wxMessageBox( prompt , wxEmptyString, wxYES_NO ) )
 			return;
+	}
 
 	SCD_Telnet *t;
 	t = (SCD_Telnet*) tab->GetItemData(id);

@@ -71,7 +71,6 @@ wxString GetLocalePath();
 void ShowThemeSelector(wxWindow *parent = NULL);
 // ----------------------------------------------------------------------------
 wxString CharPtrTowxString(const char *str);
-char* wxStringToCharPtr(const wxString &str);
 wxCharBuffer wxStringToBig5Buffer(const wxString &str);
 // ----------------------------------------------------------------------------
 wxConfigBase* GetConfig();
