@@ -264,7 +264,7 @@ void SiteInfo::Set(wxString str)
 	if( protocol != SOCK_SSH )	protocol = SOCK_TELNET;
 	if( port == 0 )	port = ( protocol == SOCK_SSH ) ? 22 : 23;
 
-	//¥N±K½X¥Î DES ¸Ñ±K
+	//ä»£å¯†ç¢¼ç”¨ DES è§£å¯†
 	password = LoadSiteInfoSecret(this, _T("password"), password);
 	message = LoadSiteInfoSecret(this, _T("message"), message);
 }

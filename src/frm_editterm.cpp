@@ -50,12 +50,12 @@ enum
 
 	MENU_CHARPROP_CHCOLOR_1,	MENU_CHARPROP_CHCOLOR_2,	MENU_CHARPROP_CHCOLOR_3,
 	MENU_CHARPROP_CHCOLOR_4,	MENU_CHARPROP_CHCOLOR_5,	MENU_CHARPROP_CHCOLOR_6,
- 	MENU_CHARPROP_CHCOLOR_7,	MENU_CHARPROP_CHCOLOR_8,
+	MENU_CHARPROP_CHCOLOR_7,	MENU_CHARPROP_CHCOLOR_8,
 
 	MENU_CHARPROP_BGCOLOR_1,	MENU_CHARPROP_BGCOLOR_2,	MENU_CHARPROP_BGCOLOR_3,
 	MENU_CHARPROP_BGCOLOR_4,	MENU_CHARPROP_BGCOLOR_5,	MENU_CHARPROP_BGCOLOR_6,
- 	MENU_CHARPROP_BGCOLOR_7,	MENU_CHARPROP_BGCOLOR_8,
- 	
+	MENU_CHARPROP_BGCOLOR_7,	MENU_CHARPROP_BGCOLOR_8,
+
     MENU_CHARPROP_END,
 
 
@@ -93,24 +93,24 @@ void frame_EditTerm::UpdateTitle()
 	wxString t;
 	t = gettext("BBMan - ANSI Editor");
 	t += _T(" [ ");
- 	if( filename == wxEmptyString )	t += gettext("New File");
-  	else	t += filename;
-  	if( editterm->isChanged() )	t += _T(" *");
-   	t += _T(" ]");
+	if( filename == wxEmptyString )	t += gettext("New File");
+	else	t += filename;
+	if( editterm->isChanged() )	t += _T(" *");
+	t += _T(" ]");
 	SetTitle( t );
-}    
+}
 
 bool frame_EditTerm::SaveNewFile()
 {
 	wxString path = wxFileSelector( gettext("Save As...") , wxEmptyString, _T("NewFile.ans"), _T("ans") , _T("BBS ANSI Text (*.ans)|*.ans|All (*.*)|*.*") , wxFD_SAVE | wxFD_OVERWRITE_PROMPT , this );
 	if( path.empty() )	return false;
 	return SaveFile( path , editterm->GetAllContent(true) );
-}    
+}
 bool frame_EditTerm::SaveFile()
 {
     if( filename == wxEmptyString )	return SaveNewFile();
     else return SaveFile( filename , editterm->GetAllContent(true) );
-}    
+}
 bool frame_EditTerm::SaveFile(wxString _filename, wxString content)
 {
 	FILE *fp = wxFopen( _filename , wxT( "wb" ) );
@@ -121,7 +121,7 @@ bool frame_EditTerm::SaveFile(wxString _filename, wxString content)
     editterm->setUnchanged();
     UpdateTitle();
     return true;
-}    
+}
 
 void frame_EditTerm::OnFile(wxCommandEvent& event)
 {
@@ -130,7 +130,7 @@ void frame_EditTerm::OnFile(wxCommandEvent& event)
 	{
 		case MENU_OPENNEWWINDOW :
 			ShowAnsiEditor();
-  			break;
+			break;
 	    case MENU_OPENNEWFILE :
 			if( editterm->isChanged() )
 			{
@@ -138,14 +138,14 @@ void frame_EditTerm::OnFile(wxCommandEvent& event)
 					break;
 			}
 
-       		editterm->abs_CleanAll();
-       		editterm->gotoXY(0,0);
-       		editterm->ScrollToCaret();
+		editterm->abs_CleanAll();
+		editterm->gotoXY(0,0);
+		editterm->ScrollToCaret();
 			editterm->repaint();
 
-       		filename = wxEmptyString;
-       		editterm->setUnchanged();
-       		UpdateTitle();
+		filename = wxEmptyString;
+		editterm->setUnchanged();
+		UpdateTitle();
 	        break;
 	    case MENU_OPENOLDFILE :
 	        {
@@ -154,10 +154,10 @@ void frame_EditTerm::OnFile(wxCommandEvent& event)
 					if( wxNO == wxMessageBox( gettext("Content modified but not save yet, are you sure to quit?") , wxEmptyString, wxYES_NO ) )
 						break;
 				}
-    
+
 				wxString path = wxFileSelector( gettext("Open") , wxEmptyString, wxEmptyString, _T("ans") , gettext("BBS color text file (*.ans)|*.ans|All (*.*)|*.*") , wxFD_OPEN | wxFD_FILE_MUST_EXIST , this );
 				if( path.empty() )	return;
-				
+
 				FILE *fp = wxFopen( path , wxT( "rb" ) );
 				if(fp == NULL)	return;
 				wxString content;
@@ -166,20 +166,20 @@ void frame_EditTerm::OnFile(wxCommandEvent& event)
 				{
 				    wxFgets( buf , 1999 , fp );
 				    content += buf;
-				}    
+				}
 				fclose(fp);
 
-        		editterm->abs_CleanAll();
+		editterm->abs_CleanAll();
 //        		editterm->parse( (char*) content.c_str() );
 				editterm->Paste( content , true );
-        		editterm->gotoXY(0,0);
-        		editterm->ScrollToCaret();
+		editterm->gotoXY(0,0);
+		editterm->ScrollToCaret();
 //				editterm->repaint();
 
-        		filename = path;
-        		editterm->setUnchanged();
-        		UpdateTitle();
-	        }    
+		filename = path;
+		editterm->setUnchanged();
+		UpdateTitle();
+	        }
 	        break;
 	    case MENU_SAVEFILE :
 			SaveFile();
@@ -188,10 +188,10 @@ void frame_EditTerm::OnFile(wxCommandEvent& event)
 	        SaveNewFile();
 	        break;
 		case MENU_QUIT :
-  			Close();
-  			break;
-	}	
-}    
+			Close();
+			break;
+	}
+}
 
 void frame_EditTerm::OnEdit(wxCommandEvent& event)
 {
@@ -205,16 +205,16 @@ void frame_EditTerm::OnEdit(wxCommandEvent& event)
 			editterm->DeleteLineTail();
 		    break;
 		case MNU_JOINLINE :
-      		editterm->JoinLine();
-      		break;
+		editterm->JoinLine();
+		break;
 	    case MNU_COPY :
 			editterm->CopySelectionToClipboard(false);
 			editterm->CancelSelection();
-     		break;
+		break;
 	    case MNU_COPY_ANSI :
 			editterm->CopySelectionToClipboard(true);
 			editterm->CancelSelection();
-     		break;
+		break;
 	    case MNU_PASTE : editterm->PasteFromClipboard(false);	break;
 	    case MNU_PASTE_ANSI : editterm->PasteFromClipboard(true);	break;
 	    case MNU_SELECTALL : editterm->SelectAll(); break;
@@ -227,9 +227,9 @@ void frame_EditTerm::OnEdit(wxCommandEvent& event)
 			if( ! line.IsEmpty() )
 				editterm->Paste( line , false );
 			break;
-	}    
+	}
 }
-    
+
 void frame_EditTerm::OnCharProperty(wxCommandEvent& event)
 {
 	int id = event.GetId();
@@ -247,7 +247,7 @@ void frame_EditTerm::OnCharProperty(wxCommandEvent& event)
 	    case MENU_CHARPROP_UNDERLINE :	editterm->setSelectionUnderline(true); break;
 	    case MENU_CHARPROP_UNUNDERLINE :editterm->setSelectionUnderline(false); break;
 	}
-}    
+}
 
 void frame_EditTerm::ShowCharPropContextMenu(const wxPoint& pos)
 {
@@ -362,7 +362,7 @@ frame_EditTerm::frame_EditTerm(const wxString& title, const wxPoint& pos, const 
 
 
 
-	//³]©w terminal ¦r«¬
+	//è¨­å®š terminal å­—åž‹
 	SetFont( GetCurrentFont() );
 
 
@@ -391,17 +391,17 @@ void frame_EditTerm::SetTerminalFont(wxFont fnt)
 
 void frame_EditTerm::OnClose(wxCloseEvent& event)
 {
-	if( event.CanVeto() )	//¦pªG¤£¬O¨t²Î±j¨îÃö³¬µøµ¡
+	if( event.CanVeto() )	//å¦‚æžœä¸æ˜¯ç³»çµ±å¼·åˆ¶é—œé–‰è¦–çª—
 		if( editterm->isChanged() )
 			if( wxNO == wxMessageBox( gettext("Content modified but not save yet, are you sure to quit?") , wxEmptyString, wxYES_NO ) )
 			{
-				event.Veto();	//ªý¤î¨t²ÎÃö³¬µøµ¡ 
+				event.Veto();	//é˜»æ­¢ç³»çµ±é—œé–‰è¦–çª—
 				return;
 			}
 
 	CloseAnsiEditor(this);
-	this->Destroy();	//Ãö³¬µøµ¡			
-}    
+	this->Destroy();	//é—œé–‰è¦–çª—
+}
 
 void frame_EditTerm::OnAbout(wxCommandEvent& WXUNUSED(event))
 {	ShowAbout();	}

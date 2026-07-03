@@ -96,7 +96,7 @@ bool SCD_TabCtrl::DeleteItem(void *client_data)
 {
 	int i = TabObjectList.Index(client_data);
 	if(i == wxNOT_FOUND)	return false;
-	
+
 	return DeleteItem(i);
 }
 // ----------------------------------------------------------------------------
@@ -110,24 +110,24 @@ int SCD_TabCtrl::SetSelection(int index)
 		else return now_selected_index;
 	}
 	else if( ! isTabExist(index) )	return now_selected_index;
-	
+
 
 	if( index < now_start_index || index > now_right_index )
 		now_start_index = index;
 
 	int old_selected_index = now_selected_index;
 
-	//²£¥Í EVT_TAB_SEL_CHANGING ¨Æ¥ó
+	//ç”¢ç”Ÿ EVT_TAB_SEL_CHANGING äº‹ä»¶
 	wxNotebookEvent eb(wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGING , GetId() , index , old_selected_index );
-	GetParent()->GetEventHandler()->ProcessEvent(eb);	//³o¸Ì¤£¯à¥Î AddPenddingEvent() ¤£µM·| crash
+	GetParent()->GetEventHandler()->ProcessEvent(eb);	//é€™è£¡ä¸èƒ½ç”¨ AddPenddingEvent() ä¸ç„¶æœƒ crash
 
-	//§ó·s¸ê®Æ
+	//æ›´æ–°è³‡æ–™
 	now_selected_index = index;
 	Refresh();
 
-	//²£¥Í EVT_TAB_SEL_CHANGED ¨Æ¥ó
+	//ç”¢ç”Ÿ EVT_TAB_SEL_CHANGED äº‹ä»¶
 	wxNotebookEvent ea(wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED , GetId() , index , old_selected_index );
-	GetParent()->GetEventHandler()->ProcessEvent(ea);	//³o¸Ì¤£¯à¥Î AddPenddingEvent() ¤£µM·| crash
+	GetParent()->GetEventHandler()->ProcessEvent(ea);	//é€™è£¡ä¸èƒ½ç”¨ AddPenddingEvent() ä¸ç„¶æœƒ crash
 
 	return old_selected_index;
 }
@@ -160,7 +160,7 @@ int SCD_TabCtrl::GetItemIndex(void* p)
 	int i, c;
 	c = GetItemCount();
 	for(i=0;i<c;i++)
-  		if( p == GetItemData(i) )	return i;
+		if( p == GetItemData(i) )	return i;
 
 	return -1;
 }
@@ -243,7 +243,7 @@ inline bool SCD_TabCtrl::isTabVisible(int index)
 	return true;
 }
 // ----------------------------------------------------------------------------
-int SCD_TabCtrl::getTabUnderMouse(int x, int y)	//¨ú±o¦ì©ó®y¼Ğ (x,y) ¤Uªº«ö¶s
+int SCD_TabCtrl::getTabUnderMouse(int x, int y)	//å–å¾—ä½æ–¼åº§æ¨™ (x,y) ä¸‹çš„æŒ‰éˆ•
 {
 	int button_right = 0;
 	for(int i=now_start_index ; isTabVisible(i) ; i++)
@@ -260,10 +260,10 @@ int SCD_TabCtrl::DrawTab(int index , wxDC *dc , int start_x)
 	if( ! isTabVisible(index) )	return start_x;
 
 	TabObject *tab = (TabObject*)(TabObjectList.Item(index));
-	
-	//µe¤W«ö¶sªº©³¦â
+
+	//ç•«ä¸ŠæŒ‰éˆ•çš„åº•è‰²
 	if( index == now_selected_index )
- 	{
+	{
 	    dc->SetBrush( wxBrush( wxSystemSettings::GetColour(wxSYS_COLOUR_BTNHIGHLIGHT) , wxSOLID ) );
 		dc->SetPen( wxPen( wxSystemSettings::GetColour(wxSYS_COLOUR_BTNSHADOW), 1, wxSOLID ) );
 		dc->DrawRoundedRectangle( start_x + 1 , 2 , tab->width - 5, GetClientSize().GetHeight() - 4, 8 );
@@ -272,7 +272,7 @@ int SCD_TabCtrl::DrawTab(int index , wxDC *dc , int start_x)
 //	int _x = start_x + padding.GetWidth();
 //	int _y = padding.GetHeight();
 
-	//µe¤W tab ªº¹Ï¥Ü (¦pªG¦³«ü©w ImageList ªº¸Ü)
+	//ç•«ä¸Š tab çš„åœ–ç¤º (å¦‚æœæœ‰æŒ‡å®š ImageList çš„è©±)
 	int img_w = 0, img_h = 0;
 	if( image_list && tab->imageId >= 0 )
 	{
@@ -281,19 +281,19 @@ int SCD_TabCtrl::DrawTab(int index , wxDC *dc , int start_x)
 		image_list->Draw( tab->imageId, *dc, start_x + padding.GetWidth(), img_y, wxIMAGELIST_DRAW_TRANSPARENT, true);
 	}
 
-	//µe¤W¼ĞÃD
+	//ç•«ä¸Šæ¨™é¡Œ
 	int text_y = (tab->height - tab->text_height) / 2;
 	dc->SetTextForeground(*wxBLACK);
 	dc->DrawText( wxString::Format( _T("%d. ") , index + 1 ) + tab->text, start_x + padding.GetWidth() + img_w + 6 , text_y );
-	
-	//µe¤W¥kÃä¬É
+
+	//ç•«ä¸Šå³é‚Šç•Œ
 	int right = start_x + tab->width;
 	dc->SetPen( wxPen( wxSystemSettings::GetColour(wxSYS_COLOUR_BTNSHADOW), 1, wxSOLID ) );
 	dc->DrawLine(right-2, 0, right-2, tab->height);
 	dc->SetPen( wxPen( wxSystemSettings::GetColour(wxSYS_COLOUR_BTNHIGHLIGHT), 1, wxSOLID ) );
 	dc->DrawLine(right-1, 0, right-1, tab->height);
 
-	return right;	//¶Ç¦^¥kÃä¬É
+	return right;	//å‚³å›å³é‚Šç•Œ
 }
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
@@ -309,7 +309,7 @@ void SCD_TabCtrl::OnMouseLeftDown(wxMouseEvent& event)
 	if( new_selection >= 0 && new_selection != old_selection )
 		SetSelection(new_selection);
 
-	//©ì¦² tab
+	//æ‹–æ›³ tab
 	drag_tab_index = new_selection;
 	dragging = true;
 	dragging_move_count = 0;
@@ -317,7 +317,7 @@ void SCD_TabCtrl::OnMouseLeftDown(wxMouseEvent& event)
 // ----------------------------------------------------------------------------
 void SCD_TabCtrl::OnMouseLeftUp(wxMouseEvent& event)
 {
-	//©ì¦² tab
+	//æ‹–æ›³ tab
 
 	if(!dragging)	return;
 	dragging = false;
@@ -358,7 +358,7 @@ void SCD_TabCtrl::OnPaint(wxPaintEvent& event)
 	win_height = 30;
 
 	if( now_start_index >= GetItemCount() && GetItemCount() > 0 )
- 		now_start_index = GetItemCount() - 1;
+		now_start_index = GetItemCount() - 1;
 
 #if !wxCHECK_VERSION(2, 9, 0)
 	dc.BeginDrawing();

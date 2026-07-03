@@ -24,9 +24,9 @@ wxString GetUserConfigPath(wxString _path);
 void setLoginWhenStart(bool b);
 bool getLoginWhenStart();
 bool isUserExist(wxString _user);
-void ShowNewAccountDialog();	//·s¼W±b¸¹
-void ShowPasswdDialog();	//­×§ï±K½X
-void ShowLoginDialog();	//µn¤J
+void ShowNewAccountDialog();	//æ–°å¢žå¸³è™Ÿ
+void ShowPasswdDialog();	//ä¿®æ”¹å¯†ç¢¼
+void ShowLoginDialog();	//ç™»å…¥
 
 
 // ============================================================================

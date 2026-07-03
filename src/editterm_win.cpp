@@ -53,10 +53,10 @@ EditTerm_win::EditTerm_win(wxWindow *parent) : wxScrolledWindow(parent, -1, wxDe
     SetScrollRate( cs.GetWidth(), cs.GetHeight() );
     SetVirtualSize( editterm->getWindowSize() );
 
-	//ªì©l¤Æ timer
+	//åˆå§‹åŒ– timer
 	timer.SetOwner(this, 0);
 	timer.Start(600);
-	
+
 }
 // ----------------------------------------------------------------------------
 EditTerm_win::~EditTerm_win()
