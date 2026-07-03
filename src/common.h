@@ -30,7 +30,7 @@
 
 #include <wx/config.h>
 //#include <wx/fileconf.h>
-#define BBMAN_VERSION _T(" v3.0.1")
+#define BBMAN_VERSION _T(" 3.2.0")
 
 
 #ifdef __UNIX__

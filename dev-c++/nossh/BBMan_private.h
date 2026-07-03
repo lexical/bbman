@@ -5,10 +5,10 @@
 #define BBMAN_PRIVATE_H
 
 // VERSION DEFINITIONS
-#define VER_STRING	"3.0.1.0"
+#define VER_STRING	"3.2.0.0"
 #define VER_MAJOR	3
-#define VER_MINOR	0
-#define VER_RELEASE	1
+#define VER_MINOR	2
+#define VER_RELEASE	0
 #define VER_BUILD	0
 #define COMPANY_NAME	""
 #define FILE_VERSION	""

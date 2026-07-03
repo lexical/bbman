@@ -1,4 +1,4 @@
-VERSION=v3-0-1
+VERSION=3.2.0
 
 rm -rf unix/BBMan*
 rm -rf unix/obj/*

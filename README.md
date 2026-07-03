@@ -3,6 +3,8 @@
 This repository is a modern Linux port of BBMan, a classic Taiwan BBS
 terminal client.
 
+The current wxWidgets 3 / GTK3 port release is 3.2.0.
+
 ## Upstream
 
 The original BBMan project was published on SourceForge:
