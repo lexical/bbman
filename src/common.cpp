@@ -496,7 +496,12 @@ void SCD_PlaySound()
 #else
 		wxString player, file;
 		if( GetConfig()->Read( GetUserConfigPath(_T("/setting/sound_file")) , & file ) && GetConfig()->Read( GetUserConfigPath(_T("/setting/sound_player")) , & player ) )
-			wxExecute( player + _T(" ") + file );
+		{
+			wxCharBuffer player_arg = player.mb_str(wxConvFile);
+			wxCharBuffer file_arg = file.mb_str(wxConvFile);
+			const char *argv[] = { player_arg.data(), file_arg.data(), NULL };
+			wxExecute(argv);
+		}
 #endif
 	}
 }

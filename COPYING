@@ -1,0 +1,13 @@
+BBMan License Notice
+====================
+
+The imported upstream source declares the project license as:
+
+    GPL : http://www.gnu.org/licenses/gpl.html
+
+This repository keeps the original imported `license` file unchanged. No exact
+GPL version number was found in the imported CVS tree.
+
+The historical embedded libssh copy under `legacy/ssh-libssh/` has its own
+LGPL notice and copying text in that subtree. The active wx3 build does not
+compile or link that embedded libssh code.
