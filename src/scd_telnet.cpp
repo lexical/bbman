@@ -17,7 +17,9 @@
 #include "scd_terminal.h"
 #include "main.h"
 
+#ifdef BBMAN_DEBUG_SOCKET_DUMP
 bool debugging = false;
+#endif
 
 // ============================================================================
 
@@ -42,6 +44,7 @@ SCD_Telnet::~SCD_Telnet()
 	//不可以直接 delete sock
 	//因為 sock.Destroy 可以防止 sock 在 destroy 之後又接收到 socket event
 	DestroySocket();
+	DeletePendingEvents();
 }
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
@@ -528,7 +531,9 @@ void SCD_Telnet::OnKeyDown(wxKeyEvent& event)
 {
 	int key = event.GetKeyCode();
 
+#ifdef BBMAN_DEBUG_SOCKET_DUMP
 	if(key==WXK_F3 && ! event.ControlDown() ) debugging = ! debugging;	//除錯機制
+#endif
 
 	if( event.ControlDown() && (key < 'A' || key > 'Z') )
 	{	/*event.Skip();*/	return;	}	//不能加上 event.Skip() 不然還是會被 OnChar 處理
@@ -656,6 +661,7 @@ void SCD_Telnet::OnSocketEvent( wxSocketEvent &event )
 		{
 			int buf_len = SocketRead(buf, 30000);
 			if(buf_len == 0)	break;
+#ifdef BBMAN_DEBUG_SOCKET_DUMP
 if(debugging)
 {
 wxString tmp_str;
@@ -667,6 +673,7 @@ for(int i=0;i<buf_len;i++)
 }
 wxMessageBox(tmp_str);
 }
+#endif
 
 			unsigned char *e, *end;
 			e = buf;

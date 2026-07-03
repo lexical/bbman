@@ -27,10 +27,14 @@ private:
 	void *client_data;
 	wxUint32 last_count;
 	std::deque<char> input_buf;
+	std::deque<char> output_buf;
 	std::mutex input_mutex;
+	std::mutex output_mutex;
+	std::mutex event_mutex;
 	std::thread reader_thread;
 
 	void ReaderLoop();
+	void FlushOutput();
 	void PostSocketEvent(wxSocketNotify event_type);
 	void StopChild();
 

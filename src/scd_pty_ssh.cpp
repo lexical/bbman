@@ -10,6 +10,7 @@
 #include <csignal>
 #include <fcntl.h>
 #include <pty.h>
+#include <poll.h>
 #include <sys/ioctl.h>
 #include <sys/wait.h>
 #include <cstring>
@@ -35,17 +36,20 @@ SCD_PtySSH::~SCD_PtySSH()
 
 void SCD_PtySSH::SetEventHandler(wxEvtHandler& handler, int id)
 {
+	std::lock_guard<std::mutex> lock(event_mutex);
 	evt_handler = &handler;
 	evt_id = id;
 }
 
 void SCD_PtySSH::SetClientData(void *data)
 {
+	std::lock_guard<std::mutex> lock(event_mutex);
 	client_data = data;
 }
 
 void* SCD_PtySSH::GetClientData()
 {
+	std::lock_guard<std::mutex> lock(event_mutex);
 	return client_data;
 }
 
@@ -107,43 +111,108 @@ void SCD_PtySSH::ReaderLoop()
 	char buf[4096];
 	while( !stopping )
 	{
-		ssize_t n = read(master_fd, buf, sizeof(buf));
-		if( n > 0 )
+		bool has_output = false;
 		{
-			bool should_post = false;
+			std::lock_guard<std::mutex> lock(output_mutex);
+			has_output = !output_buf.empty();
+		}
+
+		int fd = master_fd;
+		if( fd < 0 ) break;
+
+		struct pollfd pfd;
+		memset(&pfd, 0, sizeof(pfd));
+		pfd.fd = fd;
+		pfd.events = POLLIN | (has_output ? POLLOUT : 0);
+
+		int ret = poll(&pfd, 1, 100);
+		if( ret < 0 )
+		{
+			if( errno == EINTR ) continue;
+			break;
+		}
+		if( ret == 0 )
+			continue;
+
+		if( pfd.revents & POLLOUT )
+			FlushOutput();
+
+		if( pfd.revents & POLLIN )
+		{
+			ssize_t n = read(fd, buf, sizeof(buf));
+			if( n > 0 )
 			{
-				std::lock_guard<std::mutex> lock(input_mutex);
-				input_buf.insert(input_buf.end(), buf, buf + n);
-				should_post = !input_event_pending.exchange(true);
+				bool should_post = false;
+				{
+					std::lock_guard<std::mutex> lock(input_mutex);
+					input_buf.insert(input_buf.end(), buf, buf + n);
+					should_post = !input_event_pending.exchange(true);
+				}
+				if( should_post ) PostSocketEvent(wxSOCKET_INPUT);
 			}
-			if( should_post ) PostSocketEvent(wxSOCKET_INPUT);
+			else if( n == 0 )
+				break;
+			else if( errno != EAGAIN && errno != EWOULDBLOCK && errno != EINTR )
+				break;
 		}
-		else if( n == 0 )
-		{
+
+		if( pfd.revents & (POLLERR | POLLHUP | POLLNVAL) )
 			break;
-		}
-		else if( errno == EAGAIN || errno == EWOULDBLOCK || errno == EINTR )
-		{
-			usleep(10000);
-		}
-		else
-		{
-			break;
-		}
 	}
 
 	connected = false;
 	if( !stopping ) PostSocketEvent(wxSOCKET_LOST);
 }
 
+void SCD_PtySSH::FlushOutput()
+{
+	char buf[4096];
+	while( !stopping )
+	{
+		size_t count = 0;
+		{
+			std::lock_guard<std::mutex> lock(output_mutex);
+			count = std::min(sizeof(buf), output_buf.size());
+			for( size_t i = 0; i < count; i++ )
+				buf[i] = output_buf[i];
+		}
+		if( count == 0 ) return;
+
+		int fd = master_fd;
+		if( fd < 0 ) return;
+
+		ssize_t n = write(fd, buf, count);
+		if( n > 0 )
+		{
+			std::lock_guard<std::mutex> lock(output_mutex);
+			for( ssize_t i = 0; i < n && !output_buf.empty(); i++ )
+				output_buf.pop_front();
+		}
+		else if( n < 0 && errno == EINTR )
+			continue;
+		else if( n < 0 && (errno == EAGAIN || errno == EWOULDBLOCK) )
+			return;
+		else
+			return;
+	}
+}
+
 void SCD_PtySSH::PostSocketEvent(wxSocketNotify event_type)
 {
-	wxEvtHandler *handler = evt_handler;
+	wxEvtHandler *handler = NULL;
+	void *data = NULL;
+	int id = -1;
+	{
+		std::lock_guard<std::mutex> lock(event_mutex);
+		handler = evt_handler;
+		data = client_data;
+		id = evt_id;
+	}
 	if( handler == NULL ) return;
 
-	wxSocketEvent event(evt_id);
+	wxSocketEvent event(id);
 	event.m_event = event_type;
-	event.m_clientData = client_data;
+	event.m_clientData = data;
 	wxPostEvent(handler, event);
 }
 
@@ -164,6 +233,16 @@ void SCD_PtySSH::StopChild()
 
 	if( reader_thread.joinable() )
 		reader_thread.join();
+
+	{
+		std::lock_guard<std::mutex> lock(input_mutex);
+		input_buf.clear();
+	}
+	{
+		std::lock_guard<std::mutex> lock(output_mutex);
+		output_buf.clear();
+	}
+	input_event_pending = false;
 
 	if( pid > 0 )
 	{
@@ -189,12 +268,15 @@ void SCD_PtySSH::Close()
 {
 	StopChild();
 	connected = false;
-	PostSocketEvent(wxSOCKET_LOST);
 }
 
 bool SCD_PtySSH::Destroy()
 {
-	evt_handler = NULL;
+	{
+		std::lock_guard<std::mutex> lock(event_mutex);
+		evt_handler = NULL;
+		client_data = NULL;
+	}
 	StopChild();
 	connected = false;
 	return true;
@@ -235,13 +317,27 @@ void SCD_PtySSH::Read(void *buffer, wxUint32 nbytes)
 
 void SCD_PtySSH::Write(const void *buffer, wxUint32 nbytes)
 {
-	if( master_fd < 0 )
-	{
-		last_count = 0;
+	last_count = 0;
+	if( buffer == NULL || nbytes == 0 || master_fd < 0 || stopping )
 		return;
+
+	const char *data = static_cast<const char*>(buffer);
+	wxUint32 offset = 0;
+	{
+		std::lock_guard<std::mutex> lock(output_mutex);
+		if( output_buf.empty() )
+		{
+			ssize_t n = write(master_fd, data, nbytes);
+			if( n > 0 )
+				offset = n;
+			else if( n < 0 && errno != EINTR && errno != EAGAIN && errno != EWOULDBLOCK )
+				return;
+		}
+
+		for( wxUint32 i = offset; i < nbytes; i++ )
+			output_buf.push_back(data[i]);
 	}
-	ssize_t n = write(master_fd, buffer, nbytes);
-	last_count = (n > 0) ? n : 0;
+	last_count = nbytes;
 }
 
 void SCD_PtySSH::Unread(const void *buffer, wxUint32 nbytes)
