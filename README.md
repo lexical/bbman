@@ -119,4 +119,4 @@ the GPLv2 era, before GPLv3 existed, so this maintained fork is conservatively
 conveyed under GNU GPL version 2.
 
 See `LICENSE` for the GPLv2 text, `license` for the original one-line upstream
-file, and `COPYING` for the repository license note.
+file, and `COPYING` for the reasoning behind the GPLv2 conveyance choice.

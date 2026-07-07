@@ -12,6 +12,22 @@ BBMan was originally released in the GPLv2 era, before GPLv3 existed. This
 maintained fork is therefore conservatively conveyed under GNU GPL version 2.
 The full GPLv2 text is provided in `LICENSE`.
 
+Basis for selecting GPLv2
+-------------------------
+
+* The imported upstream files and the original `license` file identify the
+  license as GPL and point to the GNU GPL URL.
+* The upstream source dates from 2004, when that GNU GPL URL referred to
+  GPLv2; GPLv3 did not exist until 2007.
+* The imported upstream source does not specify a GPL version number.
+* GPLv2 section 9 says that, when a program does not specify a GPL version
+  number, recipients may choose any version published by the Free Software
+  Foundation.
+* As the maintainer and distributor of this maintained fork, Keng-Yu Lin
+  selects GPLv2 as the version used to convey the fork. This makes the
+  selected GPL version explicit without claiming that the original upstream
+  author wrote a more specific license notice.
+
 This notice does not relicense the original upstream code. It records the GPL
 version selected for conveying this maintained fork. Porting changes by
 Keng-Yu Lin are distributed under the same GPLv2 terms.
