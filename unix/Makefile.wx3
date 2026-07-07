@@ -77,9 +77,10 @@ install: check-deps $(BIN)
 	$(INSTALL_DATA) ../sites.dat $(DESTDIR)$(appdatadir)/sites.dat
 	$(INSTALL_DIR) $(DESTDIR)$(desktopdir)
 	$(INSTALL_DATA) ../data/bbman.desktop $(DESTDIR)$(desktopdir)/bbman.desktop
-	$(INSTALL_DIR) $(DESTDIR)$(icondir)/16x16/apps $(DESTDIR)$(icondir)/32x32/apps
+	$(INSTALL_DIR) $(DESTDIR)$(icondir)/16x16/apps $(DESTDIR)$(icondir)/32x32/apps $(DESTDIR)$(icondir)/48x48/apps
 	$(INSTALL_DATA) ../src/icon/bbman_16.xpm $(DESTDIR)$(icondir)/16x16/apps/bbman.xpm
 	$(INSTALL_DATA) ../src/icon/bbman_32.xpm $(DESTDIR)$(icondir)/32x32/apps/bbman.xpm
+	$(INSTALL_DATA) ../icon/BBMan_48.png $(DESTDIR)$(icondir)/48x48/apps/bbman.png
 	for langdir in ../mo/*; do \
 		if test -f "$$langdir/LC_MESSAGES/bbman.mo"; then \
 			lang=$$(basename "$$langdir"); \

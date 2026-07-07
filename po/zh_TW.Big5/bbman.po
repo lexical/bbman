@@ -529,10 +529,6 @@ msgstr "定時重新整理畫面防閒置斷線"
 msgid "&Options"
 msgstr "設定(&O)"
 
-#: src/frm_telnet.cpp:294
-msgid "Show SFTP Window\tF6"
-msgstr "顯示 SFTP 視窗\tF6"
-
 #: src/frm_telnet.cpp:297
 msgid "ANSI &editor"
 msgstr "BBMan 彩色文字編輯器"
@@ -576,10 +572,6 @@ msgstr "複製純文字 (Alt+C)"
 #: src/frm_telnet.cpp:348
 msgid "Paste (Alt+V)"
 msgstr "貼上 (Alt+V)"
-
-#: src/frm_telnet.cpp:351
-msgid "Show SFTP Window (F6)"
-msgstr "顯示 SFTP 視窗 (F6)"
 
 #: src/frm_telnet.cpp:369
 msgid "Enter the server address, and press [Enter] to connect"
