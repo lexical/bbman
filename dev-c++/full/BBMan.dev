@@ -1,18 +1,18 @@
 [Project]
 FileName=BBMan.dev
 Name=BBMan
-UnitCount=58
+UnitCount=57
 Type=0
 Ver=1
 ObjFiles=
-Includes=..\..\src\libssh\include
+Includes=
 Libs=
 PrivateResource=BBMan_private.rc
 ResourceIncludes=D:\Dev-Cpp\include
 MakeIncludes=
 Compiler=-D__WXMSW___@@_
 CppCompiler=-DWINVER=0x0400 -D__WIN95__ -D__GNUWIN32__ -D__WIN32__ -DHAVE_W32API_H  -D__WXMSW__ -D__WINDOWS__ -Wall -fno-pcc-struct-return -O2 -Os -fno-rtti -fno-exceptions_@@_
-Linker=-Wl,--subsystem,windows -mwindows -lwxmsw -lstdc++ -lgcc -lodbc32 -lwsock32 -lwinspool -lwinmm -lshell32 -lcomctl32 -lctl3d32 -ladvapi32 -lopengl32 -lglu32 -lole32 -loleaut32 -luuid  _@@_D:/Dev-Cpp/lib/libeay32.a_@@_D:/Dev-Cpp/lib/ssleay32.a_@@_D:/Dev-Cpp/lib/libzlib.a_@@_D:/Dev-Cpp/lib/libwsock32.a_@@_
+Linker=-Wl,--subsystem,windows -mwindows -lwxmsw -lstdc++ -lgcc -lodbc32 -lwsock32 -lwinspool -lwinmm -lshell32 -lcomctl32 -lctl3d32 -ladvapi32 -lopengl32 -lglu32 -lole32 -loleaut32 -luuid  _@@_
 IsCpp=1
 Icon=BBMan.ico
 ExeOutput=obj
@@ -20,7 +20,7 @@ ObjectOutput=obj
 OverrideOutput=0
 OverrideOutputName=BBMan.exe
 HostApplication=
-Folders=libssh,scd_wxssh
+Folders=
 CommandLine=
 UseCustomMakefile=0
 CustomMakefile=
@@ -130,25 +130,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit13]
-FileName=..\..\src\frm_sftp.cpp
-CompileCpp=1
-Folder=BBMan
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
 [Unit14]
-FileName=..\..\src\frm_sftp.h
-CompileCpp=1
-Folder=BBMan
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
 [Unit15]
 FileName=..\..\src\frm_telnet.cpp
 CompileCpp=1
@@ -298,7 +280,7 @@ LanguageID=1033
 CharsetID=1252
 CompanyName=
 FileVersion=
-FileDescription=BBMan - BBS/SSH/SFTP/Telnet Client
+FileDescription=BBMan - BBS/SSH/Telnet Client
 InternalName=
 LegalCopyright=
 LegalTrademarks=
@@ -378,235 +360,28 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit36]
-FileName=..\..\src\scd_wxssh\scd_wxsftp.cpp
-CompileCpp=1
-Folder=scd_wxssh
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
 [Unit37]
-FileName=..\..\src\scd_wxssh\scd_wxsftp.h
-CompileCpp=1
-Folder=scd_wxssh
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
 [Unit38]
-FileName=..\..\src\scd_wxssh\scd_wxssh.cpp
-CompileCpp=1
-Folder=scd_wxssh
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
 [Unit39]
-FileName=..\..\src\scd_wxssh\scd_wxssh.h
-CompileCpp=1
-Folder=scd_wxssh
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
 [Unit40]
-FileName=..\..\src\libssh\libssh\auth.c
-CompileCpp=0
-Folder=libssh
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=$(CC) -c auth.c -o obj/auth.o $(CFLAGS)
-
 [Unit41]
-FileName=..\..\src\libssh\libssh\base64.c
-CompileCpp=0
-Folder=libssh
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=$(CC) -c base64.c -o obj/base64.o $(CFLAGS)
-
 [Unit42]
-FileName=..\..\src\libssh\libssh\buffer.c
-CompileCpp=0
-Folder=libssh
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=$(CC) -c buffer.c -o obj/buffer.o $(CFLAGS)
-
 [Unit43]
-FileName=..\..\src\libssh\libssh\channels.c
-CompileCpp=0
-Folder=libssh
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=$(CC) -c channels.c -o obj/channels.o $(CFLAGS)
-
 [Unit44]
-FileName=..\..\src\libssh\libssh\client.c
-CompileCpp=0
-Folder=libssh
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=$(CC) -c client.c -o obj/client.o $(CFLAGS)
-
 [Unit45]
-FileName=..\..\src\libssh\libssh\connect.c
-CompileCpp=0
-Folder=libssh
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=$(CC) -c connect.c -o obj/connect.o $(CFLAGS)
-
 [Unit46]
-FileName=..\..\src\libssh\libssh\crypt.c
-CompileCpp=0
-Folder=libssh
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=$(CC) -c crypt.c -o obj/crypt.o $(CFLAGS)
-
 [Unit47]
-FileName=..\..\src\libssh\libssh\dh.c
-CompileCpp=0
-Folder=libssh
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=$(CC) -c dh.c -o obj/dh.o $(CFLAGS)
-
 [Unit48]
-FileName=..\..\src\libssh\libssh\error.c
-CompileCpp=0
-Folder=libssh
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=$(CC) -c error.c -o obj/error.o $(CFLAGS)
-
 [Unit50]
-FileName=..\..\src\libssh\libssh\kex.c
-CompileCpp=0
-Folder=libssh
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=$(CC) -c kex.c -o obj/kex.o $(CFLAGS)
-
 [Unit49]
-FileName=..\..\src\libssh\libssh\gzip.c
-CompileCpp=0
-Folder=libssh
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=$(CC) -c gzip.c -o obj/gzip.o $(CFLAGS)
-
 [Unit51]
-FileName=..\..\src\libssh\libssh\keyfiles.c
-CompileCpp=0
-Folder=libssh
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=$(CC) -c keyfiles.c -o obj/keyfiles.o $(CFLAGS)
-
 [Unit52]
-FileName=..\..\src\libssh\libssh\keys.c
-CompileCpp=0
-Folder=libssh
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=$(CC) -c keys.c -o obj/keys.o $(CFLAGS)
-
 [Unit53]
-FileName=..\..\src\libssh\libssh\misc.c
-CompileCpp=0
-Folder=libssh
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=$(CC) -c misc.c -o obj/misc.o $(CFLAGS)
-
 [Unit54]
-FileName=..\..\src\libssh\libssh\options.c
-CompileCpp=0
-Folder=libssh
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=$(CC) -c options.c -o obj/options.o $(CFLAGS)
-
 [Unit55]
-FileName=..\..\src\libssh\libssh\packet.c
-CompileCpp=0
-Folder=libssh
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=$(CC) -c packet.c -o obj/packet.o $(CFLAGS)
-
 [Unit56]
-FileName=..\..\src\libssh\libssh\sftp.c
-CompileCpp=0
-Folder=libssh
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=$(CC) -c sftp.c -o obj/sftp.o $(CFLAGS)
-
 [Unit58]
-FileName=..\..\src\libssh\libssh\wrapper.c
-CompileCpp=0
-Folder=libssh
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=$(CC) -c wrapper.c -o obj/wrapper.o $(CFLAGS)
-
 [Unit57]
-FileName=..\..\src\libssh\libssh\string.c
-CompileCpp=0
-Folder=libssh
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=$(CC) -c string.c -o obj/string.o $(CFLAGS)
-
 [Unit59]
 FileName=..\src\ds.cpp
 CompileCpp=1

@@ -12,10 +12,11 @@ Original BBMan is not directly suitable for current PTT:
 - PTT port 23 is still reachable, but it no longer offers unencrypted telnet
   login. It returns a Big5 notice saying telnet has been disabled and users
   should use WebSocket or SSH.
-- BBMan's bundled SSH implementation is based on an old vendored libssh 0.1.
-  It only advertises obsolete algorithms such as `diffie-hellman-group1-sha1`,
-  `ssh-dss` / `ssh-rsa`, and CBC ciphers. It is not compatible with current
-  PTT SSH.
+- BBMan's original bundled SSH implementation was based on old vendored libssh
+  0.1. It only advertised obsolete algorithms such as
+  `diffie-hellman-group1-sha1`, `ssh-dss` / `ssh-rsa`, and CBC ciphers. It was
+  not compatible with current PTT SSH, and it has been removed from this
+  maintained tree.
 - The old build uses `wxgtk2-2.4-config`. On the current Ubuntu machine,
   `wx-config` is `3.2.4` with `gtk3-unicode-3.2`.
 
@@ -98,8 +99,9 @@ Minimal `SCD_OpenSSH` responsibilities:
 - Reap child with `waitpid`.
 - Surface EOF and child exit as connection lost.
 
-The old `src/scd_wxssh/` and vendored `src/libssh/` should be treated as
-deprecated code. Keep them only as reference until the new backend works.
+The old `src/scd_wxssh/` and vendored `src/libssh/` code should not be
+revived. It has been removed from the maintained tree; use the OpenSSH/PTY
+backend instead.
 
 ## Big5 / Unicode Handling Plan
 
@@ -219,7 +221,7 @@ The first trial build against wx3 already showed typical old wx/C++ issues:
 Expected mechanical changes:
 
 - Replace build system with a small Makefile or CMake target using `wx-config`.
-- Build a `BBMAN_NO_SSH` / OpenSSH-only target first.
+- Build an OpenSSH-only target first.
 - Fix deprecated or removed wx APIs.
 - Replace old event macros only where needed.
 - Remove direct assumptions that `wxString::c_str()` is a byte string.
@@ -240,7 +242,7 @@ Goal: application starts on wx3/GTK3.
 Tasks:
 
 - Add modern build file.
-- Exclude old vendored libssh from the first target.
+- Keep old vendored libssh out of the wx3 target.
 - Fix mechanical compiler errors.
 - Keep terminal parser mostly unchanged.
 
@@ -293,7 +295,7 @@ Expected time: 1-2 additional weeks.
 
 Recommended decisions:
 
-- Do not port or update vendored libssh 0.1.
+- Do not port, restore, or update vendored libssh 0.1.
 - Do not keep telnet as the main PTT path. PTT has disabled unencrypted telnet.
 - Use OpenSSH through `forkpty` as the primary SSH path.
 - Keep terminal wire data byte-oriented.
@@ -334,7 +336,8 @@ Implemented so far:
 
 - Added `unix/Makefile.wx3` using system `wx-config` (`gtk3-unicode-3.2` on this host).
 - Fixed the first wx3 compile blockers in terminal, bookmark, tab, telnet frame, and editor code.
-- Kept old bundled libssh out of the wx3 target with `BBMAN_NO_SSH`.
+- Kept old bundled libssh out of the wx3 target.
+- Later removed the vendored libssh/SFTP source from the maintained tree.
 - Added `src/scd_pty_ssh.{h,cpp}`: a new SSH transport that uses `forkpty()` and execs system `ssh`.
 - Rewired `SCD_Socket` so `SOCK_SSH` in the wx3 build uses `SCD_PtySSH` instead of rejecting SSH as a no-SSH build.
 

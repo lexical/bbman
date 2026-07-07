@@ -545,9 +545,6 @@ void SCD_Telnet::OnKeyDown(wxKeyEvent& event)
 		if( key == WXK_RETURN )
 		{
 			EndUserQuery();
-#ifndef BBMAN_NO_SSH
-			sock.Login( wxEmptyString , userquery_buf );
-#endif
 		}
 		else if( key == WXK_BACK && userquery_len > 0 )
 		{
@@ -751,37 +748,6 @@ wxMessageBox(str);
 //wxMessageBox( SocketIsConnected() ? "connected!!!" : "lost" );
 	}
 
-#ifndef BBMAN_NO_SSH
-	else if( event.GetSocketEvent() == (wxSocketNotify)WXSSH_AUTH_FAIL )
-	{
-//		wxMessageBox("auth fail");
-
-		if( sock.GetType() == SOCK_SSH )	//如果是 ssh 連線
-		{
-			if( ssh_login_try_times == -1 )
-			{
-				ssh_login_try_times = 0;
-				if( ! site_info.password.IsEmpty() )
-					sock.Login(wxEmptyString, site_info.password );
-				else
-					StartUserQuery("Password : ", false);
-			}
-			else
-			{
-				ssh_login_try_times ++;
-				parse("Login Failed\r\n");
-				StartUserQuery("Password : ", false);
-			}
-		}
-		return;
-	}
-	else if( event.GetSocketEvent() == (wxSocketNotify)WXSSH_AUTH_SUCCESS )
-	{
-//		wxMessageBox("auth success");
-		parse("Login Success\r\n");
-		return;
-	}
-#endif
 	else
 	{
 		wxMessageBox(_T("unknown socket event"));
@@ -866,16 +832,6 @@ if( _si.protocol == SOCK_SSH )
 		start_time = wxGetLocalTime();
 */
 
-#ifndef BBMAN_NO_SSH
-	//如果是 ssh 連線必須先詢問登入帳號
-	if( sock.GetType() == SOCK_SSH && _si.username.IsEmpty() )
-	{
-		wxString caption = gettext("Please Enter your account.");
-		caption += _T("\n\nip : ") + ip;
-		if( ! name.IsEmpty() )	caption += _T("\nname : ") + name;
-		_si.username = wxGetTextFromUser( caption );
-	}
-#endif
 
 	wxIPV4address addr;
 	if( ! addr.Hostname(ip) || ! addr.Service(port) )

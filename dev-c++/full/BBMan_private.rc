@@ -27,7 +27,7 @@ FILETYPE VFT_APP
 		 {
 			 VALUE "CompanyName", ""
 			 VALUE "FileVersion", ""
-			 VALUE "FileDescription", "BBMan - BBS/SSH/SFTP/Telnet Client"
+			 VALUE "FileDescription", "BBMan - BBS/SSH/Telnet Client"
 			 VALUE "InternalName", ""
 			 VALUE "LegalCopyright", ""
 			 VALUE "LegalTrademarks", ""

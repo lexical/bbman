@@ -11,7 +11,7 @@ LIBS =  -L"D:/Dev-Cpp/lib" -mwindows -Wl,--subsystem,windows -mwindows -lwxmsw -
 INCS =  -I"D:/Dev-Cpp/include" 
 CXXINCS =  -I"D:/Dev-Cpp/include/c++"  -I"D:/Dev-Cpp/include/c++/mingw32"  -I"D:/Dev-Cpp/include/c++/backward"  -I"D:/Dev-Cpp/include" 
 BIN  = obj/BBMan.exe
-CXXFLAGS = $(CXXINCS) -DWINVER=0x0400 -D__WIN95__ -D__GNUWIN32__ -D__WIN32__ -DHAVE_W32API_H  -D__WXMSW__ -D__WINDOWS__ -Wall -fno-pcc-struct-return -O2 -Os -fno-rtti -fno-exceptions -DBBMAN_NO_SSH   -fexpensive-optimizations -O2
+CXXFLAGS = $(CXXINCS) -DWINVER=0x0400 -D__WIN95__ -D__GNUWIN32__ -D__WIN32__ -DHAVE_W32API_H  -D__WXMSW__ -D__WINDOWS__ -Wall -fno-pcc-struct-return -O2 -Os -fno-rtti -fno-exceptions   -fexpensive-optimizations -O2
 CFLAGS = $(INCS)   -fexpensive-optimizations -O2
 
 .PHONY: all all-before all-after clean clean-custom

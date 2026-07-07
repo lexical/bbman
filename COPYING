@@ -31,7 +31,3 @@ Basis for selecting GPLv2
 This notice does not relicense the original upstream code. It records the GPL
 version selected for conveying this maintained fork. Porting changes by
 Keng-Yu Lin are distributed under the same GPLv2 terms.
-
-The historical embedded libssh copy under `legacy/ssh-libssh/` has its own
-LGPL notice and copying text in that subtree. The active wx3 build does not
-compile or link that embedded libssh code.

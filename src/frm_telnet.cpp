@@ -16,9 +16,6 @@
 
 #include "login.h"
 #include "bookmark.h"
-#ifndef BBMAN_NO_SSH
-#include "frm_sftp.h"
-#endif
 
 enum { ICON_CLOSE, ICON_CONNECTING, ICON_CONNECTED, ICON_MESSAGE };
 
@@ -87,7 +84,6 @@ enum
 
 	MENU_TOOL_BEGIN,
 	MENU_LOCKSCREEN,
-	MENU_SHOW_SFTP,
 	MENU_EXPORT_SETTING,
 	MENU_IMPORT_SETTING,
 	MENU_TOOL_END,
@@ -290,9 +286,6 @@ BBS_Frame::BBS_Frame(const wxString& title, const wxPoint& pos, const wxSize& si
 	menuBar->Append(menuOption, gettext("&Options"));
 
 	wxMenu *menuTool = new wxMenu;
-#ifndef BBMAN_NO_SSH
-	menuTool->Append(MENU_SHOW_SFTP, gettext("Show SFTP Window\tF6") );
-#endif
 //	menuTool->Append(MENU_ANSIEDITOR, gettext("ANSI &editor") );
 	AppendMenuItemWithBitmap(menuTool, MENU_ANSIEDITOR, gettext("ANSI &editor"), GetProgramIcon(BBMAN_ICON_EDIT) );
 //	menuTool->Append(MENU_EXPORT_SETTING, gettext("Export setting") );
@@ -347,12 +340,6 @@ BBS_Frame::BBS_Frame(const wxString& title, const wxPoint& pos, const wxSize& si
 		tb->AddTool( MENU_COPY , wxEmptyString , toolbarIcons[k++] , gettext("Copy plain text (Alt+C)") );
 		tb->AddTool( MENU_PASTE_ANSI , wxEmptyString , toolbarIcons[k++] , gettext("Paste (Alt+V)") );
 		tb->AddSeparator();
-#ifndef BBMAN_NO_SSH
-		tb->AddTool( MENU_SHOW_SFTP , wxEmptyString , toolbarIcons[k++] , gettext("Show SFTP Window (F6)") );
-		tb->AddSeparator();
-#else
-		k++;
-#endif
 		tb->Realize();
 	}
 
@@ -1241,10 +1228,6 @@ void BBS_Frame::OnConnection(wxCommandEvent& event)
 		case MENU_CLOSECONNECTION :
 			if(now_telnet)
 			{
-#ifndef BBMAN_NO_SSH
-				if(now_telnet->GetSocket()->GetType() == SOCK_SSH)
-					DeleteSFTP( now_telnet->GetSocket()->GetSSH() );
-#endif
 				now_telnet->close();
 			}
 			break;
@@ -1451,12 +1434,6 @@ void BBS_Frame::OnTool(wxCommandEvent& event)
 	switch(id)
 	{
 
-#ifndef BBMAN_NO_SSH
-		case MENU_SHOW_SFTP :
-			if( now_telnet && now_telnet->GetSocket()->GetType() == SOCK_SSH )
-				ShowSFTP( now_telnet->GetSocket()->GetSSH() );
-			break;
-#endif
 
 	    case MENU_LOCKSCREEN :
 			LockScreen();
@@ -1732,9 +1709,6 @@ void BBS_Frame::UpdateToolbarUI()
 	tb->EnableTool( MENU_PASTE_ANSI , b );
 	tb->EnableTool( MENU_MULTIBYTEWORDDETECTION , b );
 	tb->EnableTool( MENU_COPY , b );
-#ifndef BBMAN_NO_SSH
-	tb->EnableTool( MENU_SHOW_SFTP , s );
-#endif
 }
 // ============================================================================
 #endif

@@ -35,8 +35,6 @@ Not supported in the active wx3 build:
 - SFTP
 - SSH password auto-login through BBMan's old libssh callback path
 
-The old embedded SSH/SFTP code is kept under `legacy/ssh-libssh/` only for
-historical reference.
 
 ## Build
 

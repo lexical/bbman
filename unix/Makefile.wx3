@@ -23,7 +23,7 @@ INSTALL_PROGRAM ?= $(INSTALL) -m 755
 INSTALL_DATA ?= $(INSTALL) -m 644
 INSTALL_DIR ?= $(INSTALL) -d
 
-CPPFLAGS := -DBBMAN_NO_SSH -DHAVE_LIBSECRET $(LIBSECRET_CFLAGS) -I../src
+CPPFLAGS := -DHAVE_LIBSECRET $(LIBSECRET_CFLAGS) -I../src
 CXXFLAGS := -g -O0 -std=gnu++17 -fno-rtti -fno-exceptions -Wall -Wextra
 CFLAGS := -std=gnu11 -Wall -Wextra
 LDFLAGS :=

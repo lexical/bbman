@@ -12,7 +12,7 @@
 #define VER_BUILD	0
 #define COMPANY_NAME	""
 #define FILE_VERSION	""
-#define FILE_DESCRIPTION	"BBMan - BBS/SSH/SFTP/Telnet Client"
+#define FILE_DESCRIPTION	"BBMan - BBS/SSH/Telnet Client"
 #define INTERNAL_NAME	""
 #define LEGAL_COPYRIGHT	""
 #define LEGAL_TRADEMARKS	""

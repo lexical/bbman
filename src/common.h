@@ -26,7 +26,6 @@
 	#include "wx/wx.h"
 #endif
 
-//#define BBMAN_NO_SSH
 
 #include <wx/config.h>
 //#include <wx/fileconf.h>

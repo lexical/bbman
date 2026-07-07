@@ -36,13 +36,6 @@ SCD_Socket::~SCD_Socket()
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
-#ifndef BBMAN_NO_SSH
-SCD_wxSSH* SCD_Socket::GetSSH()
-{
-	if( m_type == SOCK_SSH )	return ssh_sock;
-	else return NULL;
-}
-#endif
 // ----------------------------------------------------------------------------
 int SCD_Socket::GetType()
 {	return m_type;	}
@@ -74,11 +67,7 @@ void SCD_Socket::SetType(int _t)
 	}
 	else if( m_type == SOCK_SSH )
 	{
-#ifndef BBMAN_NO_SSH
-		ssh_sock = new SCD_SSH_Transport(wxSOCKET_NOWAIT);
-#else
 		ssh_sock = new SCD_SSH_Transport();
-#endif
 		ssh_sock->SetEventHandler( *evt_handler, evt_id );
 		ssh_sock->SetClientData( m_clientdata );
 	}
@@ -101,21 +90,6 @@ bool SCD_Socket::Connect(wxIPV4address& address, bool wait, wxString _username)
 	else return false;
 }
 // ----------------------------------------------------------------------------
-#ifndef BBMAN_NO_SSH
-bool SCD_Socket::Login(wxString _username, wxString _password)	//for scd_wxssh
-{
-	if( m_type == SOCK_SSH )	return ssh_sock->Login( _username, _password );
-	else return false;
-}
-#endif
-// ----------------------------------------------------------------------------
-#ifndef BBMAN_NO_SSH
-bool SCD_Socket::isLogined()	//for scd_wxssh
-{
-	if( m_type == SOCK_SSH )	return ssh_sock->isLogined();
-	else return false;
-}
-#endif
 // ----------------------------------------------------------------------------
 void SCD_Socket::Close()
 {
@@ -205,13 +179,8 @@ wxUint32 SCD_Socket::LastCount()
 // ----------------------------------------------------------------------------
 void SCD_Socket::SetWindowSize(int cols, int rows)
 {
-#ifdef BBMAN_NO_SSH
 	if( m_type == SOCK_SSH )
 		ssh_sock->SetWindowSize(cols, rows);
-#else
-	wxUnusedVar(cols);
-	wxUnusedVar(rows);
-#endif
 }
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------

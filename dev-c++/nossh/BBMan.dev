@@ -1,7 +1,7 @@
 [Project]
 FileName=BBMan.dev
 Name=BBMan
-UnitCount=33
+UnitCount=31
 Type=0
 Ver=1
 ObjFiles=
@@ -11,7 +11,7 @@ PrivateResource=BBMan_private.rc
 ResourceIncludes=D:\Dev-Cpp\include
 MakeIncludes=
 Compiler=
-CppCompiler=-DWINVER=0x0400 -D__WIN95__ -D__GNUWIN32__ -D__WIN32__ -DHAVE_W32API_H  -D__WXMSW__ -D__WINDOWS__ -Wall -fno-pcc-struct-return -O2 -Os -fno-rtti -fno-exceptions -DBBMAN_NO_SSH_@@_
+CppCompiler=-DWINVER=0x0400 -D__WIN95__ -D__GNUWIN32__ -D__WIN32__ -DHAVE_W32API_H  -D__WXMSW__ -D__WINDOWS__ -Wall -fno-pcc-struct-return -O2 -Os -fno-rtti -fno-exceptions_@@_
 Linker=-Wl,--subsystem,windows -mwindows -lwxmsw -lstdc++ -lgcc -lodbc32 -lwsock32 -lwinspool -lwinmm -lshell32 -lcomctl32 -lctl3d32 -ladvapi32 -lopengl32 -lglu32 -lole32 -loleaut32 -luuid  _@@_
 IsCpp=1
 Icon=BBMan.ico
@@ -348,7 +348,7 @@ LanguageID=1033
 CharsetID=1252
 CompanyName=
 FileVersion=
-FileDescription=BBMan - SSH/SFTP/BBS/Telnet Client
+FileDescription=BBMan - SSH/BBS/Telnet Client
 InternalName=
 LegalCopyright=
 LegalTrademarks=
