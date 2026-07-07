@@ -36,7 +36,6 @@ COMMON_OBJ := \
 	obj/login.o \
 	obj/common.o \
 	obj/ds.o \
-	obj/des.o \
 	obj/editterm_win.o \
 	obj/frm_editterm.o \
 	obj/frm_telnet.o \

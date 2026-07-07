@@ -151,6 +151,32 @@ static void ShowSiteInfoSecretLoadWarning(const wxString& field)
 		_T("BBMan keyring"), wxOK | wxICON_WARNING);
 }
 
+static void ShowSiteInfoSecretStoreWarning(const wxString& field)
+{
+	static bool shown = false;
+	if( shown ) return;
+	shown = true;
+
+	wxMessageBox(
+		wxString::Format(_T("Unable to store BBMan keyring secret for %s.\n\n")
+			_T("The secret will not be saved."), field.c_str()),
+		_T("BBMan keyring"), wxOK | wxICON_WARNING);
+}
+
+static void ShowLegacySiteInfoSecretWarning(const wxString& field)
+{
+	static bool shown = false;
+	if( shown ) return;
+	shown = true;
+
+	wxMessageBox(
+		wxString::Format(_T("BBMan found an old DES-encrypted site %s.\n\n")
+			_T("This build no longer contains the legacy DES code, so the ")
+			_T("secret cannot be loaded. Please re-enter and save it."),
+			field.c_str()),
+		_T("BBMan keyring"), wxOK | wxICON_WARNING);
+}
+
 static wxString StoreSiteInfoSecret(const SiteInfo *si, const wxString& field, const wxString& value)
 {
 	if( value.IsEmpty() )
@@ -162,10 +188,10 @@ static wxString StoreSiteInfoSecret(const SiteInfo *si, const wxString& field, c
 		return wxString(SITEINFO_SECRET_PREFIX) + service;
 #else
 	wxUnusedVar(si);
-	wxUnusedVar(field);
 #endif
 
-	return SCD_des_encrypt( GetLoginPassword() , value );
+	ShowSiteInfoSecretStoreWarning(field);
+	return wxEmptyString;
 }
 
 static wxString LoadSiteInfoSecret(const SiteInfo *si, const wxString& field, const wxString& value)
@@ -189,7 +215,8 @@ static wxString LoadSiteInfoSecret(const SiteInfo *si, const wxString& field, co
 		return wxEmptyString;
 	}
 
-	return SCD_des_decrypt( GetLoginPassword() , value );
+	ShowLegacySiteInfoSecretWarning(field);
+	return wxEmptyString;
 }
 
 static wxString PackSiteInfoField(const wxString& field)
@@ -278,7 +305,7 @@ void SiteInfo::Set(wxString str)
 	if( protocol != SOCK_SSH )	protocol = SOCK_TELNET;
 	if( port == 0 )	port = ( protocol == SOCK_SSH ) ? 22 : 23;
 
-	//代密碼用 DES 解密
+	// Load keyring-backed secrets. Legacy DES entries are no longer decrypted.
 	password = LoadSiteInfoSecret(this, _T("password"), password);
 	message = LoadSiteInfoSecret(this, _T("message"), message);
 }

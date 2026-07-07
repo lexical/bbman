@@ -69,26 +69,6 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit5]
-FileName=..\..\src\des.cpp
-CompileCpp=1
-Folder=BBMan
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit6]
-FileName=..\..\src\des.h
-CompileCpp=1
-Folder=BBMan
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
 [Unit7]
 FileName=..\..\src\ds.cpp
 CompileCpp=1

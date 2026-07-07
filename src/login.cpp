@@ -14,8 +14,8 @@
 #define LOGIN_CPP
 #include "login.h"
 
-#include "des.h"
 #include "bookmark.h"
+#include <glib.h>
 
 // ============================================================================
 
@@ -32,6 +32,7 @@ static wxString& LoginPassword()
 #define Login_ID LoginID()
 #define Login_Password LoginPassword()
 #define Default_Password _T("eU6cZpQw")
+#define Password_Hash_Prefix _T("sha256:")
 
 bool isAnonymousLogin()
 {	return Login_ID.IsEmpty();	}
@@ -44,6 +45,21 @@ wxString GetLoginPassword()
 inline wxString GetLoginName()
 {	return Login_ID;	}
 
+
+static wxString HashLoginPassword(const wxString& user, const wxString& pass)
+{
+	wxString material = user + _T("\n") + pass + _T("\nBBMan profile password v1");
+	wxCharBuffer utf8 = material.utf8_str();
+	if( utf8.data() == NULL ) return wxEmptyString;
+
+	gchar *hash = g_compute_checksum_for_string(G_CHECKSUM_SHA256, utf8.data(), -1);
+	if( hash == NULL ) return wxEmptyString;
+
+	wxString value = wxString(Password_Hash_Prefix) + wxString::FromUTF8(hash);
+	g_free(hash);
+	return value;
+}
+
 wxString GetUserConfigPath(wxString _path)
 {
 	if( isAnonymousLogin() )	return _path;
@@ -55,13 +71,13 @@ bool auth(wxString _user , wxString _pass)	//驗證使用者帳號密碼
 	wxString real_pass;
 	if( _user.IsEmpty() || _pass.IsEmpty() )	return false;
 	if( ! GetConfig()->Read( _T("/usr/") + _user + _T("/password") , & real_pass ) )	return false;
-	if( SCD_des_decrypt( _pass , real_pass ).CompareTo(Default_Password) != 0 )	return false;
-	return true;
+	if( ! real_pass.StartsWith(Password_Hash_Prefix) )	return false;
+	return real_pass == HashLoginPassword(_user, _pass);
 }
 
 void passwd(wxString _user , wxString _pass)	//修改密碼
 {
-	GetConfig()->Write( _T("/usr/") + _user + _T("/password") , SCD_des_encrypt( _pass , Default_Password ) );
+	GetConfig()->Write( _T("/usr/") + _user + _T("/password") , HashLoginPassword(_user, _pass) );
 }
 
 void setLoginWhenStart(bool b)

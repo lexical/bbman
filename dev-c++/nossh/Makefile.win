@@ -5,8 +5,8 @@ CPP  = g++.exe
 CC   = gcc.exe
 WINDRES = windres.exe
 RES  = BBMan_private.res
-OBJ  = obj/bookmark.o obj/common.o obj/des.o obj/ds.o obj/editterm_win.o obj/frm_editterm.o obj/frm_telnet.o obj/login.o obj/main.o obj/scd_editterm.o obj/scd_gtk_textctrl.o obj/scd_socket.o obj/scd_tabctrl.o obj/scd_telnet.o obj/scd_terminal.o obj/telnet_panel.o $(RES)
-LINKOBJ  = obj/bookmark.o obj/common.o obj/des.o obj/ds.o obj/editterm_win.o obj/frm_editterm.o obj/frm_telnet.o obj/login.o obj/main.o obj/scd_editterm.o obj/scd_gtk_textctrl.o obj/scd_socket.o obj/scd_tabctrl.o obj/scd_telnet.o obj/scd_terminal.o obj/telnet_panel.o $(RES)
+OBJ  = obj/bookmark.o obj/common.o obj/ds.o obj/editterm_win.o obj/frm_editterm.o obj/frm_telnet.o obj/login.o obj/main.o obj/scd_editterm.o obj/scd_gtk_textctrl.o obj/scd_socket.o obj/scd_tabctrl.o obj/scd_telnet.o obj/scd_terminal.o obj/telnet_panel.o $(RES)
+LINKOBJ  = obj/bookmark.o obj/common.o obj/ds.o obj/editterm_win.o obj/frm_editterm.o obj/frm_telnet.o obj/login.o obj/main.o obj/scd_editterm.o obj/scd_gtk_textctrl.o obj/scd_socket.o obj/scd_tabctrl.o obj/scd_telnet.o obj/scd_terminal.o obj/telnet_panel.o $(RES)
 LIBS =  -L"D:/Dev-Cpp/lib" -mwindows -Wl,--subsystem,windows -mwindows -lwxmsw -lstdc++ -lgcc -lodbc32 -lwsock32 -lwinspool -lwinmm -lshell32 -lcomctl32 -lctl3d32 -ladvapi32 -lopengl32 -lglu32 -lole32 -loleaut32 -luuid    -s 
 INCS =  -I"D:/Dev-Cpp/include" 
 CXXINCS =  -I"D:/Dev-Cpp/include/c++"  -I"D:/Dev-Cpp/include/c++/mingw32"  -I"D:/Dev-Cpp/include/c++/backward"  -I"D:/Dev-Cpp/include" 
@@ -31,8 +31,6 @@ obj/bookmark.o: ../../src/bookmark.cpp
 obj/common.o: ../../src/common.cpp
 	$(CPP) -c ../../src/common.cpp -o obj/common.o $(CXXFLAGS)
 
-obj/des.o: ../../src/des.cpp
-	$(CPP) -c ../../src/des.cpp -o obj/des.o $(CXXFLAGS)
 
 obj/ds.o: ../../src/ds.cpp
 	$(CPP) -c ../../src/ds.cpp -o obj/ds.o $(CXXFLAGS)

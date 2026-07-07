@@ -14,8 +14,6 @@
 #define DS_H
 
 #include "common.h"
-#include "des.h"
-#include "login.h"
 
 // ============================================================================
 

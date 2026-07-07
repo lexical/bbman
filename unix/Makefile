@@ -19,7 +19,7 @@ CXXFLAGS = $(CXXINCS) -fno-rtti -fno-exceptions
 # RES  = BBMan_private.res
 # WINDRES = windres.exe
 
-COMMON_OBJ  = obj/scd_terminal.o obj/login.o obj/common.o obj/ds.o obj/des.o obj/editterm_win.o obj/frm_editterm.o obj/frm_telnet.o obj/main.o obj/scd_editterm.o obj/scd_gtk_textctrl.o obj/scd_tabctrl.o obj/scd_telnet.o obj/bookmark.o obj/telnet_panel.o obj/scd_socket.o
+COMMON_OBJ  = obj/scd_terminal.o obj/login.o obj/common.o obj/ds.o obj/editterm_win.o obj/frm_editterm.o obj/frm_telnet.o obj/main.o obj/scd_editterm.o obj/scd_gtk_textctrl.o obj/scd_tabctrl.o obj/scd_telnet.o obj/bookmark.o obj/telnet_panel.o obj/scd_socket.o
 SSH_OBJ = obj/auth.o obj/base64.o obj/buffer.o obj/channels.o obj/client.o obj/connect.o obj/crypt.o obj/dh.o obj/error.o obj/gzip.o obj/kex.o obj/keyfiles.o obj/keys.o obj/misc.o obj/options.o obj/packet.o obj/sftp.o obj/string.o obj/wrapper.o obj/scd_wxssh.o obj/scd_wxsftp.o obj/frm_sftp.o $(RES)
 
 OBJ = $(COMMON_OBJ) $(SSH_OBJ)
@@ -51,8 +51,6 @@ obj/common.o: ../src/common.cpp
 obj/ds.o: ../src/ds.cpp
 	$(WXCPP) -c ../src/ds.cpp -o obj/ds.o $(CXXFLAGS)
 
-obj/des.o: ../src/des.cpp
-	$(WXCPP) -c ../src/des.cpp -o obj/des.o $(CXXFLAGS)
 
 obj/editterm_win.o: ../src/editterm_win.cpp
 	$(WXCPP) -c ../src/editterm_win.cpp -o obj/editterm_win.o $(CXXFLAGS)
