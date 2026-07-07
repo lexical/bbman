@@ -100,14 +100,17 @@ The terminal still follows Big5 BBS byte semantics. The wx3 port decodes using
 Complete UAO 2.50 mapping is not implemented yet, so rare board-specific
 characters may still display as replacement glyphs.
 
-## Historical Files
+## Build Scope
 
-Some original project files remain in the tree for reference, including old
-Dev-C++ project files and wxGTK2-era Makefiles. For current Linux use, prefer:
+The maintained build target is the wxWidgets 3 / GTK3 Linux build:
 
 ```sh
 unix/Makefile.wx3
 ```
+
+Old Dev-C++ Windows project files and wxGTK2-era Unix Makefiles were removed
+because the maintained SSH transport uses POSIX `forkpty()` and the system
+OpenSSH client.
 
 ## License
 
