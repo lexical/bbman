@@ -5,8 +5,16 @@ The imported upstream source declares the project license as:
 
     GPL : http://www.gnu.org/licenses/gpl.html
 
-This repository keeps the original imported `license` file unchanged. No exact
-GPL version number was found in the imported CVS tree.
+The original imported `license` file is kept unchanged. No exact GPL version
+number was written in the imported CVS tree.
+
+BBMan was originally released in the GPLv2 era, before GPLv3 existed. This
+maintained fork is therefore conservatively conveyed under GNU GPL version 2.
+The full GPLv2 text is provided in `LICENSE`.
+
+This notice does not relicense the original upstream code. It records the GPL
+version selected for conveying this maintained fork. Porting changes by
+Keng-Yu Lin are distributed under the same GPLv2 terms.
 
 The historical embedded libssh copy under `legacy/ssh-libssh/` has its own
 LGPL notice and copying text in that subtree. The active wx3 build does not

@@ -114,5 +114,9 @@ unix/Makefile.wx3
 ## License
 
 The original source declares GPL licensing through a GPL URL, but the imported
-CVS tree does not name an exact GPL version. See `license` for the original
-one-line upstream file and `COPYING` for the repository license note.
+CVS tree does not name an exact GPL version. BBMan was originally released in
+the GPLv2 era, before GPLv3 existed, so this maintained fork is conservatively
+conveyed under GNU GPL version 2.
+
+See `LICENSE` for the GPLv2 text, `license` for the original one-line upstream
+file, and `COPYING` for the repository license note.
