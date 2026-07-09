@@ -1,9 +1,12 @@
 [Desktop Entry]
 Type=Application
 Name=BBMan
+GenericName=BBS terminal
 Comment=BBS terminal client
+Keywords=BBS;PTT;Terminal;Telnet;SSH;
 Exec=bbman
 Icon=bbman
 StartupWMClass=bbman
+StartupNotify=true
 Terminal=false
 Categories=System;TerminalEmulator;
