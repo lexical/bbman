@@ -665,11 +665,24 @@ wxMessageBox(str);
 			char *control_code_head = input;
 
 			input ++;
+			if( input == end )
+			{
+				unread_data_len = (int)(end - control_code_head);
+				break;
+			}
 
 			bool has_left_quote = false;
 			bool has_question = false;
 
-			if( *input == '[' )	input++;
+			if( *input == '[' )
+			{
+				input++;
+				if( input == end )
+				{
+					unread_data_len = (int)(end - control_code_head);
+					break;
+				}
+			}
 			else if( *input == ']' )	//ssh/telnet server pwd
 			{
 				while(input!=end)
