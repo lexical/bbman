@@ -55,7 +55,7 @@ make -f Makefile.wx3
 Run from the source tree:
 
 ```sh
-./obj/bbman-wx3
+./obj/bbman
 ```
 
 ## Install
@@ -76,7 +76,8 @@ make -f Makefile.wx3 install DESTDIR=/tmp/bbman-install PREFIX=/usr
 
 The install target installs:
 
-- `bbman-wx3`
+- `bbman`
+- `bbman-wx3` compatibility symlink
 - themes under `share/bbman/theme`
 - bundled `sites.dat`
 - desktop file
@@ -119,5 +120,5 @@ CVS tree does not name an exact GPL version. BBMan was originally released in
 the GPLv2 era, before GPLv3 existed, so this maintained fork is conservatively
 conveyed under GNU GPL version 2.
 
-See `LICENSE` for the GPLv2 text, `license` for the original one-line upstream
-file, and `COPYING` for the reasoning behind the GPLv2 conveyance choice.
+See `LICENSE` for the GPLv2 conveyance note, `COPYING` for the GPLv2
+text, and `license` for the original one-line upstream file.

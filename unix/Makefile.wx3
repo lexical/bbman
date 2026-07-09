@@ -1,6 +1,7 @@
 # wxWidgets 3 / GTK3 build for the modernized BBMan port.
 
-PROG := bbman-wx3
+PROG := bbman
+COMPAT_PROG := bbman-wx3
 BIN := obj/$(PROG)
 
 CXX := g++
@@ -23,11 +24,13 @@ INSTALL_PROGRAM ?= $(INSTALL) -m 755
 INSTALL_DATA ?= $(INSTALL) -m 644
 INSTALL_DIR ?= $(INSTALL) -d
 
-CPPFLAGS := -DHAVE_LIBSECRET $(LIBSECRET_CFLAGS) -I../src
-CXXFLAGS := -g -O0 -std=gnu++17 -fno-rtti -fno-exceptions -Wall -Wextra
-CFLAGS := -std=gnu11 -Wall -Wextra
-LDFLAGS :=
-LDLIBS := $(WX_LIBS) $(LIBSECRET_LIBS) -lutil
+CPPFLAGS += -DHAVE_LIBSECRET $(LIBSECRET_CFLAGS) -I../src
+CXXFLAGS ?= -g -O2
+CXXSTDFLAGS := -std=gnu++17 -fno-rtti -fno-exceptions -Wall -Wextra
+CFLAGS ?= -g -O2
+CSTDFLAGS := -std=gnu11 -Wall -Wextra
+LDFLAGS ?=
+LDLIBS += $(WX_LIBS) $(LIBSECRET_LIBS) -lutil
 
 HEADERS := $(wildcard ../src/*.h)
 
@@ -63,14 +66,15 @@ $(BIN): obj $(COMMON_OBJ)
 	$(CXX) $(COMMON_OBJ) -o $@ $(LDFLAGS) $(LDLIBS)
 
 obj/%.o: ../src/%.cpp $(HEADERS) | obj
-	$(CXX) $(WX_CXXFLAGS) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
+	$(CXX) $(WX_CXXFLAGS) $(CPPFLAGS) $(CXXFLAGS) $(CXXSTDFLAGS) -c $< -o $@
 
 clean:
-	rm -f $(COMMON_OBJ) $(BIN)
+	rm -f $(COMMON_OBJ) $(BIN) obj/$(COMPAT_PROG)
 
 install: check-deps $(BIN)
 	$(INSTALL_DIR) $(DESTDIR)$(bindir)
 	$(INSTALL_PROGRAM) $(BIN) $(DESTDIR)$(bindir)/$(PROG)
+	ln -sf $(PROG) $(DESTDIR)$(bindir)/$(COMPAT_PROG)
 	$(INSTALL_DIR) $(DESTDIR)$(appdatadir)
 	rm -rf $(DESTDIR)$(appdatadir)/theme
 	tar --exclude=CVS -C .. -cf - theme | tar -C $(DESTDIR)$(appdatadir) -xf -
