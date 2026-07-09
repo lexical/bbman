@@ -182,25 +182,45 @@ BBS_Frame::BBS_Frame(const wxString& title, const wxPoint& pos, const wxSize& si
 	//you need to add both 16x16 & 32x32 icons
 	//16x16 for frame title & taskbar icon
 	//32x32 for alt-tab icon
-	wxString iconPath = _T("icon/");
+	wxString iconPath = GetResourcePath() + _T("icon/");
 	if( ! wxFile::Exists(iconPath + _T("BBMan_48.png")) )
-		iconPath = _T("../icon/");
+	{
+		iconPath = _T("icon/");
+		if( ! wxFile::Exists(iconPath + _T("BBMan_48.png")) )
+			iconPath = _T("../icon/");
+	}
 
 	wxIconBundle icons;
-	if( wxFile::Exists(iconPath + _T("BBMan_16.png")) )
-		icons.AddIcon(wxIcon(iconPath + _T("BBMan_16.png"), wxBITMAP_TYPE_PNG));
-	if( wxFile::Exists(iconPath + _T("BBMan_32.png")) )
-		icons.AddIcon(wxIcon(iconPath + _T("BBMan_32.png"), wxBITMAP_TYPE_PNG));
-	if( wxFile::Exists(iconPath + _T("BBMan_48.png")) )
-		icons.AddIcon(wxIcon(iconPath + _T("BBMan_48.png"), wxBITMAP_TYPE_PNG));
+	wxIcon frameIcon;
+	const wxChar *iconFiles[] = { _T("BBMan_16.png"), _T("BBMan_32.png"), _T("BBMan_48.png") };
+	for( size_t i = 0; i < WXSIZEOF(iconFiles); i++ )
+	{
+		wxString iconFile = iconPath + iconFiles[i];
+		if( wxFile::Exists(iconFile) )
+		{
+			wxIcon icon(iconFile, wxBITMAP_TYPE_PNG);
+			if( icon.IsOk() )
+			{
+				icons.AddIcon(icon);
+				if( ! frameIcon.IsOk() )
+					frameIcon = icon;
+			}
+		}
+	}
 
 	if( icons.IsEmpty() )
 	{
 		#include "icon/bbman_16.xpm"
 		#include "icon/bbman_32.xpm"
-		icons.AddIcon(wxIcon(bbman_16_xpm));
-		icons.AddIcon(wxIcon(bbman_32_xpm));
+		wxIcon icon16(bbman_16_xpm);
+		wxIcon icon32(bbman_32_xpm);
+		icons.AddIcon(icon16);
+		icons.AddIcon(icon32);
+		frameIcon = icon32;
 	}
+
+	if( frameIcon.IsOk() )
+		SetIcon(frameIcon);
 	SetIcons(icons);
 	//
 

@@ -4,5 +4,6 @@ Name=BBMan
 Comment=BBS terminal client
 Exec=bbman
 Icon=bbman
+StartupWMClass=bbman
 Terminal=false
 Categories=System;TerminalEmulator;
