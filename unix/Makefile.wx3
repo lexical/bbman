@@ -52,7 +52,7 @@ COMMON_OBJ := \
 	obj/scd_socket.o \
 	obj/scd_pty_ssh.o
 
-.PHONY: all check-deps clean install
+.PHONY: all check-deps clean install uninstall
 
 all: check-deps $(BIN)
 
@@ -95,6 +95,27 @@ install: check-deps $(BIN)
 				utf8lang=$${lang%.Big5}; \
 				$(INSTALL_DIR) "$(DESTDIR)$(localedir)/$$utf8lang/LC_MESSAGES"; \
 				$(INSTALL_DATA) "$$langdir/LC_MESSAGES/bbman.mo" "$(DESTDIR)$(localedir)/$$utf8lang/LC_MESSAGES/bbman.mo"; \
+				;; \
+			esac; \
+		fi; \
+	done
+
+uninstall:
+	rm -f $(DESTDIR)$(bindir)/$(PROG)
+	rm -f $(DESTDIR)$(bindir)/$(COMPAT_PROG)
+	rm -rf $(DESTDIR)$(appdatadir)
+	rm -f $(DESTDIR)$(desktopdir)/bbman.desktop
+	rm -f $(DESTDIR)$(icondir)/16x16/apps/bbman.xpm
+	rm -f $(DESTDIR)$(icondir)/32x32/apps/bbman.xpm
+	rm -f $(DESTDIR)$(icondir)/48x48/apps/bbman.png
+	for langdir in ../mo/*; do \
+		if test -f "$$langdir/LC_MESSAGES/bbman.mo"; then \
+			lang=$$(basename "$$langdir"); \
+			rm -f "$(DESTDIR)$(localedir)/$$lang/LC_MESSAGES/bbman.mo"; \
+			case "$$lang" in \
+			*.Big5) \
+				utf8lang=$${lang%.Big5}; \
+				rm -f "$(DESTDIR)$(localedir)/$$utf8lang/LC_MESSAGES/bbman.mo"; \
 				;; \
 			esac; \
 		fi; \
